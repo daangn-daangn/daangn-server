@@ -1,13 +1,13 @@
-package com.daangndaangn.daangnserver;
+package com.daangndaangn.apiserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DaangnServerApplicationTests {
+class ApiServerApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
