@@ -13,7 +13,7 @@ CREATE TABLE users
     nickname            varchar(20)     NOT NULL COMMENT '닉네임',
     location            varchar(50)     NOT NULL COMMENT '지역',
     profile_url         varchar(500)    DEFAULT NULL COMMENT '프로필 사진',
-    manner              int             NOT NULL DEFAULT 0 COMMENT '매너온도',
+    manner              float           NOT NULL DEFAULT 0 COMMENT '매너온도',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     PRIMARY KEY (id),
@@ -25,7 +25,6 @@ CREATE TABLE categories
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
     name                varchar(20)     NOT NULL COMMENT '카테고리명',
-    description         varchar(100)    NOT NULL COMMENT '카테고리 설명',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     PRIMARY KEY (id),
@@ -37,7 +36,7 @@ CREATE TABLE products
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
     name                varchar(50)     NOT NULL COMMENT '물품명',
-    price               int             NOT NULL COMMENT '가격',
+    price               bigint          NOT NULL COMMENT '가격',
     title               varchar(100)    NOT NULL COMMENT '제목',
     description         varchar(500)    NOT NULL COMMENT '상세 내용',
     selling_type        varchar(10)     NOT NULL COMMENT '중고/경매',

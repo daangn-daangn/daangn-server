@@ -35,6 +35,15 @@ subprojects {
 		developmentOnly 'org.springframework.boot:spring-boot-devtools'
 		implementation 'org.springframework.boot:spring-boot-starter'
 		implementation 'org.springframework.boot:spring-boot-starter-test'
+		implementation group: 'org.apache.commons', name: 'commons-lang3'
+
+		//querydsl 관련 추가
+		implementation "com.querydsl:querydsl-core"
+		implementation "com.querydsl:querydsl-jpa"
+		annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+		annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+		annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+		//querydsl 관련 추가 끝
 	}
 }
 
