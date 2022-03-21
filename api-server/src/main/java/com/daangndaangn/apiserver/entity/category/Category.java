@@ -21,12 +21,11 @@ public class Category extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 20)
     private String name;
 
-    @Column(nullable = false, length = 100)
-    private String description;
-
-    @Builder
-    private Category(String name, String description) {
+    private Category(String name) {
         this.name = name;
-        this.description = description;
+    }
+
+    public static Category from(String name) {
+        return new Category(name);
     }
 }

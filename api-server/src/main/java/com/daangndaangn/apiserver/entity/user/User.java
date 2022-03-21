@@ -31,7 +31,7 @@ public class User extends AuditingCreateUpdateEntity {
     private String profileUrl;
 
     @Column(nullable = false)
-    private long manner;
+    private float manner;
 
     @Builder
     private User(String email, String nickname, String location, String profileUrl) {
@@ -39,6 +39,6 @@ public class User extends AuditingCreateUpdateEntity {
         this.nickname = nickname;
         this.location = location;
         this.profileUrl = profileUrl;
-        this.manner = 0;
+        this.manner = 0.0f;
     }
 }
