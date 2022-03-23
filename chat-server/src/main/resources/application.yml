@@ -1,2 +1,9 @@
 server:
-  port: 9080
+  port: 8880
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: daangn
