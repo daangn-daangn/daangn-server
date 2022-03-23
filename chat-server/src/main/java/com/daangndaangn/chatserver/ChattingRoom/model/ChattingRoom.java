@@ -1,11 +1,15 @@
 package com.daangndaangn.chatserver.ChattingRoom.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
 @Document(collation = "chatting-room")
 public class ChattingRoom {
+
+    @Id
+    private String id;
 
     private String nickname;
 
