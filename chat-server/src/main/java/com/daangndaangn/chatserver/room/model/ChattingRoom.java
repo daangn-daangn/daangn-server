@@ -15,13 +15,12 @@ public class ChattingRoom {
 
     private String nickname;
 
-    private ConcurrentHashMap<Integer, String> map;
+    private ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();;
 
     private LocalDateTime createdAt;
 
     private ChattingRoom(String nickname){
         this.nickname = nickname;
-        this.map = new ConcurrentHashMap<>();
     }
 
     public static ChattingRoom nicknameOf(String nickname){

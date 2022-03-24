@@ -12,7 +12,7 @@ public class ChattingMessage {
     @Id
     private String id;
 
-    private ArrayList<MessageInfo> messages;
+    private ArrayList<MessageInfo> messages = new ArrayList<>();
 
     private LocalDateTime updatedAt;
 
