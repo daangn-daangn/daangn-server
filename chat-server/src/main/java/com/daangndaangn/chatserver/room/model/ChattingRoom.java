@@ -1,9 +1,11 @@
-package com.daangndaangn.chatserver.ChattingRoom.model;
+package com.daangndaangn.chatserver.room.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Document(collation = "chatting-room")
 public class ChattingRoom {
@@ -13,11 +15,17 @@ public class ChattingRoom {
 
     private String nickname;
 
-    private HashMap<Integer, String> map;
+    private ConcurrentHashMap<Integer, String> map;
 
-    public ChattingRoom(String nickname){
+    private LocalDateTime createdAt;
+
+    private ChattingRoom(String nickname){
         this.nickname = nickname;
-        this.map = new HashMap<>();
+        this.map = new ConcurrentHashMap<>();
+    }
+
+    public static ChattingRoom nicknameOf(String nickname){
+        return new ChattingRoom(nickname);
     }
 
     public void addChatting(int productId, String chattingRoomId){

@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.ChattingMessage.model;
+package com.daangndaangn.chatserver.message.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

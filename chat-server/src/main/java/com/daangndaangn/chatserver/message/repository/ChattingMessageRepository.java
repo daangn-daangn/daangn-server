@@ -1,6 +1,6 @@
-package com.daangndaangn.chatserver.ChattingMessage.repository;
+package com.daangndaangn.chatserver.message.repository;
 
-import com.daangndaangn.chatserver.ChattingMessage.model.ChattingMessage;
+import com.daangndaangn.chatserver.message.model.ChattingMessage;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ChattingMessageRepository extends MongoRepository<ChattingMessage, String> {

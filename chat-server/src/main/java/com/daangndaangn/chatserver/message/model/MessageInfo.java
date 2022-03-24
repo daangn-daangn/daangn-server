@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.ChattingMessage.model;
+package com.daangndaangn.chatserver.message.model;
 
 import lombok.Builder;
 
@@ -14,7 +14,7 @@ public class MessageInfo {
     private LocalDateTime createdAt;
 
     @Builder
-    public MessageInfo(String sender, String message, LocalDateTime createdAt){
+    private MessageInfo(String sender, String message, LocalDateTime createdAt){
         this.sender = sender;
         this.message = message;
         this.createdAt = createdAt;
