@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS sale_reviews CASCADE;
 CREATE TABLE users
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
-    oauth_id            bigint          NOT NULL COMMENt 'OAUTH ID',
+    oauth_id            bigint          NOT NULL COMMENT 'oauth id',
     email               varchar(50)     NOT NULL COMMENT '사용자 이메일',
     nickname            varchar(20)     NOT NULL COMMENT '닉네임',
     location            varchar(50)     NOT NULL COMMENT '지역',

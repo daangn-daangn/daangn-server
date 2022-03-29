@@ -45,7 +45,7 @@ public final class Jwt {
                                 .build();
     }
 
-    public String newToken(Claims claims) {
+    public String createNewToken(Claims claims) {
         Date now = new Date();
         JWTCreator.Builder builder = com.auth0.jwt.JWT.create();
         builder.withIssuer(issuer);
@@ -66,11 +66,11 @@ public final class Jwt {
         return builder.sign(algorithm);
     }
 
-    public String refreshToken(String token) throws JWTVerificationException {
+    public String createRefreshToken(String token) throws JWTVerificationException {
         Claims claims = verify(token);
         claims.eraseIat();
         claims.eraseExp();
-        return newToken(claims);
+        return createNewToken(claims);
     }
 
     public Claims verify(String token) throws JWTVerificationException  {

@@ -10,6 +10,9 @@ import javax.persistence.Embeddable;
 
 import static java.util.regex.Pattern.matches;
 
+/**
+ * 사용자의 이메일을 나타내는 Value Object
+ */
 @ToString
 @Getter
 @EqualsAndHashCode
@@ -41,7 +44,7 @@ public class Email {
             return new Email(emailAddress);
         }
 
-        throw new RuntimeException("Invalid email address");
+        throw new IllegalArgumentException("Invalid email address");
     }
 
 }

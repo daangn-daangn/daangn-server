@@ -37,7 +37,7 @@ class JwtTest {
                                         Email.from("test@gmail.com"),
                                         new String[]{"ROLE_USER"});
 
-        String encodedJWT = jwt.newToken(claims);
+        String encodedJWT = jwt.createNewToken(claims);
         log.info("encodedJWT: {}", encodedJWT);
 
         Jwt.Claims decodedJWT = jwt.verify(encodedJWT);
@@ -63,13 +63,13 @@ class JwtTest {
                     Email.from("test@gmail.com"),
                     new String[]{"ROLE_USER"});
 
-            String encodedJWT = jwt.newToken(claims);
+            String encodedJWT = jwt.createNewToken(claims);
             log.info("encodedJWT: {}", encodedJWT);
 
             // 1초 대기 후 토큰 갱신
             sleep(1_000L);
 
-            String encodedRefreshedJWT = jwt.refreshToken(encodedJWT);
+            String encodedRefreshedJWT = jwt.createRefreshToken(encodedJWT);
             log.info("encodedRefreshedJWT: {}", encodedRefreshedJWT);
 
             assertThat(encodedJWT).isNotEqualTo(encodedRefreshedJWT);

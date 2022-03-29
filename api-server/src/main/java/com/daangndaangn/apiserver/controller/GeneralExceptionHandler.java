@@ -4,13 +4,17 @@ import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.error.ServiceRuntimeException;
 import com.daangndaangn.apiserver.error.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.multipart.MultipartException;
 
 import static com.daangndaangn.apiserver.controller.ApiResult.ERROR;
 
@@ -25,6 +29,16 @@ public class GeneralExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(ERROR(throwable, status), headers, status);
+    }
+
+    @ExceptionHandler({
+        IllegalStateException.class, IllegalArgumentException.class,
+        TypeMismatchException.class, HttpMessageNotReadableException.class,
+        MissingServletRequestParameterException.class, MultipartException.class,
+    })
+    public ResponseEntity<?> handleBadRequestException(Exception e) {
+        log.info("Bad request exception occurred: {}", e.getMessage(), e);
+        return createResponse(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)

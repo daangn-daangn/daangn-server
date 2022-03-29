@@ -59,7 +59,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
                     // 만료 10분 전일 때
                     if (canRefresh(claims, 10 * 60 * 1000)) {
-                        String refreshedToken = jwt.refreshToken(authorizationToken);
+                        String refreshedToken = jwt.createRefreshToken(authorizationToken);
                         response.setHeader(headerKey, refreshedToken);
                     }
 

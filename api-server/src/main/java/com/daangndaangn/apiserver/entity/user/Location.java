@@ -7,6 +7,9 @@ import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+/**
+ * 사용자의 위치 정보를 나타내는 Value Object
+ */
 @ToString
 @Getter
 @EqualsAndHashCode

@@ -50,6 +50,6 @@ public class User extends AuditingCreateUpdateEntity {
 
     public String createApiToken(Jwt jwt, String[] roles) {
         Jwt.Claims claims = Jwt.Claims.of(id, oauthId, nickname, location, manner, email, roles);
-        return jwt.newToken(claims);
+        return jwt.createNewToken(claims);
     }
 }
