@@ -35,6 +35,7 @@ subprojects {
 		developmentOnly 'org.springframework.boot:spring-boot-devtools'
 		implementation 'org.springframework.boot:spring-boot-starter'
 		implementation 'org.springframework.boot:spring-boot-starter-test'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
 		implementation group: 'org.apache.commons', name: 'commons-lang3'
 
 		//querydsl 관련 추가

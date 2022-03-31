@@ -7,3 +7,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+
+jwt:
+  header: api_key
+  issuer: daangn-server
+  clientSecret: daangn-server
+  expirySeconds: 7200 # 2시간
+
+oauth:
+  kakao:
+    headerKey: Authorization
+    headerValue: Bearer
+    url: https://kapi.kakao.com/v2/user/me

@@ -2,6 +2,7 @@ package com.daangndaangn.apiserver.entity.product;
 
 import com.daangndaangn.apiserver.entity.AuditingCreateUpdateEntity;
 import com.daangndaangn.apiserver.entity.category.Category;
+import com.daangndaangn.apiserver.entity.user.Location;
 import com.daangndaangn.apiserver.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class Product extends AuditingCreateUpdateEntity {
     private String sellingType;
 
     @Column(nullable = false, length = 20)
-    private String location;
+    private Location location;
 
     @Column(nullable = false)
     private ProductState state;

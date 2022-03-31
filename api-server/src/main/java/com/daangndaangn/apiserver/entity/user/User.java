@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.entity.user;
 
 import com.daangndaangn.apiserver.entity.AuditingCreateUpdateEntity;
+import com.daangndaangn.apiserver.security.jwt.Jwt;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,27 +19,37 @@ public class User extends AuditingCreateUpdateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String email;
+    @Column(nullable = false)
+    private Long oauthId;
 
-    @Column(nullable = false, length = 20)
+    @Embedded
+    @Column(nullable = false, length = 50)
+    private Email email;
+
+    @Column(length = 20)
     private String nickname;
 
-    @Column(nullable = false, length = 20)
-    private String location;
+    @Column(length = 20)
+    private Location location;
 
     @Column(length = 500)
     private String profileUrl;
 
     @Column(nullable = false)
-    private float manner;
+    private double manner;
 
     @Builder
-    private User(String email, String nickname, String location, String profileUrl) {
+    private User(Long oauthId, Email email, String nickname, Location location, String profileUrl) {
+        this.oauthId = oauthId;
         this.email = email;
         this.nickname = nickname;
         this.location = location;
         this.profileUrl = profileUrl;
-        this.manner = 0.0f;
+        this.manner = 0.0;
+    }
+
+    public String createApiToken(Jwt jwt, String[] roles) {
+        Jwt.Claims claims = Jwt.Claims.of(id, oauthId, nickname, location, manner, email, roles);
+        return jwt.createNewToken(claims);
     }
 }

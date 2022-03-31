@@ -9,11 +9,12 @@ DROP TABLE IF EXISTS sale_reviews CASCADE;
 CREATE TABLE users
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
+    oauth_id            bigint          NOT NULL COMMENT 'oauth id',
     email               varchar(50)     NOT NULL COMMENT '사용자 이메일',
     nickname            varchar(20)     NOT NULL COMMENT '닉네임',
     location            varchar(50)     NOT NULL COMMENT '지역',
     profile_url         varchar(500)    DEFAULT NULL COMMENT '프로필 사진',
-    manner              float           NOT NULL DEFAULT 0 COMMENT '매너온도',
+    manner              double          NOT NULL DEFAULT 0 COMMENT '매너온도',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     PRIMARY KEY (id),
