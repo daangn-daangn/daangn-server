@@ -4,14 +4,14 @@ import com.daangndaangn.apiserver.entity.AuditingCreateUpdateEntity;
 import com.daangndaangn.apiserver.entity.category.Category;
 import com.daangndaangn.apiserver.entity.user.Location;
 import com.daangndaangn.apiserver.entity.user.User;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "products")
@@ -58,6 +58,9 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(length = 500)
     private String thumbNailImage;
 
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> productImageList = new ArrayList<>();
+
     @Builder
     private Product(User seller,
                     User buyer,
@@ -67,7 +70,7 @@ public class Product extends AuditingCreateUpdateEntity {
                     String title,
                     String description,
                     ProductState state,
-                    String thumbNailImage) {
+                    List<String> imgUrlList) {
 
         this.seller = seller;
         this.buyer = buyer;
@@ -78,6 +81,20 @@ public class Product extends AuditingCreateUpdateEntity {
         this.description = description;
         this.location = seller.getLocation();
         this.state = state;
-        this.thumbNailImage = thumbNailImage;
+        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
+
+        for(String imgUrl : imgUrlList){
+            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
+        }
+    }
+
+    public void setThumbNailImage(List<String> imgUrlList){
+        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
+    }
+
+    public void setProductImageList(List<String> imgUrlList){
+        for(String imgUrl : imgUrlList){
+            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
+        }
     }
 }
