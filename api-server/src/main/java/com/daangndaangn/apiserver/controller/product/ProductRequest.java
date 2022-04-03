@@ -15,11 +15,28 @@ public class ProductRequest {
         @NotNull
         private String title;
         @NotNull
+        private String name;
+        @NotNull
         private Long category;
         @NotNull
         private Long price;
-        private String content;
-        private List<String> imgUrl;
-
+        private String description;
+        private List<String> imgUrlList;
     }
+
+    @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class UpdateRequest {
+        @NotNull
+        private String title;
+        @NotNull
+        private String name;
+        @NotNull
+        private Long category;
+        @NotNull
+        private Long price;
+        private String description;
+        private List<String> imgUrlList;
+    }
+
 }
