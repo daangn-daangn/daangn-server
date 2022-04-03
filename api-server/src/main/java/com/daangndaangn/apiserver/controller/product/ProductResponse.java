@@ -80,13 +80,13 @@ public class ProductResponse {
     @Builder
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DeleteResponse {
-        private boolean success;
+        private Long id;
 
-        public static ProductResponse.DeleteResponse of(boolean success){
-            return new DeleteResponse(success);
+        public static ProductResponse.DeleteResponse of(Long id){
+            return new DeleteResponse(id);
         }
-        private DeleteResponse(boolean success){
-            this.success = success;
+        private DeleteResponse(Long id){
+            this.id = id;
         }
     }
 

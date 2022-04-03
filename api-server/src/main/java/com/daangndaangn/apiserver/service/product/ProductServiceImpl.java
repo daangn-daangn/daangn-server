@@ -63,8 +63,8 @@ public class ProductServiceImpl implements ProductService{
     @Transactional
     public ProductResponse.DeleteResponse deleteProduct(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
-        productRepository.delete(product);
-        return ProductResponse.DeleteResponse.of(true);
+        product.setState(ProductState.DELETED);
+        return ProductResponse.DeleteResponse.of(productRepository.save(product).getId());
     }
 
     private ProductResponse.GetResponse convertToDto(Product product) {
