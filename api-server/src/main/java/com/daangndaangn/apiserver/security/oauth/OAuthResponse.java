@@ -15,9 +15,12 @@ public class OAuthResponse {
      *
      * {
      *     "id": 123,
-     *     "kakao_account:": {
-     *         "email": "test@gmail.com",,
-     *         "profile_image": ""
+     *     "kakao_account": {
+     *         "profile_image_needs_agreement": false,
+     *         "profile": {
+     *             "thumbnail_image_url": "http://k.kakaocdn.net/dn/64fac/btrgDyt8p/QFcrbregasbqBChU1/img_110x110.jpg",
+     *             "profile_image_url": "http://k.kakaocdn.net/dn/64fac/btrgDyt8p/QFcrbregasbqBChU1/img_640x640.jpg",
+     *         }
      *     }
      * }
      */
@@ -27,9 +30,11 @@ public class OAuthResponse {
         private Long id;
         private String profileImage;
 
+        @SuppressWarnings("unchecked")
         @JsonProperty("kakao_account")
-        private void getProfileImage(Map<String, String> kakaoAccountInfo) {
-            this.profileImage = kakaoAccountInfo.get("profile_image");
+        private void getProfileImage(Map<String, Object> kakaoAccountInfo) {
+            Map<String,String> profile = (Map<String, String>) kakaoAccountInfo.get("profile");
+            this.profileImage = profile.get("thumbnail_image_url");
         }
     }
 
