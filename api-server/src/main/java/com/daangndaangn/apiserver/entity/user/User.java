@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.*;
 
@@ -22,10 +23,6 @@ public class User extends AuditingCreateUpdateEntity {
     @Column(nullable = false)
     private Long oauthId;
 
-    @Embedded
-    @Column(nullable = false, length = 50)
-    private Email email;
-
     @Column(length = 20)
     private String nickname;
 
@@ -38,18 +35,22 @@ public class User extends AuditingCreateUpdateEntity {
     @Column(nullable = false)
     private double manner;
 
+    public void update(Long oauthId, String nickname, Location location, String profileUrl) {
+        this.oauthId = ObjectUtils.isEmpty(oauthId) ? this.oauthId : oauthId;
+        this.nickname = ObjectUtils.isEmpty(nickname) ? this.nickname : nickname;
+        this.location = ObjectUtils.isEmpty(location) ? this.location : location;
+        this.profileUrl = ObjectUtils.isEmpty(profileUrl) ? this.profileUrl : profileUrl;
+    }
+
     @Builder
-    private User(Long oauthId, Email email, String nickname, Location location, String profileUrl) {
+    private User(Long oauthId, String profileUrl) {
         this.oauthId = oauthId;
-        this.email = email;
-        this.nickname = nickname;
-        this.location = location;
         this.profileUrl = profileUrl;
         this.manner = 0.0;
     }
 
     public String createApiToken(Jwt jwt, String[] roles) {
-        Jwt.Claims claims = Jwt.Claims.of(id, oauthId, nickname, location, manner, email, roles);
+        Jwt.Claims claims = Jwt.Claims.of(id, oauthId, nickname, location, manner, roles);
         return jwt.createNewToken(claims);
     }
 }

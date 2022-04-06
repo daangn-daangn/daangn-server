@@ -20,6 +20,8 @@ public class OAuthConfigure {
 
     private String headerValue; // "Bearer"
 
-    private String url; // "https://kapi.kakao.com/v2/user/me"
+    private String loginUrl; // "https://kapi.kakao.com/v2/user/me"
+
+    private String logoutUrl; // "https://kapi.kakao.com/v1/user/logout
 
 }

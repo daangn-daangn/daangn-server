@@ -1,6 +1,5 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.entity.user.Email;
 import com.daangndaangn.apiserver.entity.user.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +64,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
                     Long id = claims.id;
                     Long oauthId = claims.oauthId;
-                    Email email = claims.email;
                     String nickname = claims.nickname;
                     Location location = claims.location;
                     String profileUrl = claims.profileUrl;
@@ -78,7 +76,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         JwtAuthentication principal = JwtAuthentication.builder()
                                                                         .id(id)
                                                                         .oauthId(oauthId)
-                                                                        .email(email)
                                                                         .nickname(nickname)
                                                                         .location(location)
                                                                         .profileUrl(profileUrl)

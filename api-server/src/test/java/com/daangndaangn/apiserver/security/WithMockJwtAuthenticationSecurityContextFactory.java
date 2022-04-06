@@ -1,6 +1,5 @@
 package com.daangndaangn.apiserver.security;
 
-import com.daangndaangn.apiserver.entity.user.Email;
 import com.daangndaangn.apiserver.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationToken;
@@ -19,7 +18,6 @@ public class WithMockJwtAuthenticationSecurityContextFactory implements WithSecu
         JwtAuthentication principal = JwtAuthentication.builder()
                 .id(annotation.id())
                 .oauthId(annotation.oauthId())
-                .email(Email.from(annotation.email()))
                 .nickname(annotation.nickname())
                 .location(Location.from(annotation.location()))
                 .profileUrl(annotation.profileUrl())

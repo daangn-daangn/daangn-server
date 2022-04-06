@@ -1,7 +1,7 @@
 package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.entity.user.User;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,17 +13,18 @@ public class UserResponse {
 
     @Getter
     @Builder
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(SnakeCaseStrategy.class)
     public static class JoinResponse {
+
         private Long id;
         private Long oauthId;
-        private String email;
+        private String profileUrl;
 
         public static JoinResponse from(User user) {
             return JoinResponse.builder()
                     .id(user.getId())
                     .oauthId(user.getOauthId())
-                    .email(user.getEmail().getAddress())
+                    .profileUrl(user.getProfileUrl())
                     .build();
         }
     }

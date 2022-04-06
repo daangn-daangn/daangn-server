@@ -13,8 +13,6 @@ public @interface WithMockJwtAuthentication {
 
     long oauthId() default 12315L;
 
-    String email() default "tester00@gmail.com";
-
     String nickname() default "tester00";
 
     String location() default "서울시 마포구";

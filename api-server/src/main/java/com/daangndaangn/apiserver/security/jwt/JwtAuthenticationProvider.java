@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.controller.authentication.AuthenticationDto;
+import com.daangndaangn.apiserver.controller.authentication.AuthResponse;
 import com.daangndaangn.apiserver.entity.user.Role;
 import com.daangndaangn.apiserver.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
@@ -48,7 +48,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
                     JwtAuthenticationToken.of(jwtAuthentication, createAuthorityList(Role.USER.value()));
 
             String apiToken = user.createApiToken(jwt, new String[]{Role.USER.value()});
-            authenticationToken.setDetails(AuthenticationDto.Response.of(apiToken, user));
+            authenticationToken.setDetails(AuthResponse.LoginResponse.of(apiToken, user));
 
             return authenticationToken;
         } catch (NotFoundException e) {

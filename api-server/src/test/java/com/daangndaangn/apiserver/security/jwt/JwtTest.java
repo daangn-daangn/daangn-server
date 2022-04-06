@@ -1,6 +1,5 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.entity.user.Email;
 import com.daangndaangn.apiserver.entity.user.Location;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,6 @@ class JwtTest {
                                         "tester",
                                         Location.from("Seoul"),
                                         0.0,
-                                        Email.from("test@gmail.com"),
                                         new String[]{"ROLE_USER"});
 
         String encodedJWT = jwt.createNewToken(claims);
@@ -48,7 +46,6 @@ class JwtTest {
         assertThat(claims.nickname).isEqualTo(decodedJWT.nickname);
         assertThat(claims.location).isEqualTo(decodedJWT.location);
         assertThat(claims.manner).isEqualTo(decodedJWT.manner);
-        assertThat(claims.email).isEqualTo(decodedJWT.email);
         assertArrayEquals(claims.roles, decodedJWT.roles);
     }
 
@@ -60,7 +57,6 @@ class JwtTest {
                     "tester",
                     Location.from("Seoul"),
                     0.0,
-                    Email.from("test@gmail.com"),
                     new String[]{"ROLE_USER"});
 
             String encodedJWT = jwt.createNewToken(claims);
