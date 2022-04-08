@@ -71,7 +71,7 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                     .antMatchers("/api/hcheck").permitAll() // 서버 상태 CHECK API는 모두 접근가능
-                    .antMatchers("/api/auth").permitAll()   // 로그인 API는 모두 접근가능
+                    .antMatchers("/api/auth/login").permitAll()   // 로그인 API는 모두 접근가능
                     .antMatchers("/api/users/join").permitAll()  // 회원 가입 API는 모두 접근가능
                     .antMatchers("/api/**").hasRole(Role.USER.name())   // 그 외 API는 '회원 권한' 필요
                 .anyRequest().permitAll()

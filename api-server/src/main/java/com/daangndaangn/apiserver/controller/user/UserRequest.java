@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.controller.user;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
@@ -12,15 +12,21 @@ import javax.validation.constraints.NotNull;
 public class UserRequest {
 
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonNaming(SnakeCaseStrategy.class)
     public static class JoinRequest {
+
         @NotNull
         private String accessToken;
+    }
+
+    @Getter
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class UpdateRequest {
+
         @NotNull
         private String nickname;
         @NotNull
         private String location;
         private String profileUrl;
     }
-
 }

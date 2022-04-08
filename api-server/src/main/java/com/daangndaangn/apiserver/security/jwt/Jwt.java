@@ -7,7 +7,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.daangndaangn.apiserver.entity.user.Email;
 import com.daangndaangn.apiserver.entity.user.Location;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -58,9 +57,8 @@ public final class Jwt {
         builder.withClaim("id", claims.id);
         builder.withClaim("oauthId", claims.oauthId);
         builder.withClaim("nickname", claims.nickname);
-        builder.withClaim("location", claims.location.getAddress());
+        builder.withClaim("location", ObjectUtils.isEmpty(claims.location) ? null : claims.location.getAddress());
         builder.withClaim("manner", claims.manner);
-        builder.withClaim("email", claims.email.getAddress());
         builder.withClaim("profileUrl", claims.profileUrl);
         builder.withArrayClaim("roles", claims.roles);
         return builder.sign(algorithm);
@@ -85,7 +83,6 @@ public final class Jwt {
         String nickname;
         Location location;
         Double manner;
-        Email email;
         String profileUrl;
         String[] roles;
         Date iat;
@@ -107,9 +104,6 @@ public final class Jwt {
             Claim manner = decodedJWT.getClaim("manner");
             if (!manner.isNull())
                 this.manner = manner.asDouble();
-            Claim email = decodedJWT.getClaim("email");
-            if (!email.isNull())
-                this.email = Email.from(email.asString());
             Claim profileUrl = decodedJWT.getClaim("profileUrl");
             if (!profileUrl.isNull())
                 this.profileUrl = profileUrl.asString();
@@ -120,14 +114,13 @@ public final class Jwt {
             this.exp = decodedJWT.getExpiresAt();
         }
 
-        public static Claims of(Long id, Long oauthId, String nickname, Location location, Double manner, Email email, String[] roles) {
+        public static Claims of(Long id, Long oauthId, String nickname, Location location, Double manner, String[] roles) {
             Claims claims = new Claims();
             claims.id = id;
             claims.oauthId = oauthId;
             claims.nickname = nickname;
             claims.location = location;
             claims.manner = manner;
-            claims.email = email;
             claims.roles = roles;
             return claims;
         }
@@ -157,7 +150,6 @@ public final class Jwt {
                 .append("nickname", nickname)
                 .append("location", location)
                 .append("manner", manner)
-                .append("email", email)
                 .append("profileUrl", profileUrl)
                 .append("roles", Arrays.toString(roles))
                 .append("iat", iat)

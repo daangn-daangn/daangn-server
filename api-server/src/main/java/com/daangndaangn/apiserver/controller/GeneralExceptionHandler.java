@@ -1,5 +1,6 @@
 package com.daangndaangn.apiserver.controller;
 
+import com.daangndaangn.apiserver.error.DuplicateValueException;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.error.ServiceRuntimeException;
 import com.daangndaangn.apiserver.error.UnauthorizedException;
@@ -63,6 +64,8 @@ public class GeneralExceptionHandler {
             return createResponse(e, HttpStatus.NOT_FOUND);
         } else if (e instanceof UnauthorizedException) {
             return createResponse(e, HttpStatus.UNAUTHORIZED);
+        } else if (e instanceof DuplicateValueException) {
+            return createResponse(e, HttpStatus.BAD_REQUEST);
         }
 
         log.warn("Unexpected service exception occurred: {}", e.getMessage(), e);

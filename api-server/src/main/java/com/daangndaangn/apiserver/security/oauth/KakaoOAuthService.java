@@ -25,15 +25,29 @@ public class KakaoOAuthService implements OAuthService {
     private final OAuthConfigure oAuthConfigure;
 
     @Override
-    public OAuthDto.Response getUserInfo(OAuthDto.Request request) {
+    public OAuthResponse.LoginResponse getUserInfo(OAuthRequest.LoginRequest request) {
 
-        HttpEntity authRequest = createAuthRequest(request);
-        String requestUrl = oAuthConfigure.getUrl();
+        HttpEntity authRequest = createLoginRequest(request);
+        String requestUrl = oAuthConfigure.getLoginUrl();
 
-        ResponseEntity<OAuthDto.Response> oauthResponse
-                = restTemplate.exchange(requestUrl, HttpMethod.GET, authRequest, OAuthDto.Response.class);
+        ResponseEntity<OAuthResponse.LoginResponse> oauthResponse
+                = restTemplate.exchange(requestUrl, HttpMethod.GET, authRequest, OAuthResponse.LoginResponse.class);
 
-        log.info("response body = {}", oauthResponse.getBody());
+        log.info("authentication response body = {}", oauthResponse.getBody());
+
+        return oauthResponse.getBody();
+    }
+
+    @Override
+    public OAuthResponse.LogoutResponse logout(OAuthRequest.LogoutRequest request) {
+
+        HttpEntity logoutRequest = createLogoutRequest(request);
+        String requestUrl = oAuthConfigure.getLogoutUrl();
+
+        ResponseEntity<OAuthResponse.LogoutResponse> oauthResponse
+                = restTemplate.exchange(requestUrl, HttpMethod.POST, logoutRequest, OAuthResponse.LogoutResponse.class);
+
+        log.info("logout response body = {}", oauthResponse.getBody());
 
         return oauthResponse.getBody();
     }
@@ -44,8 +58,23 @@ public class KakaoOAuthService implements OAuthService {
      *
      * @return Authorization: Bearer ${ACCESS_TOKEN}
      */
-    private HttpEntity createAuthRequest(OAuthDto.Request authRequest) {
-        String headerValue = createRequestHeader(authRequest.getAccessToken());
+    private HttpEntity createLoginRequest(OAuthRequest.LoginRequest loginRequest) {
+        String headerValue = createRequestHeader(loginRequest.getAccessToken());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(oAuthConfigure.getHeaderKey(), headerValue);
+
+        return new HttpEntity(headers);
+    }
+
+    /**
+     * HttpHeader key: Authorization
+     * HttpHeader value: Bearer ${ACCESS_TOKEN}
+     *
+     * @return Authorization: Bearer ${ACCESS_TOKEN}
+     */
+    private HttpEntity createLogoutRequest(OAuthRequest.LogoutRequest logoutRequest) {
+        String headerValue = createRequestHeader(logoutRequest.getAccessToken());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(oAuthConfigure.getHeaderKey(), headerValue);

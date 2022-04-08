@@ -11,11 +11,12 @@ spring:
 jwt:
   header: api_key
   issuer: daangn-server
-  clientSecret: daangn-server
-  expirySeconds: 7200 # 2시간
+  client-secret: daangn-server
+  expiry-seconds: 7200 # 2시간
 
 oauth:
   kakao:
-    headerKey: Authorization
-    headerValue: Bearer
-    url: https://kapi.kakao.com/v2/user/me
+    header-key: Authorization
+    header-value: Bearer
+    login-url: https://kapi.kakao.com/v2/user/me
+    logout-url: https://kapi.kakao.com/v1/user/logout

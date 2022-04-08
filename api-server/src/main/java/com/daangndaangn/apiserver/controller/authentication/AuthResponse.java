@@ -1,46 +1,38 @@
 package com.daangndaangn.apiserver.controller.authentication;
 
 import com.daangndaangn.apiserver.entity.user.User;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
- * 인증(로그인) 요청/응답 Dto
+ * 인증(로그인/로그아웃) 응답 Dto
  */
-public class AuthenticationDto {
-
-    @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class Request {
-        private String accessToken;
-    }
+public class AuthResponse {
 
     @Builder
     @Getter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class Response {
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class LoginResponse {
         //jwt
         private String apiToken;
 
         //userInfo
         private String nickname;
-        private String email;
         private String location;
         private String profileUrl;
         private Double manner;
 
-        public static Response of(String apiToken, User user) {
-            return Response.builder()
+        public static AuthResponse.LoginResponse of(String apiToken, User user) {
+            return AuthResponse.LoginResponse.builder()
                     .apiToken(apiToken)
                     .nickname(user.getNickname())
-                    .email(user.getEmail().getAddress())
-                    .location(user.getLocation().getAddress())
+                    .location(ObjectUtils.isEmpty(user.getLocation()) ? null : user.getLocation().getAddress())
                     .profileUrl(user.getProfileUrl())
                     .manner(user.getManner())
                     .build();
         }
     }
-
 }

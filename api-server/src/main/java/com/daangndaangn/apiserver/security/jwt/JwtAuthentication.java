@@ -1,6 +1,5 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.entity.user.Email;
 import com.daangndaangn.apiserver.entity.user.Location;
 import com.daangndaangn.apiserver.entity.user.User;
 import lombok.Builder;
@@ -19,8 +18,6 @@ public class JwtAuthentication {
 
     private final Long oauthId;
 
-    private final Email email;
-
     private final String nickname;
 
     private final Location location;
@@ -33,7 +30,6 @@ public class JwtAuthentication {
         return JwtAuthentication.builder()
                 .id(user.getId())
                 .oauthId(user.getOauthId())
-                .email(user.getEmail())
                 .nickname(user.getNickname())
                 .location(user.getLocation())
                 .profileUrl(user.getProfileUrl())
