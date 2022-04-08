@@ -34,6 +34,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(User.class, String.format("userId = %s", userId)));
+    }
+
+    @Override
     public User login(Long oauthId) {
         return userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));

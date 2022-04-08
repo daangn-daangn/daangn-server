@@ -21,7 +21,7 @@ public class ProductResponse {
     public static class CreateResponse {
         private Long id;
 
-        public static ProductResponse.CreateResponse of(Long id){
+        public static ProductResponse.CreateResponse from(Long id){
             return new CreateResponse(id);
         }
         private CreateResponse(Long id){
@@ -62,13 +62,14 @@ public class ProductResponse {
                     .build();
         }
     }
+
     @Getter
     @Builder
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class UpdateResponse {
         private Long id;
 
-        public static ProductResponse.UpdateResponse of(Long id){
+        public static ProductResponse.UpdateResponse from(Long id){
             return new UpdateResponse(id);
         }
         private UpdateResponse(Long id){
@@ -82,7 +83,7 @@ public class ProductResponse {
     public static class DeleteResponse {
         private Long id;
 
-        public static ProductResponse.DeleteResponse of(Long id){
+        public static ProductResponse.DeleteResponse from(Long id){
             return new DeleteResponse(id);
         }
         private DeleteResponse(Long id){

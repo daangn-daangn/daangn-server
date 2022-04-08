@@ -8,6 +8,6 @@ import com.daangndaangn.apiserver.entity.user.User;
 public interface UserService {
 
     UserResponse.JoinResponse join(Long oauthId, Email email, String nickname, Location location, String profileUrl);
-
+    User findUser(Long userId);
     User login(Long oauthId);
 }

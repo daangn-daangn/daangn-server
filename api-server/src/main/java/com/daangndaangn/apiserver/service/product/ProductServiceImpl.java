@@ -4,9 +4,11 @@ import com.daangndaangn.apiserver.controller.product.ProductResponse;
 import com.daangndaangn.apiserver.entity.category.Category;
 import com.daangndaangn.apiserver.entity.product.Product;
 import com.daangndaangn.apiserver.entity.product.ProductState;
+import com.daangndaangn.apiserver.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.repository.ProductRepository;
 import com.daangndaangn.apiserver.service.category.CategoryService;
+import com.daangndaangn.apiserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +21,24 @@ public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private final UserService userService;
+
+    @Override
+    public Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+    }
 
     @Override
     public ProductResponse.GetResponse getProduct(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+        Product product = this.findProduct(productId);
         return convertToDto(product);
     }
     @Override
-    @Transactional
-    public ProductResponse.CreateResponse createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList) {
-        Category category = categoryService.getCategory(categoryId);
+    @Transactional(readOnly = true)
+    public ProductResponse.CreateResponse createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId) {
+        Category category = categoryService.findCategory(categoryId);
+        User user = userService.findUser(userId);
         Product product = Product.builder()
                 .title(title)
                 .name(name)
@@ -36,35 +46,34 @@ public class ProductServiceImpl implements ProductService{
                 .price(price)
                 .state(ProductState.FOR_SALE)
                 .description(description)
-                .seller(null)
+                .seller(user)
                 .buyer(null)
                 .imgUrlList(imgUrlList)
                 .build();
-        return ProductResponse.CreateResponse.of(productRepository.save(product).getId());
+        return ProductResponse.CreateResponse.from(productRepository.save(product).getId());
     }
 
     @Override
     @Transactional
-    public ProductResponse.UpdateResponse updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList){
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
-        Category category = categoryService.getCategory(categoryId);
-        product.setTitle(title);
-        product.setName(name);
-        product.setCategory(category);
-        product.setPrice(price);
-        product.setDescription(description);
-        product.setProductImageList(imgUrlList);
-        product.setThumbNailImage(imgUrlList);
-
-        return ProductResponse.UpdateResponse.of(productRepository.save(product).getId());
+    public ProductResponse.UpdateResponse updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId){
+        Product product = this.findProduct(productId);
+        if(product.getSeller().getId() != userId){
+            throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
+        }
+        Category category = categoryService.findCategory(categoryId);
+        product.update(title, name, category, price, description);
+        return ProductResponse.UpdateResponse.from(productRepository.save(product).getId());
     }
 
     @Override
     @Transactional
-    public ProductResponse.DeleteResponse deleteProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+    public ProductResponse.DeleteResponse deleteProduct(Long productId, Long userId) {
+        Product product = this.findProduct(productId);
+        if(product.getSeller().getId() != userId){
+            throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
+        }
         product.setState(ProductState.DELETED);
-        return ProductResponse.DeleteResponse.of(productRepository.save(product).getId());
+        return ProductResponse.DeleteResponse.from(productRepository.save(product).getId());
     }
 
     private ProductResponse.GetResponse convertToDto(Product product) {

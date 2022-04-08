@@ -58,6 +58,7 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(length = 500)
     private String thumbNailImage;
 
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImageList = new ArrayList<>();
 
@@ -96,5 +97,13 @@ public class Product extends AuditingCreateUpdateEntity {
         for(String imgUrl : imgUrlList){
             this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
         }
+    }
+
+    public void update(String title, String name, Category category, Long price, String description){
+        this.title = title;
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.description = description;
     }
 }
