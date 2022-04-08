@@ -10,5 +10,7 @@ public interface UserService {
 
     void update(Long oauthId, String nickname, Location location, String profileUrl);
 
+    User findUser(Long userId);
+
     User login(Long oauthId);
 }

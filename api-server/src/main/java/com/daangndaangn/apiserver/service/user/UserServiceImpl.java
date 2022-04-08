@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public void update(Long oauthId, String nickname, Location location, String profileUrl) {
 
         User user = userRepository.findByOauthId(oauthId)
-                    .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
+                .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
 
         // 닉네임을 변경하는데, 이미 존재하는 닉네임인 경우
         if (!nickname.equals(user.getNickname()) && userRepository.existsUserByNickname(nickname)) {
@@ -43,6 +43,12 @@ public class UserServiceImpl implements UserService {
         }
 
         user.update(oauthId, nickname, location, profileUrl);
+    }
+
+    @Override
+    public User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(User.class, String.format("userId = %s", userId)));
     }
 
     @Override
