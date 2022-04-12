@@ -5,7 +5,7 @@ services:
     container_name: api-server
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: ./api-server/Dockerfile.dev
     depends_on:
       - database
     ports:
