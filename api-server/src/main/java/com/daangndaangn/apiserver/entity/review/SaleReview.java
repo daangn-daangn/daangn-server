@@ -30,6 +30,10 @@ public class SaleReview extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
+    public void update(String content) {
+        this.content = content;
+    }
+
     @Builder
     private SaleReview(User seller, User buyer, String content) {
         this.seller = seller;
