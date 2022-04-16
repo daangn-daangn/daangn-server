@@ -1,12 +1,6 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;
-    username: sa
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: validate
+  profiles:
+    active: local
 
 jwt:
   header: api_key
@@ -20,3 +14,41 @@ oauth:
     header-value: Bearer
     login-url: https://kapi.kakao.com/v2/user/me
     logout-url: https://kapi.kakao.com/v1/user/logout
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    initialize: false
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none
+
+server:
+  port: 9080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
