@@ -16,15 +16,15 @@ public class SaleReviewResponse {
     @JsonNaming(SnakeCaseStrategy.class)
     public static class GetResponse {
         private Long id;
-        private Long sellerId;
-        private Long buyerId;
+        private String seller;
+        private String buyer;
         private String content;
 
         public static GetResponse from(SaleReview saleReview) {
             return GetResponse.builder()
                     .id(saleReview.getId())
-                    .sellerId(saleReview.getSeller().getId())
-                    .buyerId(saleReview.getBuyer().getId())
+                    .seller(saleReview.getSeller().getNickname())
+                    .buyer(saleReview.getBuyer().getNickname())
                     .content(saleReview.getContent())
                     .build();
         }
