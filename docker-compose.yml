@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  api_server:
+    container_name: api-server
+    build:
+      context: .
+      dockerfile: ./api-server/Dockerfile.dev
+    depends_on:
+      - database
+    ports:
+      - "9080:9080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/testdb?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: test1234
+      SPRING_PROFILES_ACTIVE: dev
+  database:
+    container_name: mysql-db
+    build: ./api-server/db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./api-server/db/data:/var/lib/mysql
+      - ./api-server/db/scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: test1234

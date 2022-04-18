@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HealthCheckRestControllerTest {
+class HealthCheckControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,7 +36,7 @@ class HealthCheckRestControllerTest {
 
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(handler().handlerType(HealthCheckRestController.class))
+                .andExpect(handler().handlerType(HealthCheckController.class))
                 .andExpect(handler().methodName("getSystemTimeMillisWithUser"))
                 .andExpect(jsonPath("$.success", is(true)));
     }

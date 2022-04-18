@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping("/api/hcheck")
 @RestController
-public class HealthCheckRestController {
+public class HealthCheckController {
 
     @GetMapping
     public ApiResult<Long> getSystemTimeMillis() {
