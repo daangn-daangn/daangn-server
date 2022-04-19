@@ -37,6 +37,7 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-test'
 		implementation 'org.springframework.boot:spring-boot-starter-validation'
 		implementation group: 'org.apache.commons', name: 'commons-lang3'
+		implementation("com.google.guava:guava:31.1-jre")
 
 		//querydsl 관련 추가
 		implementation "com.querydsl:querydsl-core"

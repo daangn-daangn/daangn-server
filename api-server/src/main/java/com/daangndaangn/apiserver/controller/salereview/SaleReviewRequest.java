@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class SaleReviewRequest {
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class CreateRequest {
-        @NotEmpty
+        @NotNull
         private Long sellerId;
-        @NotEmpty
+        @NotNull
         private Long buyerId;
         @NotEmpty
         private String content;
