@@ -9,7 +9,6 @@ import com.daangndaangn.apiserver.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -69,8 +68,8 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     @Override
     @Transactional
     public SaleReview create(Long sellerId, Long buyerId, String content) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(sellerId), "sellerId 값은 필수입니다.");
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(buyerId), "buyerId 값은 필수입니다.");
+        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
         Preconditions.checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
         User seller = userService.findUser(sellerId);
@@ -87,7 +86,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
     @Override
     public SaleReview findSaleReview(Long id) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(id), "id 값은 필수입니다.");
+        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
 
         return saleReviewRepository.findBySaleReviewId(id)
                 .orElseThrow(() -> new NotFoundException(SaleReview.class, String.format("saleReviewId = %s", id)));
@@ -95,29 +94,29 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
     @Override
     public List<SaleReview> findAllUserReview(Long userId, Pageable pageable) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(userId), "userId 값은 필수입니다.");
+        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
 
         return saleReviewRepository.findAllUserReview(userId, pageable);
     }
 
     @Override
     public List<SaleReview> findAllSellerReview(Long sellerId, Pageable pageable) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(sellerId), "sellerId 값은 필수입니다.");
+        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
 
         return saleReviewRepository.findAllSellerReview(sellerId, pageable);
     }
 
     @Override
     public List<SaleReview> findAllBuyerReview(Long buyerId, Pageable pageable) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(buyerId), "buyerId 값은 필수입니다.");
+        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
         return saleReviewRepository.findAllBuyerReview(buyerId, pageable);
     }
 
     @Override
     public boolean isSellerReviewWriter(Long reviewId, Long sellerId) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(reviewId), "reviewId 값은 필수입니다.");
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(sellerId), "sellerId 값은 필수입니다.");
+        Preconditions.checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
+        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
 
         SaleReview saleReview = findSaleReview(reviewId);
         return saleReview.getSeller().getId().equals(sellerId);
@@ -125,8 +124,8 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
     @Override
     public boolean isBuyerReviewWriter(Long reviewId, Long buyerId) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(reviewId), "reviewId 값은 필수입니다.");
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(buyerId), "buyerId 값은 필수입니다.");
+        Preconditions.checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
+        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
         SaleReview saleReview = findSaleReview(reviewId);
         return saleReview.getBuyer().getId().equals(buyerId);
@@ -135,7 +134,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     @Override
     @Transactional
     public SaleReview update(Long id, String content) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(id), "id 값은 필수입니다.");
+        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
         Preconditions.checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
         SaleReview updatedReview = findSaleReview(id);
@@ -146,7 +145,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     @Override
     @Transactional
     public void delete(Long id) {
-        Preconditions.checkArgument(ObjectUtils.isNotEmpty(id), "id 값은 필수입니다.");
+        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
 
         SaleReview deletedReview = findSaleReview(id);
         saleReviewRepository.delete(deletedReview);
