@@ -7,6 +7,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -14,6 +17,11 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 public class ServiceConfigure {
+
+    @Bean
+    public PageableHandlerMethodArgumentResolverCustomizer paginationConfigure() {
+        return p -> p.setFallbackPageable(PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "id")));
+    }
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {

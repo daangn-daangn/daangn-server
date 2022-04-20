@@ -12,5 +12,7 @@ public interface UserService {
 
     User findUser(Long userId);
 
-    User login(Long oauthId);
+    User findUserByOauthId(Long oauthId);
+
+    void delete(Long userId);
 }

@@ -52,9 +52,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(Long oauthId) {
+    public User findUserByOauthId(Long oauthId) {
         return userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long userId) {
+        User deletedUser = findUser(userId);
+        userRepository.delete(deletedUser);
     }
 
     private UserResponse.JoinResponse convertToDto(User user) {
