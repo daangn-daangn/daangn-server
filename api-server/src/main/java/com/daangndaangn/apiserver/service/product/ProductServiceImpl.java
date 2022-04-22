@@ -79,4 +79,8 @@ public class ProductServiceImpl implements ProductService{
     private ProductResponse.GetResponse convertToDto(Product product) {
         return ProductResponse.GetResponse.from(product);
     }
+
+    private ProductResponse.GetListResponse convertToDtoList(Product product) {
+        return ProductResponse.GetListResponse.from(product);
+    }
 }
