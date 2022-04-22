@@ -3,6 +3,7 @@ package com.daangndaangn.apiserver.entity.favorite;
 import com.daangndaangn.apiserver.entity.AuditingCreateUpdateEntity;
 import com.daangndaangn.apiserver.entity.product.Product;
 import com.daangndaangn.apiserver.entity.user.User;
+import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,6 +42,9 @@ public class FavoriteProduct extends AuditingCreateUpdateEntity {
 
     @Builder
     private FavoriteProduct(User user, Product product) {
+        Preconditions.checkArgument(user != null, "사용자 정보는 필수입니다.");
+        Preconditions.checkArgument(product != null, "물품 정보는 필수입니다.");
+
         this.user = user;
         this.product = product;
         this.isValid = true;

@@ -81,7 +81,7 @@ CREATE TABLE favorite_products
     product_id          bigint          DEFAULT NULL COMMENT '물품 id',
     PRIMARY KEY (id),
     KEY favorite_products_idx_user (user_id),
-    KEY favorite_products_idx_product (product_id),
+    KEY favorite_products_idx_product_user (product_id, user_id),
     CONSTRAINT fk_favorite_products_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_favorite_products_to_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT '찜하기 테이블';
