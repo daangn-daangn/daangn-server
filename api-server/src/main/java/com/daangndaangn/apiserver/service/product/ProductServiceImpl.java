@@ -61,19 +61,19 @@ public class ProductServiceImpl implements ProductService{
             throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
         }
         Category category = categoryService.findCategory(categoryId);
-        product.update(title, name, category, price, description);
-        return ProductResponse.UpdateResponse.from(productRepository.save(product).getId());
+        product.updateInfo(title, name, category, price, description);
+        productRepository.save(product);
     }
 
     @Override
     @Transactional
-    public ProductResponse.DeleteResponse deleteProduct(Long productId, Long userId) {
+    public void deleteProduct(Long productId, Long userId) {
         Product product = this.findProduct(productId);
         if(product.getSeller().getId() != userId){
             throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
         }
-        product.setState(ProductState.DELETED);
-        return ProductResponse.DeleteResponse.from(productRepository.save(product).getId());
+        product.updateState(ProductState.DELETED);
+        productRepository.save(product);
     }
 
     private ProductResponse.GetResponse convertToDto(Product product) {
