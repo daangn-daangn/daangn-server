@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "products")
@@ -45,9 +44,8 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 100)
     private String description;
 
-    //TODO: 현재는 사용하지 않을 필드인데 String null로 놔둘지 사용자 정의타입으로 놔둘지, 그냥 삭제해둘지 결정 필요
-    @Column(length = 10)
-    private String sellingType;
+    @Column(nullable = false)
+    private Long chattingCount;
 
     @Column(nullable = false, length = 20)
     private Location location;
@@ -70,6 +68,7 @@ public class Product extends AuditingCreateUpdateEntity {
                     long price,
                     String title,
                     String description,
+                    Long chattingCount,
                     ProductState state,
                     List<String> imgUrlList) {
 
@@ -80,30 +79,27 @@ public class Product extends AuditingCreateUpdateEntity {
         this.price = price;
         this.title = title;
         this.description = description;
+        this.chattingCount = chattingCount;
         this.location = seller.getLocation();
         this.state = state;
-        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
 
-        for(String imgUrl : imgUrlList){
-            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
-        }
+        //이 부분은 추후에 처리하도록 하겠습니다.
+//        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
+
+//        for(String imgUrl : imgUrlList){
+//            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
+//        }
     }
 
-    public void setThumbNailImage(List<String> imgUrlList){
-        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
-    }
-
-    public void setProductImageList(List<String> imgUrlList){
-        for(String imgUrl : imgUrlList){
-            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
-        }
-    }
-
-    public void update(String title, String name, Category category, Long price, String description){
+    public void updateInfo(String title, String name, Category category, Long price, String description){
         this.title = title;
         this.name = name;
         this.category = category;
         this.price = price;
         this.description = description;
+    }
+
+    public void updateState(ProductState state){
+        this.state = state;
     }
 }
