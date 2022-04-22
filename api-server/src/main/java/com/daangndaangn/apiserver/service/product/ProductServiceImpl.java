@@ -34,9 +34,10 @@ public class ProductServiceImpl implements ProductService{
         Product product = this.findProduct(productId);
         return convertToDto(product);
     }
+
     @Override
-    @Transactional(readOnly = true)
-    public ProductResponse.CreateResponse createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId) {
+    @Transactional
+    public Product createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId){
         Category category = categoryService.findCategory(categoryId);
         User user = userService.findUser(userId);
         Product product = Product.builder()
@@ -50,12 +51,23 @@ public class ProductServiceImpl implements ProductService{
                 .buyer(null)
                 .imgUrlList(imgUrlList)
                 .build();
-        return ProductResponse.CreateResponse.from(productRepository.save(product).getId());
+        return productRepository.save(product);
+    }
+    @Override
+    @Transactional
+    public ProductResponse.CreateResponse createProduct(ProductRequest.CreateRequest request, Long userId) {
+        String title = request.getTitle();
+        String name = request.getName();
+        Long categoryId = request.getCategory();
+        Long price = request.getPrice();
+        String description = request.getDescription();
+        List<String> imgUrlList = request.getImgUrlList();
+        return ProductResponse.CreateResponse.from(this.createProduct(title, name, categoryId, price, description, imgUrlList, userId).getId());
     }
 
     @Override
     @Transactional
-    public ProductResponse.UpdateResponse updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId){
+    public void updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId){
         Product product = this.findProduct(productId);
         if(product.getSeller().getId() != userId){
             throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
