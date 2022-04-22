@@ -17,10 +17,6 @@ public class ProductRepositoryImpl implements ProductCustom{
 
     private static final QProduct qProduct = QProduct.product;
     private final JPAQueryFactory jpaQueryFactory;
-    @Override
-    public List<Product> findAllProduct(Pageable pageable) {
-        return null;
-    }
 
     @Override
     public List<Product> findAllProductByLocation(Location location, Pageable pageable) {
@@ -38,7 +34,6 @@ public class ProductRepositoryImpl implements ProductCustom{
 
     @Override
     public List<Product> findAllProductByFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Location location, Pageable pageable) {
-        System.out.println(789);
         return jpaQueryFactory.select(qProduct)
                 .from(qProduct)
                 .join(qProduct.category).fetchJoin()

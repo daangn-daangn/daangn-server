@@ -1,22 +1,28 @@
 package com.daangndaangn.apiserver.service.product;
 
+import com.daangndaangn.apiserver.controller.product.ProductRequest;
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
 import com.daangndaangn.apiserver.entity.category.Category;
 import com.daangndaangn.apiserver.entity.product.Product;
 import com.daangndaangn.apiserver.entity.product.ProductState;
+import com.daangndaangn.apiserver.entity.user.Location;
 import com.daangndaangn.apiserver.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.repository.ProductRepository;
+import com.daangndaangn.apiserver.repository.product.ProductRepository;
 import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
@@ -28,6 +34,34 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
     }
+
+    @Override
+    public List<ProductResponse.GetListResponse> getProductList(Long userId, Pageable pageable){
+        return this.getProductListWithLocation(userId, pageable).stream()
+                .map(this::convertToDtoList)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> getProductListWithLocation(Long userId, Pageable pageable) {
+        Location location = userService.findUser(userId).getLocation();
+        return productRepository.findAllProductByLocation(location, pageable);
+    }
+
+    @Override
+    public List<ProductResponse.GetListResponse> getProductListFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId){
+        return this.getProductListWithFilter(keyword, minPrice, maxPrice, categoryId, pageable, userId).stream()
+                .map(this::convertToDtoList)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> getProductListWithFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId){
+        Preconditions.checkArgument(minPrice < maxPrice, "유효하지 않는 범위입니다.");
+        Location location = userService.findUser(userId).getLocation();
+        return productRepository.findAllProductByFilter(keyword, minPrice, maxPrice, categoryId, location, pageable);
+    }
+
 
     @Override
     public ProductResponse.GetResponse getProduct(Long productId){
@@ -47,6 +81,7 @@ public class ProductServiceImpl implements ProductService{
                 .price(price)
                 .state(ProductState.FOR_SALE)
                 .description(description)
+                .chattingCount(0L)
                 .seller(user)
                 .buyer(null)
                 .imgUrlList(imgUrlList)
