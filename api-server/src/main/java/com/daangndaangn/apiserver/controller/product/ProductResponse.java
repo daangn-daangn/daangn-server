@@ -7,10 +7,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ProductResponse {
@@ -39,6 +37,7 @@ public class ProductResponse {
         private String category;
         private String state;
         private String description;
+        private Long chattingCount;
         private Long price;
         private LocalDateTime createdAt;
         private List<String> imgUrlList;
@@ -54,6 +53,7 @@ public class ProductResponse {
                     .category(product.getCategory().getName())
                     .state(product.getState().getState())
                     .description(product.getDescription())
+                    .chattingCount(product.getChattingCount())
                     .price(product.getPrice())
                     .createdAt(product.getCreatedAt())
                     .userNickname(product.getSeller().getNickname())
@@ -66,28 +66,26 @@ public class ProductResponse {
     @Getter
     @Builder
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class UpdateResponse {
-        private Long id;
+    public static class GetListResponse {
+        private String title;
+        private String name;
+        private String location;
+        private String thumbNailImage;
+        private Long price;
+        private Long chattingCount;
+        private LocalDateTime createdAt;
 
-        public static ProductResponse.UpdateResponse from(Long id){
-            return new UpdateResponse(id);
-        }
-        private UpdateResponse(Long id){
-            this.id = id;
-        }
-    }
 
-    @Getter
-    @Builder
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class DeleteResponse {
-        private Long id;
-
-        public static ProductResponse.DeleteResponse from(Long id){
-            return new DeleteResponse(id);
-        }
-        private DeleteResponse(Long id){
-            this.id = id;
+        public static ProductResponse.GetListResponse from(Product product){
+            return GetListResponse.builder()
+                    .title(product.getTitle())
+                    .name(product.getName())
+                    .location(product.getLocation().getAddress())
+                    .thumbNailImage(product.getThumbNailImage())
+                    .price(product.getPrice())
+                    .chattingCount(product.getChattingCount())
+                    .createdAt(product.getCreatedAt())
+                    .build();
         }
     }
 
