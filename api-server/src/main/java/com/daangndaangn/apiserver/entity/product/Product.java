@@ -36,7 +36,7 @@ public class Product extends AuditingCreateUpdateEntity {
     private String name;
 
     @Column(nullable = false)
-    private long price;
+    private Long price;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -57,7 +57,7 @@ public class Product extends AuditingCreateUpdateEntity {
     private String thumbNailImage;
 
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImageList = new ArrayList<>();
 
     @Builder
@@ -91,7 +91,7 @@ public class Product extends AuditingCreateUpdateEntity {
 //        }
     }
 
-    public void updateInfo(String title, String name, Category category, Long price, String description){
+    public void updateInfo(String title, String name, Category category, Long price, String description) {
         this.title = title;
         this.name = name;
         this.category = category;
@@ -99,7 +99,7 @@ public class Product extends AuditingCreateUpdateEntity {
         this.description = description;
     }
 
-    public void updateState(ProductState state){
+    public void updateState(ProductState state) {
         this.state = state;
     }
 }

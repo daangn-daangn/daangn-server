@@ -14,8 +14,7 @@ public interface ProductService {
     */
     ProductResponse.GetResponse getProduct(Long productId);
     ProductResponse.CreateResponse createProduct(ProductRequest.CreateRequest request, Long userId);
-    List<ProductResponse.GetListResponse> getProductList(Long userId, Pageable pageable);
-    List<ProductResponse.GetListResponse> getProductListFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId);
+    List<ProductResponse.GetListResponse> getProductList(String keyword, Long minPrice, Long maxPrice, Long categoryId, Long userId, Pageable pageable);
 
 
     /*
@@ -26,8 +25,7 @@ public interface ProductService {
     //생성
     Product createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId);
     //복수 조회 with 조건
-    List<Product> getProductListWithFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId);
-    List<Product> getProductListWithLocation(Long userId, Pageable pageable);
+    List<Product> findProductList(String keyword, Long minPrice, Long maxPrice, Long categoryId, Long userId, Pageable pageable);
     /*
     For 공용
     */

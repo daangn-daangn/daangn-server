@@ -13,56 +13,55 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ProductRepositoryImpl implements ProductCustom{
+public class ProductRepositoryImpl implements ProductCustom {
 
     private static final QProduct qProduct = QProduct.product;
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Product> findAllProductByLocation(Location location, Pageable pageable) {
-
-        return jpaQueryFactory.select(qProduct)
-                .from(qProduct)
-                .join(qProduct.category).fetchJoin()
-                .where(
-                        qProduct.location.eq(location)
-                                .and(qProduct.state.eq(ProductState.FOR_SALE)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-    }
-
-    @Override
-    public List<Product> findAllProductByFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Location location, Pageable pageable) {
+    public List<Product> findAllProduct(String keyword, Long minPrice, Long maxPrice, Long categoryId, Location location, Pageable pageable) {
         return jpaQueryFactory.select(qProduct)
                 .from(qProduct)
                 .join(qProduct.category).fetchJoin()
                 .where(
                         this.eqKeyword(keyword),
                         this.eqCategory(categoryId),
+                        this.eqLocation(location),
                         this.rangePrice(minPrice, maxPrice),
-                        qProduct.location.eq(location)
-                        .and(qProduct.state.eq(ProductState.FOR_SALE)))
+                        qProduct.state.eq(ProductState.FOR_SALE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
     }
 
-    private BooleanExpression eqKeyword(String keyword){
-        if(StringUtils.isEmpty(keyword)){
+    private BooleanExpression eqKeyword(String keyword) {
+        if (StringUtils.isEmpty(keyword)) {
             return null;
         }
         return qProduct.title.contains(keyword);
     }
 
-    private BooleanExpression rangePrice(Long minPrice, Long maxPrice){
-        if(minPrice == null && maxPrice == null) return null;
-        if(minPrice != null && maxPrice == null) return qProduct.price.goe(minPrice);
+    private BooleanExpression eqLocation(Location location) {
+        if (location == null) {
+            return null;
+        }
+        return qProduct.location.eq(location);
+    }
+
+    private BooleanExpression rangePrice(Long minPrice, Long maxPrice) {
+        if (minPrice == null && maxPrice == null) {
+            return null;
+        }
+
+        if (minPrice != null && maxPrice == null) {
+            return qProduct.price.goe(minPrice);
+        }
+
         return qProduct.price.between(minPrice, maxPrice);
     }
 
-    private BooleanExpression eqCategory(Long categoryId){
-        if(categoryId == null){
+    private BooleanExpression eqCategory(Long categoryId) {
+        if (categoryId == null) {
             return null;
         }
         return qProduct.category.id.eq(categoryId);
