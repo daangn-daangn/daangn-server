@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.service.user;
 
 import com.daangndaangn.apiserver.controller.user.UserResponse;
-import com.daangndaangn.apiserver.entity.user.Location;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.User;
 
 public interface UserService {
 

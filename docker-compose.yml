@@ -2,28 +2,41 @@ version: "3"
 
 services:
   api_server:
-    container_name: api-server
+    container_name: api
     build:
       context: .
       dockerfile: ./api-server/Dockerfile.dev
-    depends_on:
-      - database
     ports:
-      - "9080:9080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/testdb?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: test1234
-      SPRING_PROFILES_ACTIVE: dev
-  database:
-    container_name: mysql-db
-    build: ./api-server/db
-    restart: unless-stopped
+      - "8080:8080"
+#    environment:
+#      SPRING_PROFILES_ACTIVE:
+#      SPRING_DATASOURCE_URL:
+#      SPRING_DATASOURCE_USERNAME:
+#      SPRING_DATASOURCE_PASSWORD:
+#      SPRING_DATA_MONGODB_DATABASE:
+#      SPRING_DATA_MONGODB_HOST:
+#      SPRING_DATA_MONGODB_PORT:
+#      SPRING_DATA_MONGODB_USERNAME:
+#      SPRING_DATA_MONGODB_PASSWORD:
+  chat_server:
+    container_name: chat
+    build:
+      context: .
+      dockerfile: ./chat-server/Dockerfile.dev
     ports:
-      - "3306:3306"
-    volumes:
-      - ./api-server/db/data:/var/lib/mysql
-      - ./api-server/db/scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql
-    environment:
-      MYSQL_DATABASE: testdb
-      MYSQL_ROOT_PASSWORD: test1234
+      - "8880:8880"
+#    environment:
+#      SPRING_PROFILES_ACTIVE:
+#      SPRING_DATASOURCE_URL:
+#      SPRING_DATASOURCE_USERNAME:
+#      SPRING_DATASOURCE_PASSWORD:
+#      SPRING_DATA_MONGODB_DATABASE:
+#      SPRING_DATA_MONGODB_HOST:
+#      SPRING_DATA_MONGODB_PORT:
+#      SPRING_DATA_MONGODB_USERNAME:
+#      SPRING_DATA_MONGODB_PASSWORD:
+
+networks:
+  default:
+    external:
+      name: daangn_net

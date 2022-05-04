@@ -7,7 +7,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.daangndaangn.apiserver.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,11 @@ public final class Jwt {
         this.jwtVerifier = JWT.require(algorithm)
                                 .withIssuer(issuer)
                                 .build();
+    }
+
+    public String createApiToken(User user, String[] roles) {
+        Claims claims = Claims.of(user, roles);
+        return createNewToken(claims);
     }
 
     public String createNewToken(Claims claims) {
@@ -88,7 +94,7 @@ public final class Jwt {
         Date iat;
         Date exp;
 
-        Claims(DecodedJWT decodedJWT) {
+        private Claims(DecodedJWT decodedJWT) {
             Claim id = decodedJWT.getClaim("id");
             if (!id.isNull())
                 this.id = id.asLong();
@@ -112,6 +118,17 @@ public final class Jwt {
                 this.roles = roles.asArray(String.class);
             this.iat = decodedJWT.getIssuedAt();
             this.exp = decodedJWT.getExpiresAt();
+        }
+
+        public static Claims of(User user, String[] roles) {
+            Claims claims = new Claims();
+            claims.id = user.getId();
+            claims.oauthId = user.getOauthId();
+            claims.nickname = user.getNickname();
+            claims.location = user.getLocation();
+            claims.manner = user.getManner();
+            claims.roles = roles;
+            return claims;
         }
 
         public static Claims of(Long id, Long oauthId, String nickname, Location location, Double manner, String[] roles) {

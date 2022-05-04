@@ -1,9 +1,38 @@
+spring:
+  profiles:
+    active: local
+
 server:
   port: 8880
 
+---
 spring:
+  config:
+    activate:
+      on-profile: local
   data:
     mongodb:
-      host: localhost
+      database: daangn_test # 임의로 적어봤습니다
       port: 27017
-      database: daangn
+      host: localhost
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production

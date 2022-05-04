@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.Location;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

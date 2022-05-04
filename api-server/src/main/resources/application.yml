@@ -28,6 +28,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  data:
+    mongodb:
+      database: daangn_test # 임의로 적어봤습니다
+      port: 27017
+      host: localhost
 
 ---
 spring:
@@ -35,7 +40,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    initialize: false
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
       hibernate:
@@ -43,10 +48,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
-
-server:
-  port: 9080
-
+  sql:
+    init:
+      mode: never # schema.sql 실행 금지
 ---
 spring:
   config:

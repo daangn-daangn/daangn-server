@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.configure;
 
-import com.daangndaangn.apiserver.entity.user.Role;
+import com.daangndaangn.common.api.entity.user.Role;
 import com.daangndaangn.apiserver.security.CustomAccessDeniedHandler;
 import com.daangndaangn.apiserver.security.CustomUnauthorizedHandler;
 import com.daangndaangn.apiserver.security.jwt.Jwt;

@@ -2,7 +2,7 @@ package com.daangndaangn.apiserver.service.product;
 
 import com.daangndaangn.apiserver.controller.product.ProductRequest;
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
-import com.daangndaangn.apiserver.entity.product.Product;
+import com.daangndaangn.common.api.entity.product.Product;
 import org.springframework.data.domain.Pageable;
 
 

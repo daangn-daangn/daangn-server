@@ -2,10 +2,10 @@ package com.daangndaangn.apiserver.service.salereview;
 
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest;
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse;
-import com.daangndaangn.apiserver.entity.review.SaleReview;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.repository.salereview.SaleReviewRepository;
+import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;

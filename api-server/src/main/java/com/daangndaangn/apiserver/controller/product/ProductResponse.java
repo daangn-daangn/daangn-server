@@ -1,7 +1,6 @@
 package com.daangndaangn.apiserver.controller.product;
 
-import com.daangndaangn.apiserver.controller.user.UserResponse;
-import com.daangndaangn.apiserver.entity.product.Product;
+import com.daangndaangn.common.api.entity.product.Product;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;

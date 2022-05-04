@@ -1,7 +1,7 @@
 package com.daangndaangn.apiserver.controller.salereview;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
-import com.daangndaangn.apiserver.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;

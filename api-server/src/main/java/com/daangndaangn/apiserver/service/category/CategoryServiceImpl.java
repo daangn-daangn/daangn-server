@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.service.category;
 
-import com.daangndaangn.apiserver.entity.category.Category;
+import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.repository.CategoryRepository;
+import com.daangndaangn.common.api.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
