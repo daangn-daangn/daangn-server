@@ -1,0 +1,16 @@
+FROM openjdk:11 as builder
+
+COPY ./ ./
+
+RUN chmod +x ./gradlew
+
+RUN ./gradlew clean :chat-server:build -x test
+
+
+FROM openjdk:11
+
+WORKDIR /app
+
+COPY --from=builder chat-server/build/libs/*.jar ./chat-server.jar
+
+ENTRYPOINT ["java","-jar","./chat-server.jar"]

@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.controller.user;
 
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.user.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;

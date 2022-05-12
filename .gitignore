@@ -39,6 +39,3 @@ out/
 
 .DS_store
 **/.DS_store
-
-### Docker ###
-/api-server/db/data

@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.security.jwt;
 
 import com.daangndaangn.apiserver.controller.authentication.AuthResponse;
-import com.daangndaangn.apiserver.entity.user.Role;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.user.Role;
+import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             JwtAuthenticationToken authenticationToken =
                     JwtAuthenticationToken.of(jwtAuthentication, createAuthorityList(Role.USER.value()));
 
-            String apiToken = user.createApiToken(jwt, new String[]{Role.USER.value()});
+            String apiToken = jwt.createApiToken(user, new String[]{Role.USER.value()});
             authenticationToken.setDetails(AuthResponse.LoginResponse.of(apiToken, user));
 
             return authenticationToken;

@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.controller.salereview;
 
-import com.daangndaangn.apiserver.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
