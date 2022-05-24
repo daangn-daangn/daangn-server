@@ -1,11 +1,11 @@
 package com.daangndaangn.apiserver.service.user;
 
 import com.daangndaangn.apiserver.controller.user.UserResponse;
-import com.daangndaangn.apiserver.entity.user.Location;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.DuplicateValueException;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.repository.UserRepository;
+import com.daangndaangn.common.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

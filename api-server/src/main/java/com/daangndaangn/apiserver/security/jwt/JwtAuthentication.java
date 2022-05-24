@@ -1,7 +1,7 @@
 package com.daangndaangn.apiserver.security.jwt;
 
-import com.daangndaangn.apiserver.entity.user.Location;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

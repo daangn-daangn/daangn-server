@@ -2,7 +2,7 @@ package com.daangndaangn.apiserver.service.salereview;
 
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest;
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse;
-import com.daangndaangn.apiserver.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.review.SaleReview;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

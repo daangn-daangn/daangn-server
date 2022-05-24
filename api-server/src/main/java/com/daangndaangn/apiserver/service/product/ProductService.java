@@ -1,17 +1,38 @@
 package com.daangndaangn.apiserver.service.product;
 
+import com.daangndaangn.apiserver.controller.product.ProductRequest;
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
-import com.daangndaangn.apiserver.entity.product.Product;
+import com.daangndaangn.common.api.entity.product.Product;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
 
 public interface ProductService {
-    Product findProduct(Long productId);
+    /*
+    For DTO
+    */
     ProductResponse.GetResponse getProduct(Long productId);
-    ProductResponse.CreateResponse createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId);
-    ProductResponse.UpdateResponse updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId);
-    ProductResponse.DeleteResponse deleteProduct(Long productId, Long userId);
+    ProductResponse.CreateResponse createProduct(ProductRequest.CreateRequest request, Long userId);
+    List<ProductResponse.GetListResponse> getProductList(Long userId, Pageable pageable);
+    List<ProductResponse.GetListResponse> getProductListFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId);
+
+
+    /*
+    For Entity
+    */
+    //단일 조회
+    Product findProduct(Long productId);
+    //생성
+    Product createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId);
+    //복수 조회 with 조건
+    List<Product> getProductListWithFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId);
+    List<Product> getProductListWithLocation(Long userId, Pageable pageable);
+    /*
+    For 공용
+    */
+    void updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId);
+    void deleteProduct(Long productId, Long userId);
 
 
 }

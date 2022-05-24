@@ -1,11 +1,11 @@
 package com.daangndaangn.apiserver.service.favorite;
 
-import com.daangndaangn.apiserver.entity.category.Category;
-import com.daangndaangn.apiserver.entity.favorite.FavoriteProduct;
-import com.daangndaangn.apiserver.entity.product.Product;
-import com.daangndaangn.apiserver.entity.product.ProductState;
-import com.daangndaangn.apiserver.entity.user.User;
-import com.daangndaangn.apiserver.repository.favorite.FavoriteProductRepository;
+import com.daangndaangn.common.api.entity.category.Category;
+import com.daangndaangn.common.api.entity.favorite.FavoriteProduct;
+import com.daangndaangn.common.api.entity.product.Product;
+import com.daangndaangn.common.api.entity.product.ProductState;
+import com.daangndaangn.common.api.entity.user.User;
+import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import org.junit.jupiter.api.*;

@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.service.favorite;
 
-import com.daangndaangn.apiserver.entity.favorite.FavoriteProduct;
+import com.daangndaangn.common.api.entity.favorite.FavoriteProduct;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

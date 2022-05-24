@@ -1,10 +1,10 @@
 package com.daangndaangn.apiserver.service.salereview;
 
-import com.daangndaangn.apiserver.entity.review.SaleReview;
-import com.daangndaangn.apiserver.entity.user.User;
+import com.daangndaangn.common.api.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.repository.salereview.SaleReviewRepository;
-import com.daangndaangn.apiserver.repository.UserRepository;
+import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
+import com.daangndaangn.common.api.repository.UserRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional

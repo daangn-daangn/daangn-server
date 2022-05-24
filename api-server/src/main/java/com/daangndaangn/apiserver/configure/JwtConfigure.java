@@ -24,5 +24,4 @@ public class JwtConfigure {
     private String clientSecret;
 
     private int expirySeconds;
-
 }

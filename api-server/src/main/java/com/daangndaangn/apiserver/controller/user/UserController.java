@@ -1,7 +1,7 @@
 package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
-import com.daangndaangn.apiserver.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
 import com.daangndaangn.apiserver.security.oauth.OAuthResponse;

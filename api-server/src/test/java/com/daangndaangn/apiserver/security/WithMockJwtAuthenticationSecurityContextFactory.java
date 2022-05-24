@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.security;
 
-import com.daangndaangn.apiserver.entity.user.Location;
+import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
