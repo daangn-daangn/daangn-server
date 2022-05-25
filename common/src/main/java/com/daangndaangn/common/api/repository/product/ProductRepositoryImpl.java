@@ -19,7 +19,7 @@ public class ProductRepositoryImpl implements ProductCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Product> findAllProductByLocation(Location location, Pageable pageable) {
+    public List<Product> findAllProduct(String keyword, Long minPrice, Long maxPrice, Long categoryId, Location location, Pageable pageable) {
 
         return jpaQueryFactory.select(qProduct)
                 .from(qProduct)
@@ -40,9 +40,9 @@ public class ProductRepositoryImpl implements ProductCustom{
                 .where(
                         this.eqKeyword(keyword),
                         this.eqCategory(categoryId),
+                        this.eqLocation(location),
                         this.rangePrice(minPrice, maxPrice),
-                        qProduct.location.eq(location)
-                        .and(qProduct.state.eq(ProductState.FOR_SALE)))
+                        qProduct.state.eq(ProductState.FOR_SALE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -55,9 +55,22 @@ public class ProductRepositoryImpl implements ProductCustom{
         return qProduct.title.contains(keyword);
     }
 
-    private BooleanExpression rangePrice(Long minPrice, Long maxPrice){
-        if(minPrice == null && maxPrice == null) return null;
-        if(minPrice != null && maxPrice == null) return qProduct.price.goe(minPrice);
+    private BooleanExpression eqLocation(Location location) {
+        if (location == null) {
+            return null;
+        }
+        return qProduct.location.eq(location);
+    }
+
+    private BooleanExpression rangePrice(Long minPrice, Long maxPrice) {
+        if (minPrice == null && maxPrice == null) {
+            return null;
+        }
+
+        if (minPrice != null && maxPrice == null) {
+            return qProduct.price.goe(minPrice);
+        }
+
         return qProduct.price.between(minPrice, maxPrice);
     }
 

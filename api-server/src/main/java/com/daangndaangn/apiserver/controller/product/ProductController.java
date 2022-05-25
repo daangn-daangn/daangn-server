@@ -14,10 +14,10 @@ import java.util.List;
 
 import static com.daangndaangn.apiserver.controller.ApiResult.OK;
 
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 @RestController
 @RequiredArgsConstructor
-public class ProductApiController {
+public class ProductController {
 
     private final ProductService productService;
 
@@ -34,22 +34,20 @@ public class ProductApiController {
         return OK(getResponse);
     }
 
-    @GetMapping("/list")
-    public ApiResult<List<ProductResponse.GetListResponse>> getProductList(Pageable pageable, @AuthenticationPrincipal JwtAuthentication authentication){
+    @GetMapping
+    public ApiResult<List<ProductResponse.GetListResponse>> getProductList(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "minPrice", defaultValue = "0", required = false) Long minPrice,
+            @RequestParam(value = "maxPrice", required = false) Long maxPrice,
+            @RequestParam(value = "category", required = false) Long category,
+            Pageable pageable,
+            @AuthenticationPrincipal JwtAuthentication authentication){
         Long userId = authentication.getId();
-        return OK(productService.getProductList(userId, pageable));
-    }
-
-    @GetMapping("/list/filter")
-    public ApiResult<List<ProductResponse.GetListResponse>> getProductListFilter(
-            @RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "minPrice", defaultValue = "0", required = false) Long minPrice, @RequestParam(value = "maxPrice", required = false) Long maxPrice,
-            @RequestParam(value = "category", required = false) Long category, Pageable pageable, @AuthenticationPrincipal JwtAuthentication authentication){
-        Long userId = authentication.getId();
-        return OK(productService.getProductListFilter(keyword, minPrice, maxPrice, category, pageable, userId));
+        return OK(productService.getProductList(keyword, minPrice, maxPrice, category, userId, pageable));
     }
 
     @PutMapping("/{productId}")
-    public ApiResult updateProduct(@PathVariable("productId") Long productId, @Valid @RequestBody ProductRequest.CreateRequest request, @AuthenticationPrincipal JwtAuthentication authentication){
+    public ApiResult updateProduct(@PathVariable("productId") Long productId, @Valid @RequestBody ProductRequest.UpdateRequest request, @AuthenticationPrincipal JwtAuthentication authentication){
         String title = request.getTitle();
         String name = request.getName();
         String description = request.getDescription();

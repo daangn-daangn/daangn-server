@@ -36,16 +36,13 @@ public class Product extends AuditingCreateUpdateEntity {
     private String name;
 
     @Column(nullable = false)
-    private long price;
+    private Long price;
 
     @Column(nullable = false, length = 100)
     private String title;
 
     @Column(nullable = false, length = 100)
     private String description;
-
-    @Column(nullable = false)
-    private Long chattingCount;
 
     @Column(nullable = false, length = 20)
     private Location location;
@@ -68,7 +65,6 @@ public class Product extends AuditingCreateUpdateEntity {
                     long price,
                     String title,
                     String description,
-                    Long chattingCount,
                     ProductState state,
                     List<String> imgUrlList) {
 
@@ -79,7 +75,6 @@ public class Product extends AuditingCreateUpdateEntity {
         this.price = price;
         this.title = title;
         this.description = description;
-        this.chattingCount = chattingCount;
         this.location = seller.getLocation();
         this.state = state;
 

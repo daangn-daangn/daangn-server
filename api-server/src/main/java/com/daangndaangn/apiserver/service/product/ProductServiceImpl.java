@@ -31,37 +31,26 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product findProduct(Long productId) {
+        Preconditions.checkArgument(productId != null, "productId 값은 필수입니다.");
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
     }
 
     @Override
-    public List<ProductResponse.GetListResponse> getProductList(Long userId, Pageable pageable){
-        return this.getProductListWithLocation(userId, pageable).stream()
+    public List<ProductResponse.GetListResponse> getProductList(String keyword, Long minPrice, Long maxPrice, Long categoryId, Long userId, Pageable pageable) {
+        return this.findProductList(keyword, minPrice, maxPrice, categoryId, userId, pageable).stream()
                 .map(this::convertToDtoList)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductListWithLocation(Long userId, Pageable pageable) {
+    public List<Product> findProductList(String keyword, Long minPrice, Long maxPrice, Long categoryId, Long userId, Pageable pageable) {
+        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
+//        Preconditions.checkArgument(minPrice < maxPrice, "유효하지 않는 범위입니다.");
         Location location = userService.findUser(userId).getLocation();
-        return productRepository.findAllProductByLocation(location, pageable);
-    }
 
-    @Override
-    public List<ProductResponse.GetListResponse> getProductListFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId){
-        return this.getProductListWithFilter(keyword, minPrice, maxPrice, categoryId, pageable, userId).stream()
-                .map(this::convertToDtoList)
-                .collect(Collectors.toList());
+        return productRepository.findAllProduct(keyword, minPrice, maxPrice, categoryId, location, pageable);
     }
-
-    @Override
-    public List<Product> getProductListWithFilter(String keyword, Long minPrice, Long maxPrice, Long categoryId, Pageable pageable, Long userId){
-        Preconditions.checkArgument(minPrice < maxPrice, "유효하지 않는 범위입니다.");
-        Location location = userService.findUser(userId).getLocation();
-        return productRepository.findAllProductByFilter(keyword, minPrice, maxPrice, categoryId, location, pageable);
-    }
-
 
     @Override
     public ProductResponse.GetResponse getProduct(Long productId){
@@ -71,7 +60,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public Product createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId){
+    public Product createProduct(String title, String name, Long categoryId, Long price, String description, List<String> imgUrlList, Long userId) {
+        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
+        Preconditions.checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
         Category category = categoryService.findCategory(categoryId);
         User user = userService.findUser(userId);
         Product product = Product.builder()
@@ -81,13 +72,13 @@ public class ProductServiceImpl implements ProductService{
                 .price(price)
                 .state(ProductState.FOR_SALE)
                 .description(description)
-                .chattingCount(0L)
                 .seller(user)
                 .buyer(null)
                 .imgUrlList(imgUrlList)
                 .build();
         return productRepository.save(product);
     }
+
     @Override
     @Transactional
     public ProductResponse.CreateResponse createProduct(ProductRequest.CreateRequest request, Long userId) {
@@ -102,25 +93,30 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId){
+    public void updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId) {
+        Preconditions.checkArgument(productId != null, "productId 값은 필수입니다.");
+        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
         Product product = this.findProduct(productId);
-        if(product.getSeller().getId() != userId){
-            throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
-        }
+        isSeller(userId, product.getSeller().getId());
         Category category = categoryService.findCategory(categoryId);
         product.updateInfo(title, name, category, price, description);
-        productRepository.save(product);
     }
 
     @Override
     @Transactional
     public void deleteProduct(Long productId, Long userId) {
+        Preconditions.checkArgument(productId != null, "productId 값은 필수입니다.");
+        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
         Product product = this.findProduct(productId);
-        if(product.getSeller().getId() != userId){
-            throw new  NotFoundException(Product.class, String.format("productId = %s", productId));
-        }
+        isSeller(userId, product.getSeller().getId());
         product.updateState(ProductState.DELETED);
-        productRepository.save(product);
+    }
+
+    private boolean isSeller(Long userId, Long sellerId) {
+        return userId == sellerId;
+//        if (userId != sellerId) {
+//            throw new UnauthorizedException("물품 접근 권한이 없습니다.");
+//        }
     }
 
     private ProductResponse.GetResponse convertToDto(Product product) {
