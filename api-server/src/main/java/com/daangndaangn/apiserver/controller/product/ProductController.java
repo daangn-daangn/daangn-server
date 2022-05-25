@@ -25,8 +25,7 @@ public class ProductController {
 
     @PostMapping
     public ApiResult<ProductResponse.CreateResponse> createProduct(@Valid @RequestBody ProductRequest.CreateRequest request, @AuthenticationPrincipal JwtAuthentication authentication) {
-        Long userId = 1L;
-        ProductResponse.CreateResponse createResponse = productService.createProduct(request, userId);
+        ProductResponse.CreateResponse createResponse = productService.createProduct(request, authentication.getId());
         return OK(createResponse);
     }
 

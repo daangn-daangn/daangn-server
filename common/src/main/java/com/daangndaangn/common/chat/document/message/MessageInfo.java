@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 
 public class MessageInfo {
 
-    private String sender;
+    private Long sender;
 
     private String message;
 
     private LocalDateTime createdAt;
 
     @Builder
-    private MessageInfo(String sender, String message, LocalDateTime createdAt){
+    private MessageInfo(Long sender, String message, LocalDateTime createdAt){
         this.sender = sender;
         this.message = message;
         this.createdAt = createdAt;

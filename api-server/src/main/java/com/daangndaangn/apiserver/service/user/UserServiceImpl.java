@@ -6,6 +6,8 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.DuplicateValueException;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.UserRepository;
+import com.daangndaangn.common.chat.document.room.ChattingRoom;
+import com.daangndaangn.common.chat.repository.room.ChattingRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final ChattingRoomRepository chattingRoomRepository;
     @Override
     @Transactional
     public UserResponse.JoinResponse join(Long oauthId, String profileUrl) {
@@ -26,8 +28,10 @@ public class UserServiceImpl implements UserService {
                         .oauthId(oauthId)
                         .profileUrl(profileUrl)
                         .build();
-
-        return convertToDto(userRepository.save(user));
+        user = userRepository.save(user);
+        ChattingRoom chattingRoom = ChattingRoom.userIdOf(user.getId());
+        chattingRoomRepository.save(chattingRoom);
+        return convertToDto(user);
     }
 
     @Override

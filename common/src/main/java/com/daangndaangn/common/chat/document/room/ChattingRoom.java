@@ -12,25 +12,25 @@ public class ChattingRoom {
     @Id
     private String id;
 
-    private String nickname;
+    private Long userId;
 
-    private ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();;
+    private ConcurrentHashMap<Long, String> map = new ConcurrentHashMap<>();;
 
     private LocalDateTime createdAt;
 
-    private ChattingRoom(String nickname){
-        this.nickname = nickname;
+    private ChattingRoom(Long userId){
+        this.userId = userId;
     }
 
-    public static ChattingRoom nicknameOf(String nickname){
-        return new ChattingRoom(nickname);
+    public static ChattingRoom userIdOf(Long userId){
+        return new ChattingRoom(userId);
     }
 
-    public void addChatting(int productId, String chattingRoomId){
+    public void addChatting(Long productId, String chattingRoomId){
         map.put(productId, chattingRoomId);
     }
 
-    public void removeChatting(int productId){
-        map.remove(productId);
-    }
+//    public void removeChatting(int productId){
+//        map.remove(productId);
+//    }
 }
