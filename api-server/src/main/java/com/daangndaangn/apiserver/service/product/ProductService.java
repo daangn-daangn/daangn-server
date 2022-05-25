@@ -32,4 +32,6 @@ public interface ProductService {
     void updateProduct(Long productId, String title, String name, Long categoryId, Long price, String description, Long userId);
     void deleteProduct(Long productId, Long userId);
 
+    boolean isSeller(Long userId, Long sellerId);
+
 }

@@ -46,7 +46,6 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<Product> findProductList(String keyword, Long minPrice, Long maxPrice, Long categoryId, Long userId, Pageable pageable) {
         Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
-//        Preconditions.checkArgument(minPrice < maxPrice, "유효하지 않는 범위입니다.");
         Location location = userService.findUser(userId).getLocation();
 
         return productRepository.findAllProduct(keyword, minPrice, maxPrice, categoryId, location, pageable);
@@ -97,7 +96,6 @@ public class ProductServiceImpl implements ProductService{
         Preconditions.checkArgument(productId != null, "productId 값은 필수입니다.");
         Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
         Product product = this.findProduct(productId);
-        isSeller(userId, product.getSeller().getId());
         Category category = categoryService.findCategory(categoryId);
         product.updateInfo(title, name, category, price, description);
     }
@@ -108,15 +106,12 @@ public class ProductServiceImpl implements ProductService{
         Preconditions.checkArgument(productId != null, "productId 값은 필수입니다.");
         Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
         Product product = this.findProduct(productId);
-        isSeller(userId, product.getSeller().getId());
         product.updateState(ProductState.DELETED);
     }
 
-    private boolean isSeller(Long userId, Long sellerId) {
+    @Override
+    public boolean isSeller(Long userId, Long sellerId) {
         return userId == sellerId;
-//        if (userId != sellerId) {
-//            throw new UnauthorizedException("물품 접근 권한이 없습니다.");
-//        }
     }
 
     private ProductResponse.GetResponse convertToDto(Product product) {

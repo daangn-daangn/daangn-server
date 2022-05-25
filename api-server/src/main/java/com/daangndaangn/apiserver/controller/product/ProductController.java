@@ -1,8 +1,10 @@
 package com.daangndaangn.apiserver.controller.product;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
+import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.common.api.entity.product.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -54,14 +56,29 @@ public class ProductController {
         Long category = request.getCategory();
         Long price = request.getPrice();
         Long userId = authentication.getId();
-        productService.updateProduct(productId, title, name, category, price, description, userId);
-        return OK();
+
+        Product product = productService.findProduct(productId);
+
+        if(productService.isSeller(userId, product.getSeller().getId())){
+            productService.updateProduct(productId, title, name, category, price, description, userId);
+            return OK();
+        }
+
+        throw new UnauthorizedException("물품 수정은 판매자만 가능합니다.");
+
     }
 
     @DeleteMapping("/{productId}")
     public ApiResult deleteProduct(@PathVariable("productId") Long productId, @AuthenticationPrincipal JwtAuthentication authentication){
         Long userId = authentication.getId();
-        productService.deleteProduct(productId, userId);
-        return OK();
+
+        Product product = productService.findProduct(productId);
+
+        if(productService.isSeller(userId, product.getSeller().getId())){
+            productService.deleteProduct(productId, userId);
+            return OK();
+        }
+
+        throw new UnauthorizedException("물품 삭제는 판매자만 가능합니다.");
     }
 }
