@@ -18,7 +18,7 @@ public class ChattingController {
     @MessageMapping("/send-message")
 //    @SendTo() : convertAndSend 메소드의 첫번째 인자인 경로를 설정할 수 있다는대, 활용법 공부 필요
     public void sendMessage(String message, Long userId, String roomId){
-
+        chattingService.createMessage(message, userId, roomId);
         //브로커가 /topic/방번호를 구독하고 있는 클라이언트에게 message를 전송합니다.
         sendingOperations.convertAndSend("/topic/방번호", message);
     }
