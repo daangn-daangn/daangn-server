@@ -73,9 +73,9 @@ public class UserServiceImpl implements UserService {
         User user = this.findUser(userId);
 
         if (manner >= 50) {
-            user.incrementAndGetManner();
+            user.increaseManner();
         } else {
-            user.decrementAndGetManner();
+            user.decreaseManner();
         }
     }
 

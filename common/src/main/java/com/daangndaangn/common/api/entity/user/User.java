@@ -41,14 +41,12 @@ public class User extends AuditingCreateUpdateEntity {
         this.profileUrl = ObjectUtils.isEmpty(profileUrl) ? this.profileUrl : profileUrl;
     }
 
-    public double incrementAndGetManner() {
+    public void increaseManner() {
         this.manner = Math.min(100.0, this.manner + 0.1);
-        return this.manner;
     }
 
-    public double decrementAndGetManner() {
+    public void decreaseManner() {
         this.manner = Math.max(0.0, this.manner - 0.1);
-        return this.manner;
     }
 
     @Builder
