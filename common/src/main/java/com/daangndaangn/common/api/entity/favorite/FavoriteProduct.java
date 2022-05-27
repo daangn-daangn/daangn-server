@@ -1,5 +1,6 @@
 package com.daangndaangn.common.api.entity.favorite;
 
+import com.google.common.base.Preconditions;
 import com.daangndaangn.common.api.entity.AuditingCreateUpdateEntity;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
@@ -41,6 +42,9 @@ public class FavoriteProduct extends AuditingCreateUpdateEntity {
 
     @Builder
     private FavoriteProduct(User user, Product product) {
+        Preconditions.checkArgument(user != null, "사용자 정보는 필수입니다.");
+        Preconditions.checkArgument(product != null, "물품 정보는 필수입니다.");
+
         this.user = user;
         this.product = product;
         this.isValid = true;
