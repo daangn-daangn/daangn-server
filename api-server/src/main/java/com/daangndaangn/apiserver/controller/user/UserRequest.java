@@ -29,4 +29,13 @@ public class UserRequest {
         private String location;
         private String profileUrl;
     }
+
+    @Getter
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class MannerRequest {
+        @NotNull
+        private Long userId;
+        @NotNull
+        private int score;
+    }
 }

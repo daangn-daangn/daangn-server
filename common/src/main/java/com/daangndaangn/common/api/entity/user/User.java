@@ -41,10 +41,18 @@ public class User extends AuditingCreateUpdateEntity {
         this.profileUrl = ObjectUtils.isEmpty(profileUrl) ? this.profileUrl : profileUrl;
     }
 
+    public void increaseManner() {
+        this.manner = Math.min(100.0, this.manner + 0.1);
+    }
+
+    public void decreaseManner() {
+        this.manner = Math.max(0.0, this.manner - 0.1);
+    }
+
     @Builder
     private User(Long oauthId, String profileUrl) {
         this.oauthId = oauthId;
         this.profileUrl = profileUrl;
-        this.manner = 0.0;
+        this.manner = 36.5;
     }
 }

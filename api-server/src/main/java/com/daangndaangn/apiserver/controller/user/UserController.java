@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
+import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
@@ -47,6 +48,22 @@ public class UserController {
                             request.getNickname(),
                             Location.from(request.getLocation()),
                             request.getProfileUrl());
+
+        return OK(null);
+    }
+
+    /**
+     * POST /api/users/manner
+     */
+    @PostMapping
+    public ApiResult<Void> updateManner(@AuthenticationPrincipal JwtAuthentication authentication,
+                                        @Valid @RequestBody UserRequest.MannerRequest request) {
+
+        if (authentication.getId().equals(request.getUserId())) {
+            throw new UnauthorizedException("자기 자신은 매너평가를 할 수 없습니다.");
+        }
+
+        userService.updateManner(request.getUserId(), request.getScore());
 
         return OK(null);
     }

@@ -15,4 +15,6 @@ public interface UserService {
     User findUserByOauthId(Long oauthId);
 
     void delete(Long userId);
+
+    void updateManner(Long userId, int manner);
 }

@@ -6,6 +6,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.DuplicateValueException;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.UserRepository;
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +63,20 @@ public class UserServiceImpl implements UserService {
     public void delete(Long userId) {
         User deletedUser = findUser(userId);
         userRepository.delete(deletedUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateManner(Long userId, int manner) {
+        Preconditions.checkArgument(0 <= manner && manner <= 100, "manner는 0과 100사이의 값이어야 합니다.");
+
+        User user = this.findUser(userId);
+
+        if (manner >= 50) {
+            user.increaseManner();
+        } else {
+            user.decreaseManner();
+        }
     }
 
     private UserResponse.JoinResponse convertToDto(User user) {
