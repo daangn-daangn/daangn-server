@@ -7,8 +7,6 @@ import com.daangndaangn.common.api.entity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,21 +42,14 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 100)
     private String description;
 
-    @Column(nullable = false)
-    private Long chattingCount;
-
     @Column(nullable = false, length = 20)
     private Location location;
 
     @Column(nullable = false)
     private ProductState state;
 
-    @Column(length = 500)
+    @Column(length = 250)
     private String thumbNailImage;
-
-
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> productImageList = new ArrayList<>();
 
     @Builder
     private Product(User seller,
@@ -68,9 +59,7 @@ public class Product extends AuditingCreateUpdateEntity {
                     long price,
                     String title,
                     String description,
-                    Long chattingCount,
-                    ProductState state,
-                    List<String> imgUrlList) {
+                    ProductState state) {
 
         this.seller = seller;
         this.buyer = buyer;
@@ -79,19 +68,11 @@ public class Product extends AuditingCreateUpdateEntity {
         this.price = price;
         this.title = title;
         this.description = description;
-        this.chattingCount = chattingCount;
         this.location = seller.getLocation();
         this.state = state;
-
-        //이 부분은 추후에 처리하도록 하겠습니다.
-//        this.thumbNailImage = imgUrlList.size() > 0 ? imgUrlList.get(0) : "디폴트 이미지 URL 추가 예정";
-
-//        for(String imgUrl : imgUrlList){
-//            this.productImageList.add(ProductImage.builder().product(this).imageUrl(imgUrl).build());
-//        }
     }
 
-    public void updateInfo(String title, String name, Category category, Long price, String description){
+    public void updateInfo(String title, String name, Category category, Long price, String description) {
         this.title = title;
         this.name = name;
         this.category = category;
@@ -99,7 +80,7 @@ public class Product extends AuditingCreateUpdateEntity {
         this.description = description;
     }
 
-    public void updateState(ProductState state){
+    public void updateState(ProductState state) {
         this.state = state;
     }
 }
