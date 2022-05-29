@@ -48,9 +48,9 @@ public class SaleReviewServiceTest {
         userService.join(222L, "");
         userService.join(333L, "");
 
-        User seller = userService.findUserByOauthId(USER_OAUTH_ID);
-        User buyer = userService.findUserByOauthId(222L);
-        User buyer2 = userService.findUserByOauthId(333L);
+        User seller = userService.getUserByOauthId(USER_OAUTH_ID);
+        User buyer = userService.getUserByOauthId(222L);
+        User buyer2 = userService.getUserByOauthId(333L);
 
         saleReviewService.create(seller.getId(), buyer.getId(), "첫 번째 리뷰입니다.");
         saleReviewService.create(buyer.getId(), seller.getId(), "두 번째 리뷰입니다.");
@@ -85,7 +85,7 @@ public class SaleReviewServiceTest {
     @Test
     public void 전체_리뷰를_조회할_수_있다() {
         //given
-        User user = userService.findUserByOauthId(USER_OAUTH_ID);
+        User user = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
         List<SaleReview> userReviews = saleReviewService.findAllUserReview(user.getId(), TEST_PAGINATION);
@@ -97,7 +97,7 @@ public class SaleReviewServiceTest {
     @Test
     public void 판매자_리뷰를_조회할_수_있다() {
         //given
-        User seller = userService.findUserByOauthId(USER_OAUTH_ID);
+        User seller = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
         List<SaleReview> sellerReviews = saleReviewService.findAllSellerReview(seller.getId(), TEST_PAGINATION);
@@ -109,7 +109,7 @@ public class SaleReviewServiceTest {
     @Test
     public void 구매자_리뷰를_조회할_수_있다() {
         //given
-        User buyer = userService.findUserByOauthId(USER_OAUTH_ID);
+        User buyer = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
         List<SaleReview> buyerReviews = saleReviewService.findAllBuyerReview(buyer.getId(), TEST_PAGINATION);

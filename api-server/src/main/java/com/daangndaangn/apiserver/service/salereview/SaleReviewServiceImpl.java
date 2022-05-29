@@ -72,8 +72,8 @@ public class SaleReviewServiceImpl implements SaleReviewService {
         Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
         Preconditions.checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
-        User seller = userService.findUser(sellerId);
-        User buyer = userService.findUser(buyerId);
+        User seller = userService.getUser(sellerId);
+        User buyer = userService.getUser(buyerId);
 
         SaleReview saleReview = SaleReview.builder()
                                         .seller(seller)

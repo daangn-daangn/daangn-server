@@ -1,21 +1,43 @@
 package com.daangndaangn.apiserver.service.category;
 
-import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.common.api.repository.CategoryRepository;
+import com.daangndaangn.common.api.entity.category.Category;
+import com.daangndaangn.common.api.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
-@Service
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService{
+@Service
+public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category findCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(Category.class, String.format("categoryId = %s", categoryId)));
+    @Transactional
+    public void create(String name) {
+        checkArgument(isNotEmpty(name), "category name must not be null");
+
+        Category category = Category.from(name);
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public Category getCategory(Long id) {
+        checkArgument(id != null, "category id must not be null");
+
+        return categoryRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(Category.class, String.format("categoryId = %s", id)));
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return categoryRepository.findAll();
     }
 }

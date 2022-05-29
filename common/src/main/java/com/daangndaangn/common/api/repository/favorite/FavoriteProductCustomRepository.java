@@ -10,4 +10,6 @@ public interface FavoriteProductCustomRepository {
     Optional<FavoriteProduct> findByProductAndUser(Long productId, Long userId);
 
     List<FavoriteProduct> findAll(Long userId, Pageable pageable);
+
+    int getNumberOfFavorites(Long productId);
 }

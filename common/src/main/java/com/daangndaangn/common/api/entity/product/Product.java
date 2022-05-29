@@ -8,6 +8,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -53,34 +58,53 @@ public class Product extends AuditingCreateUpdateEntity {
 
     @Builder
     private Product(User seller,
-                    User buyer,
                     Category category,
                     String name,
                     long price,
                     String title,
-                    String description,
-                    ProductState state) {
+                    String description) {
+
+        checkArgument(seller != null, "seller must not be null");
+        checkArgument(category != null, "category must not be null");
+        checkArgument(isNotEmpty(name), "name must not be null");
+        checkArgument(isNotEmpty(title), "title must not be null");
+        checkArgument(isNotEmpty(description), "description must not be null");
 
         this.seller = seller;
-        this.buyer = buyer;
+        this.buyer = null;
         this.category = category;
         this.name = name;
         this.price = price;
         this.title = title;
         this.description = description;
         this.location = seller.getLocation();
-        this.state = state;
+        this.state = ProductState.FOR_SALE;
     }
 
     public void updateInfo(String title, String name, Category category, Long price, String description) {
-        this.title = title;
-        this.name = name;
-        this.category = category;
-        this.price = price;
-        this.description = description;
+        checkArgument(
+                isEmpty(title) || title.length() <= 100,
+                "판매글 제목은 100자 이하여야 합니다.");
+        checkArgument(
+                isEmpty(name) || name.length() <= 50,
+                "물품명은 50자 이하여야 합니다.");
+        checkArgument(
+                isEmpty(description) || description.length() <= 100,
+                "물품 설명은 100자 이하여야 합니다.");
+
+        this.title = isEmpty(title) ? this.title : title;
+        this.name = isEmpty(name) ? this.name : name;
+        this.category = isEmpty(category) ? this.category : category;
+        this.price = isEmpty(price) ? this.price : price;
+        this.description = isEmpty(description) ? this.description : description;
     }
 
     public void updateState(ProductState state) {
         this.state = state;
+    }
+
+    public void updateBuyer(User buyer) {
+        checkArgument(buyer != null, "buyer must not be null");
+        this.buyer = buyer;
     }
 }

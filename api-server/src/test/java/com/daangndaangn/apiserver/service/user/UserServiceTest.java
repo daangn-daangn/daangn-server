@@ -32,12 +32,12 @@ class UserServiceTest {
     @Test
     public void 매너평가를_오십점_이상으로_받으면_매너점수가_상승한다() {
         //given
-        User beforeUser = userService.findUserByOauthId(USER_OAUTH_ID);
+        User beforeUser = userService.getUserByOauthId(USER_OAUTH_ID);
         double before = beforeUser.getManner();
 
         //when
         userService.updateManner(beforeUser.getId(), 50);
-        User afterUser = userService.findUserByOauthId(USER_OAUTH_ID);
+        User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //then
         Assertions.assertThat(afterUser.getManner()).isEqualTo(before + 0.1);
@@ -46,12 +46,12 @@ class UserServiceTest {
     @Test
     public void 매너평가를_오십점_미만으로_받으면_매너점수가_하락한다() {
         //given
-        User beforeUser = userService.findUserByOauthId(USER_OAUTH_ID);
+        User beforeUser = userService.getUserByOauthId(USER_OAUTH_ID);
         double before = beforeUser.getManner();
 
         //when
         userService.updateManner(beforeUser.getId(), 10);
-        User afterUser = userService.findUserByOauthId(USER_OAUTH_ID);
+        User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //then
         Assertions.assertThat(afterUser.getManner()).isEqualTo(before - 0.1);
@@ -59,7 +59,7 @@ class UserServiceTest {
 
     @AfterAll
     public void destroy() {
-        User user = userService.findUserByOauthId(USER_OAUTH_ID);
+        User user = userService.getUserByOauthId(USER_OAUTH_ID);
         userService.delete(user.getId());
     }
 }

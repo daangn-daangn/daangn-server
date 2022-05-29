@@ -10,9 +10,11 @@ public interface UserService {
 
     void update(Long oauthId, String nickname, Location location, String profileUrl);
 
-    User findUser(Long userId);
+    void update(Long id, String nickname, String location);
 
-    User findUserByOauthId(Long oauthId);
+    User getUser(Long userId);
+
+    User getUserByOauthId(Long oauthId);
 
     void delete(Long userId);
 

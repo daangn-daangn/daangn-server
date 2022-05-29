@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -21,6 +24,7 @@ public class Category extends AuditingCreateUpdateEntity {
     private String name;
 
     private Category(String name) {
+        checkArgument(isNotEmpty(name), "category name must not be null");
         this.name = name;
     }
 
