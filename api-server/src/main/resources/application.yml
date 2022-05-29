@@ -28,11 +28,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
   data:
     mongodb:
-      database: daangn_test # 임의로 적어봤습니다
+      database: daangn_test
       port: 27017
       host: localhost
+      authentication-database: admin
 
 ---
 spring:

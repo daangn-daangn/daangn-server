@@ -42,7 +42,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private Authentication createUserAuthentication(Long authenticationId) {
         try {
-            User user = userService.findUserByOauthId(authenticationId);
+            User user = userService.getUserByOauthId(authenticationId);
             JwtAuthentication jwtAuthentication = JwtAuthentication.from(user);
             JwtAuthenticationToken authenticationToken =
                     JwtAuthenticationToken.of(jwtAuthentication, createAuthorityList(Role.USER.value()));

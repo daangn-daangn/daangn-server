@@ -40,7 +40,6 @@ CREATE TABLE products
     price               bigint          NOT NULL COMMENT '가격',
     title               varchar(100)    NOT NULL COMMENT '제목',
     description         varchar(500)    NOT NULL COMMENT '상세 내용',
-    chatting_count      bigint          NOT NULL COMMENT '채팅 수',
     location            varchar(50)     NOT NULL COMMENT '지역',
     state               int             NOT NULL COMMENT '물품상태 (삭제, 예약중, 판매중, 판매완료)',
     thumb_nail_image    varchar(500)    DEFAULT NULL COMMENT '대표이미지 url',

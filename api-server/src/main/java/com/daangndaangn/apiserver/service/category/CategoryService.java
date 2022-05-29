@@ -2,8 +2,13 @@ package com.daangndaangn.apiserver.service.category;
 
 import com.daangndaangn.common.api.entity.category.Category;
 
+import java.util.List;
 
 public interface CategoryService {
 
-    Category findCategory(Long categoryId);
+    void create(String name);
+
+    Category getCategory(Long id);
+
+    List<Category> getCategories();
 }

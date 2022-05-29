@@ -5,9 +5,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,11 +37,33 @@ public class User extends AuditingCreateUpdateEntity {
     @Column(nullable = false)
     private double manner;
 
+    public void update(String nickname, Location location) {
+        checkArgument(
+                isEmpty(nickname) || nickname.length() <= 20,
+                "닉네임은 20자 이하여야 합니다.");
+        checkArgument(
+                isEmpty(location) || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
+                "주소는 20자 이하여야 합니다.");
+
+        this.nickname = isEmpty(nickname) ? this.nickname : nickname;
+        this.location = isEmpty(location) ? this.location : location;
+    }
+
     public void update(Long oauthId, String nickname, Location location, String profileUrl) {
-        this.oauthId = ObjectUtils.isEmpty(oauthId) ? this.oauthId : oauthId;
-        this.nickname = ObjectUtils.isEmpty(nickname) ? this.nickname : nickname;
-        this.location = ObjectUtils.isEmpty(location) ? this.location : location;
-        this.profileUrl = ObjectUtils.isEmpty(profileUrl) ? this.profileUrl : profileUrl;
+        checkArgument(
+                isEmpty(nickname) || nickname.length() <= 20,
+                "닉네임은 20자 이하여야 합니다.");
+        checkArgument(
+                isEmpty(location) || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
+                "주소는 20자 이하여야 합니다.");
+        checkArgument(
+                isEmpty(profileUrl) || profileUrl.length() <= 500,
+                "프로필 URL은 500자 이하여야 합니다.");
+
+        this.oauthId = isEmpty(oauthId) ? this.oauthId : oauthId;
+        this.nickname = isEmpty(nickname) ? this.nickname : nickname;
+        this.location = isEmpty(location) ? this.location : location;
+        this.profileUrl = isEmpty(profileUrl) ? this.profileUrl : profileUrl;
     }
 
     public void increaseManner() {
@@ -51,6 +76,11 @@ public class User extends AuditingCreateUpdateEntity {
 
     @Builder
     private User(Long oauthId, String profileUrl) {
+        checkArgument(oauthId != null, "oauthId must not be null");
+        checkArgument(
+                isEmpty(profileUrl) || profileUrl.length() <= 500,
+                "프로필 URL은 500자 이하여야 합니다.");
+
         this.oauthId = oauthId;
         this.profileUrl = profileUrl;
         this.manner = 36.5;

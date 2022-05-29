@@ -41,4 +41,16 @@ public class FavoriteProductCustomRepositoryImpl implements FavoriteProductCusto
                     .limit(pageable.getPageSize())
                 .fetch();
     }
+
+    @Override
+    public int getNumberOfFavorites(Long productId) {
+        return jpaQueryFactory.select(qFavoriteProduct.id)
+                .from(qFavoriteProduct)
+                .where(
+                    qFavoriteProduct.product.id.eq(productId),
+                    qFavoriteProduct.isValid.eq(true)
+                )
+                .fetch()
+                .size();
+    }
 }

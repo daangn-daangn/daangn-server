@@ -8,8 +8,12 @@ import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.UserRepository;
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
 @Transactional(readOnly = true)
@@ -24,9 +28,9 @@ public class UserServiceImpl implements UserService {
     public UserResponse.JoinResponse join(Long oauthId, String profileUrl) {
 
         User user = User.builder()
-                        .oauthId(oauthId)
-                        .profileUrl(profileUrl)
-                        .build();
+                .oauthId(oauthId)
+                .profileUrl(profileUrl)
+                .build();
 
         return convertToDto(userRepository.save(user));
     }
@@ -47,13 +51,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(Long userId) {
+    @Transactional
+    public void update(Long id, String nickname, String location) {
+        checkArgument(isNotEmpty(nickname), "nickname must not be null");
+        checkArgument(isNotEmpty(location), "location must not be null");
+
+        User user = getUser(id);
+        user.update(nickname, Location.from(location));
+    }
+
+    @Override
+    public User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("userId = %s", userId)));
     }
 
     @Override
-    public User findUserByOauthId(Long oauthId) {
+    public User getUserByOauthId(Long oauthId) {
         return userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
     }
@@ -61,16 +75,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Long userId) {
-        User deletedUser = findUser(userId);
+        User deletedUser = getUser(userId);
         userRepository.delete(deletedUser);
     }
 
     @Override
     @Transactional
     public void updateManner(Long userId, int manner) {
-        Preconditions.checkArgument(0 <= manner && manner <= 100, "manner는 0과 100사이의 값이어야 합니다.");
+        checkArgument(0 <= manner && manner <= 100, "manner는 0과 100사이의 값이어야 합니다.");
 
-        User user = this.findUser(userId);
+        User user = this.getUser(userId);
 
         if (manner >= 50) {
             user.increaseManner();

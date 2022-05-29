@@ -20,5 +20,7 @@ public interface FavoriteProductService {
 
     List<FavoriteProduct> findAll(Long userId, Pageable pageable);
 
+    int getNumberOfFavorites(Long productId);
+
     void delete(Long id);
 }
