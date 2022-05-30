@@ -28,7 +28,7 @@ public class User extends AuditingCreateUpdateEntity {
     @Column(length = 20)
     private String nickname;
 
-    @Column(length = 20)
+    @Column
     private Location location;
 
     @Column(length = 500)

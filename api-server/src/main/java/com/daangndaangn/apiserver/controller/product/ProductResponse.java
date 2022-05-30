@@ -1,7 +1,7 @@
 package com.daangndaangn.apiserver.controller.product;
 
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 public class ProductResponse {
 
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     @Getter
     @Builder
+    @JsonNaming(SnakeCaseStrategy.class)
     public static class SimpleResponse {
         private String title;
         private String location;

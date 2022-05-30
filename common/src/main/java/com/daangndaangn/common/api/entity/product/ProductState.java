@@ -27,7 +27,7 @@ public enum ProductState {
         ProductState productState = productStateMap.get(productStateCode);
         if (isEmpty(productState)) {
             //TODO: 사용자 정의 예외로 변경
-            throw new IllegalArgumentException("잘못된 ProductState 타입");
+            throw new IllegalArgumentException("잘못된 ProductState 타입입니다.");
         }
 
         return productState;

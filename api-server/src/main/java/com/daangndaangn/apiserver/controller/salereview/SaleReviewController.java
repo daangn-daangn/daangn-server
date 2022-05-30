@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.daangndaangn.apiserver.controller.ApiResult.OK;
+import static java.util.stream.Collectors.toList;
+
 
 @RequestMapping("/api/sale-reviews")
 @RestController
@@ -30,7 +33,8 @@ public class SaleReviewController {
      */
     @GetMapping("/{sale-review-id}")
     public ApiResult<SaleReviewResponse.GetResponse> getSaleReview(@PathVariable("sale-review-id") Long saleReviewId) {
-        return ApiResult.OK(saleReviewService.getSaleReview(saleReviewId));
+        SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
+        return OK(SaleReviewResponse.GetResponse.from(saleReview));
     }
 
     /**
@@ -41,9 +45,13 @@ public class SaleReviewController {
     @GetMapping("/user/{user-id}")
     public ApiResult<SaleReviewResult> getSaleReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> allUserReviews = saleReviewService.getAllUserReview(userId, pageable);
+        List<SaleReviewResponse.GetResponse> userReviews =
+                saleReviewService.getUserReviews(userId, pageable)
+                        .stream()
+                        .map(SaleReviewResponse.GetResponse::from)
+                        .collect(toList());
 
-        return ApiResult.OK(SaleReviewResult.of(allUserReviews.size(), allUserReviews));
+        return OK(SaleReviewResult.of(userReviews.size(), userReviews));
     }
 
     /**
@@ -54,9 +62,13 @@ public class SaleReviewController {
     @GetMapping("/seller/{user-id}")
     public ApiResult<SaleReviewResult> getSellerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> allSellerReviews = saleReviewService.getAllSellerReview(userId, pageable);
+        List<SaleReviewResponse.GetResponse> sellerReviews =
+                saleReviewService.getSellerReviews(userId, pageable)
+                        .stream()
+                        .map(SaleReviewResponse.GetResponse::from)
+                        .collect(toList());
 
-        return ApiResult.OK(SaleReviewResult.of(allSellerReviews.size(), allSellerReviews));
+        return OK(SaleReviewResult.of(sellerReviews.size(), sellerReviews));
     }
 
     /**
@@ -67,9 +79,13 @@ public class SaleReviewController {
     @GetMapping("/buyer/{user-id}")
     public ApiResult<SaleReviewResult> getBuyerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> allBuyerReviews = saleReviewService.getAllBuyerReview(userId, pageable);
+        List<SaleReviewResponse.GetResponse> buyerReviews =
+                saleReviewService.getBuyerReviews(userId, pageable)
+                        .stream()
+                        .map(SaleReviewResponse.GetResponse::from)
+                        .collect(toList());
 
-        return ApiResult.OK(SaleReviewResult.of(allBuyerReviews.size(), allBuyerReviews));
+        return OK(SaleReviewResult.of(buyerReviews.size(), buyerReviews));
     }
 
     @Getter
@@ -93,8 +109,8 @@ public class SaleReviewController {
                                               @Valid @RequestBody SaleReviewRequest.CreateRequest request) {
 
         if (authentication.getId().equals(request.getSellerId())) {
-            Long saleReviewId = saleReviewService.createSaleReview(request);
-            return ApiResult.OK(saleReviewId);
+            Long saleReviewId = saleReviewService.create(request.getSellerId(), request.getBuyerId(), request.getContent());
+            return OK(saleReviewId);
         }
 
         throw new UnauthorizedException("판매자는 본인이어야 합니다.");
@@ -110,8 +126,8 @@ public class SaleReviewController {
                                              @Valid @RequestBody SaleReviewRequest.CreateRequest request) {
 
         if (authentication.getId().equals(request.getBuyerId())) {
-            Long saleReviewId = saleReviewService.createSaleReview(request);
-            return ApiResult.OK(saleReviewId);
+            Long saleReviewId = saleReviewService.create(request.getSellerId(), request.getBuyerId(), request.getContent());
+            return OK(saleReviewId);
         }
 
         throw new UnauthorizedException("구매자는 본인이어야 합니다.");
@@ -127,11 +143,11 @@ public class SaleReviewController {
                                               @AuthenticationPrincipal JwtAuthentication authentication,
                                               @Valid @RequestBody SaleReviewRequest.UpdateRequest request) {
 
-        SaleReview saleReview = saleReviewService.findSaleReview(saleReviewId);
+        SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
         if (authentication.getId().equals(saleReview.getSeller().getId())) {
-            saleReviewService.updateSaleReview(saleReviewId, request);
-            return ApiResult.OK(null);
+            saleReviewService.update(saleReviewId, request.getContent());
+            return OK(null);
         }
 
         throw new UnauthorizedException("리뷰 수정은 작성자만 가능합니다.");
@@ -147,11 +163,11 @@ public class SaleReviewController {
                                              @AuthenticationPrincipal JwtAuthentication authentication,
                                              @Valid @RequestBody SaleReviewRequest.UpdateRequest request) {
 
-        SaleReview saleReview = saleReviewService.findSaleReview(saleReviewId);
+        SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
         if (authentication.getId().equals(saleReview.getBuyer().getId())) {
-            saleReviewService.updateSaleReview(saleReviewId, request);
-            return ApiResult.OK(null);
+            saleReviewService.update(saleReviewId, request.getContent());
+            return OK(null);
         }
 
         throw new UnauthorizedException("리뷰 수정은 작성자만 가능합니다.");
@@ -166,11 +182,11 @@ public class SaleReviewController {
     public ApiResult<Void> deleteSellerReview(@PathVariable("sale-review-id") Long saleReviewId,
                                               @AuthenticationPrincipal JwtAuthentication authentication) {
 
-        SaleReview saleReview = saleReviewService.findSaleReview(saleReviewId);
+        SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
         if (authentication.getId().equals(saleReview.getSeller().getId())) {
             saleReviewService.delete(saleReviewId);
-            return ApiResult.OK(null);
+            return OK(null);
         }
 
         throw new UnauthorizedException("리뷰 삭제는 작성자만 가능합니다.");
@@ -185,11 +201,11 @@ public class SaleReviewController {
     public ApiResult<Void> deleteBuyerReview(@PathVariable("sale-review-id") Long saleReviewId,
                                              @AuthenticationPrincipal JwtAuthentication authentication) {
 
-        SaleReview saleReview = saleReviewService.findSaleReview(saleReviewId);
+        SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
         if (authentication.getId().equals(saleReview.getBuyer().getId())) {
             saleReviewService.delete(saleReviewId);
-            return ApiResult.OK(null);
+            return OK(null);
         }
 
         throw new UnauthorizedException("리뷰 삭제는 작성자만 가능합니다.");

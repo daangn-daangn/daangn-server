@@ -1,13 +1,10 @@
 package com.daangndaangn.apiserver.service.salereview;
 
-import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest;
-import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 
 @Transactional(readOnly = true)
@@ -28,49 +26,10 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
     @Override
     @Transactional
-    public Long createSaleReview(SaleReviewRequest.CreateRequest request) {
-        SaleReview saleReview = create(request.getSellerId(), request.getBuyerId(), request.getContent());
-        return saleReview.getId();
-    }
-
-    @Override
-    public SaleReviewResponse.GetResponse getSaleReview(Long id) {
-        return convertToDto(findSaleReview(id));
-    }
-
-    @Override
-    public List<SaleReviewResponse.GetResponse> getAllUserReview(Long userId, Pageable pageable) {
-        return findAllUserReview(userId, pageable).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<SaleReviewResponse.GetResponse> getAllSellerReview(Long userId, Pageable pageable) {
-        return findAllSellerReview(userId, pageable).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<SaleReviewResponse.GetResponse> getAllBuyerReview(Long userId, Pageable pageable) {
-        return findAllBuyerReview(userId, pageable).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public void updateSaleReview(Long id, SaleReviewRequest.UpdateRequest request) {
-        update(id, request.getContent());
-    }
-
-    @Override
-    @Transactional
-    public SaleReview create(Long sellerId, Long buyerId, String content) {
-        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
-        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
-        Preconditions.checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
+    public Long create(Long sellerId, Long buyerId, String content) {
+        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+        checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
         User seller = userService.getUser(sellerId);
         User buyer = userService.getUser(buyerId);
@@ -81,77 +40,72 @@ public class SaleReviewServiceImpl implements SaleReviewService {
                                         .content(content)
                                         .build();
 
-        return saleReviewRepository.save(saleReview);
+        return saleReviewRepository.save(saleReview).getId();
     }
 
     @Override
-    public SaleReview findSaleReview(Long id) {
-        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
+    public SaleReview getSaleReview(Long id) {
+        checkArgument(id != null, "id 값은 필수입니다.");
 
         return saleReviewRepository.findBySaleReviewId(id)
                 .orElseThrow(() -> new NotFoundException(SaleReview.class, String.format("saleReviewId = %s", id)));
     }
 
     @Override
-    public List<SaleReview> findAllUserReview(Long userId, Pageable pageable) {
-        Preconditions.checkArgument(userId != null, "userId 값은 필수입니다.");
+    public List<SaleReview> getUserReviews(Long userId, Pageable pageable) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         return saleReviewRepository.findAllUserReview(userId, pageable);
     }
 
     @Override
-    public List<SaleReview> findAllSellerReview(Long sellerId, Pageable pageable) {
-        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+    public List<SaleReview> getSellerReviews(Long sellerId, Pageable pageable) {
+        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
 
         return saleReviewRepository.findAllSellerReview(sellerId, pageable);
     }
 
     @Override
-    public List<SaleReview> findAllBuyerReview(Long buyerId, Pageable pageable) {
-        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+    public List<SaleReview> getBuyerReviews(Long buyerId, Pageable pageable) {
+        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
         return saleReviewRepository.findAllBuyerReview(buyerId, pageable);
     }
 
     @Override
     public boolean isSellerReviewWriter(Long reviewId, Long sellerId) {
-        Preconditions.checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
-        Preconditions.checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+        checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
+        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
 
-        SaleReview saleReview = findSaleReview(reviewId);
+        SaleReview saleReview = getSaleReview(reviewId);
         return saleReview.getSeller().getId().equals(sellerId);
     }
 
     @Override
     public boolean isBuyerReviewWriter(Long reviewId, Long buyerId) {
-        Preconditions.checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
-        Preconditions.checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+        checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
+        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
-        SaleReview saleReview = findSaleReview(reviewId);
+        SaleReview saleReview = getSaleReview(reviewId);
         return saleReview.getBuyer().getId().equals(buyerId);
     }
 
     @Override
     @Transactional
-    public SaleReview update(Long id, String content) {
-        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
-        Preconditions.checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
+    public void update(Long id, String content) {
+        checkArgument(id != null, "id 값은 필수입니다.");
+        checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
-        SaleReview updatedReview = findSaleReview(id);
+        SaleReview updatedReview = getSaleReview(id);
         updatedReview.update(content);
-        return updatedReview;
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        Preconditions.checkArgument(id != null, "id 값은 필수입니다.");
+        checkArgument(id != null, "id 값은 필수입니다.");
 
-        SaleReview deletedReview = findSaleReview(id);
+        SaleReview deletedReview = getSaleReview(id);
         saleReviewRepository.delete(deletedReview);
-    }
-
-    private SaleReviewResponse.GetResponse convertToDto(SaleReview saleReview) {
-        return SaleReviewResponse.GetResponse.from(saleReview);
     }
 }

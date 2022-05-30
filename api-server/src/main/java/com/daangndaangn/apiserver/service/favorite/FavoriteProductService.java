@@ -7,20 +7,11 @@ import java.util.List;
 
 public interface FavoriteProductService {
 
-    /**
-     * DTO Region (for other controllers)
-     */
+    Long create(Long productId, Long userId);
 
-    /**
-     * Entity Region (for other services)
-     */
-    FavoriteProduct create(Long productId, Long userId);
+    FavoriteProduct getFavoriteProduct(Long id);
 
-    FavoriteProduct findById(Long id);
-
-    List<FavoriteProduct> findAll(Long userId, Pageable pageable);
-
-    int getNumberOfFavorites(Long productId);
+    List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable);
 
     void delete(Long id);
 }

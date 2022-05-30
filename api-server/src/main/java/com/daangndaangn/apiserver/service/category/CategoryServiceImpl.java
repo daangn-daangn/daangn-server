@@ -21,11 +21,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void create(String name) {
+    public Long create(String name) {
         checkArgument(isNotEmpty(name), "category name must not be null");
 
         Category category = Category.from(name);
-        categoryRepository.save(category);
+        return categoryRepository.save(category).getId();
     }
 
     @Override

@@ -1,12 +1,11 @@
 package com.daangndaangn.apiserver.service.user;
 
-import com.daangndaangn.apiserver.controller.user.UserResponse;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 
 public interface UserService {
 
-    UserResponse.JoinResponse join(Long oauthId, String profileUrl);
+    Long create(Long oauthId, String profileUrl);
 
     void update(Long oauthId, String nickname, Location location, String profileUrl);
 
