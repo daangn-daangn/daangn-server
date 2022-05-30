@@ -64,8 +64,19 @@ public class ProductServiceImpl implements ProductService {
     public Product getProduct(Long id) {
         checkArgument(id != null, "product id must not be null");
 
-        return productRepository.findById(id)
+        return productRepository.findByProductId(id)
             .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", id)));
+    }
+
+    @Override
+    @Transactional
+    public void updateToSoldOut(Long id, Long buyerId) {
+        checkArgument(buyerId != null, "buyerId id must not be null");
+
+        Product updatedProduct = getProduct(id);
+        User buyer = userService.getUser(buyerId);
+        updatedProduct.updateState(ProductState.SOLD_OUT);
+        updatedProduct.updateBuyer(buyer);
     }
 
     @Override
@@ -106,5 +117,16 @@ public class ProductServiceImpl implements ProductService {
     public void delete(Long id) {
         Product deleteProduct = getProduct(id);
         deleteProduct.updateState(ProductState.DELETED);
+    }
+
+    @Override
+    public boolean isSeller(Long productId, Long userId) {
+        checkArgument(productId != null, "productId must not be null");
+        checkArgument(userId != null, "userId must not be null");
+
+        Product product = productRepository.findByProductIdWithOnlySeller(productId)
+                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+
+        return userId.equals(product.getSeller().getId());
     }
 }

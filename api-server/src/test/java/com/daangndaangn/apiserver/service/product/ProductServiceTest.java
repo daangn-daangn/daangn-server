@@ -164,6 +164,43 @@ class ProductServiceTest {
         assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.DELETED);
     }
 
+    @Test
+    public void 판매_완료_처리시_물품상태변경과_Buyer를_업데이트_한다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+
+        assertThat(productService.getProduct(productId).getBuyer()).isNull();
+        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.FOR_SALE);
+
+        //when
+        productService.updateToSoldOut(productId, mockBuyerId);
+
+        //then
+        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.SOLD_OUT);
+        assertThat(productService.getProduct(productId).getBuyer().getId()).isEqualTo(mockBuyerId);
+    }
+
+    @Test
+    public void 물품_판매자를_식별할_수_있다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+
+        //when
+        //then
+        assertThat(productService.isSeller(productId, mockSellerId)).isEqualTo(true);
+        assertThat(productService.isSeller(productId, mockBuyerId)).isEqualTo(false);
+    }
+
     @AfterAll
     public void destroy() {
         userService.delete(mockSellerId);

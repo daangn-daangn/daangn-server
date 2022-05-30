@@ -3,6 +3,7 @@ package com.daangndaangn.apiserver.controller.product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -34,4 +35,16 @@ public class ProductResponse {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class CreateResponse {
+        private Long productId;
+
+        public static CreateResponse from(Long productId) {
+            return new CreateResponse(productId);
+        }
+    }
+
 }

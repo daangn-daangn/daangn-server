@@ -14,6 +14,8 @@ public interface ProductService {
 
     Product getProduct(Long id);
 
+    void updateToSoldOut(Long id, Long buyerId);
+
     void update(Long id, Long buyerId);
 
     void update(Long id, int productStateCode);
@@ -21,4 +23,6 @@ public interface ProductService {
     void update(Long id, String title, String name, Long categoryId, Long price, String description);
 
     void delete(Long id);
+
+    boolean isSeller(Long productId, Long userId);
 }

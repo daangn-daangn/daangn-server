@@ -26,12 +26,6 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * private UserResponse.JoinResponse convertToDto(User user) {
-     *         return UserResponse.JoinResponse.from(user);
-     *     }
-     */
-
-    /**
      * POST /api/users/join
      */
     @PostMapping("/join")
