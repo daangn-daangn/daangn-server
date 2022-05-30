@@ -1,6 +1,8 @@
 package com.daangndaangn.apiserver;
 
+import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
+import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
@@ -10,6 +12,9 @@ import com.daangndaangn.common.chat.repository.ChattingInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,11 +65,18 @@ public class TestController {
 
     @GetMapping("/v1")
     public List<ProductQueryDto> func(ProductSearchOption productSearchOption) {
-        return productQueryRepository.findAll(productSearchOption, PageRequest.of(0, 20));
+        return productQueryRepository.findAll(productSearchOption, null, PageRequest.of(0, 20));
     }
 
     @GetMapping("/v2")
     public List<ProductResponse.SimpleResponse> func2(ProductSearchOption productSearchOption) {
         return productQueryService.getProducts(productSearchOption, PageRequest.of(0, 20));
+    }
+
+    @GetMapping("/v3")
+    public ApiResult<List<ProductResponse.SimpleResponse>> func3(ProductSearchOption productSearchOption,
+                                                                @PageableDefault(size = 5) Pageable pageable) {
+
+        return ApiResult.OK(productQueryService.getProducts(productSearchOption, pageable));
     }
 }

@@ -1,5 +1,6 @@
 package com.daangndaangn.common.api.repository.product.query;
 
+import com.daangndaangn.common.api.entity.user.Location;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,7 +30,7 @@ public class ProductQueryRepository {
      *  private Long favoriteCount;
      *  private LocalDateTime createdAt;
      */
-    public List<ProductQueryDto> findAll(ProductSearchOption productSearchOption, Pageable pageable) {
+    public List<ProductQueryDto> findAll(ProductSearchOption productSearchOption, String address, Pageable pageable) {
 
         return jpaQueryFactory
                 .select(
@@ -48,7 +49,8 @@ public class ProductQueryRepository {
                                             .on(favoriteProduct.isValid.eq(true))
                 .where(
                     categoriesEq(productSearchOption.getCategories()),
-                    titleContains(productSearchOption.getTitle())
+                    titleContains(productSearchOption.getTitle()),
+                    addressContains(address)
                 )
                 .groupBy(product.id)
                 .orderBy(product.id.desc())
@@ -69,5 +71,12 @@ public class ProductQueryRepository {
             return null;
         }
         return product.title.contains(title);
+    }
+
+    private BooleanExpression addressContains(String address) {
+        if (isBlank(address)) {
+            return null;
+        }
+        return product.location.address.contains(address);
     }
 }
