@@ -75,7 +75,7 @@ public class ProductController {
     /**
      * 물품 수정
      *
-     * PUT /api/products/{productId}
+     * PUT /api/products/:productId
      */
     @PutMapping("/{productId}")
     public ApiResult<Void> updateProduct(@PathVariable("productId") Long productId,
@@ -99,7 +99,7 @@ public class ProductController {
     /**
      * 물품 삭제
      *
-     * DELETE /api/products/{productId}
+     * DELETE /api/products/:productId
      */
     @DeleteMapping("/{productId}")
     public ApiResult<Void> deleteProduct(@PathVariable("productId") Long productId,
@@ -116,7 +116,7 @@ public class ProductController {
     /**
      * 물품 판매 완료 처리
      *
-     * PUT /api/products/sold-out/{productId}
+     * PUT /api/products/sold-out/:productId
      */
     @PutMapping("/sold-out/{productId}")
     public ApiResult<Void> updateSoldOutProduct(@PathVariable("productId") Long productId,

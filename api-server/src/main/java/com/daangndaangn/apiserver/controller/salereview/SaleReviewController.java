@@ -27,7 +27,7 @@ public class SaleReviewController {
     private final SaleReviewService saleReviewService;
 
     /**
-     * GET /api/sale-reviews/{sale-review-id}
+     * GET /api/sale-reviews/:sale-review-id
      *
      * SaleReview 단 건 조회
      */
@@ -38,7 +38,7 @@ public class SaleReviewController {
     }
 
     /**
-     * GET /api/sale-reviews/user/{user-id}
+     * GET /api/sale-reviews/user/:user-id
      *
      * 사용자의 전체 후기 조회(SaleReview 리스트 조회)
      */
@@ -55,7 +55,7 @@ public class SaleReviewController {
     }
 
     /**
-     * GET /api/sale-reviews/seller/{user-id}
+     * GET /api/sale-reviews/seller/:user-id
      *
      * 사용자의 판매자 후기 조회(SaleReview 리스트 조회)
      */
@@ -72,7 +72,7 @@ public class SaleReviewController {
     }
 
     /**
-     * GET /api/sale-reviews/buyer/{user-id}
+     * GET /api/sale-reviews/buyer/:user-id
      *
      * 사용자의 구매자 후기 조회(SaleReview 리스트 조회)
      */
@@ -134,7 +134,7 @@ public class SaleReviewController {
     }
 
     /**
-     * PUT /api/sale-reviews/seller/{sale-review-id}
+     * PUT /api/sale-reviews/seller/:sale-review-id
      *
      * 사용자는 판매자 후기를 수정할 수 있다.
      */
@@ -154,7 +154,7 @@ public class SaleReviewController {
     }
 
     /**
-     * PUT /api/sale-reviews/buyer/{sale-review-id}
+     * PUT /api/sale-reviews/buyer/:sale-review-id
      *
      * 사용자는 구매자 후기를 수정할 수 있다.
      */
@@ -174,7 +174,7 @@ public class SaleReviewController {
     }
 
     /**
-     * DELETE /api/sale-reviews/seller/{sale-review-id}
+     * DELETE /api/sale-reviews/seller/:sale-review-id
      *
      * 사용자는 판매자 후기를 삭제할 수 있다.
      */
@@ -193,7 +193,7 @@ public class SaleReviewController {
     }
 
     /**
-     * DELETE /api/sale-reviews/buyer/{sale-review-id}
+     * DELETE /api/sale-reviews/buyer/:sale-review-id
      *
      * 사용자는 구매자 후기를 삭제할 수 있다.
      */

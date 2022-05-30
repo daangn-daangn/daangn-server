@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface FavoriteProductCustomRepository {
     Optional<FavoriteProduct> findByProductAndUser(Long productId, Long userId);
-
+    Optional<FavoriteProduct> findByIdWithUser(Long id);
     List<FavoriteProduct> findAll(Long userId, Pageable pageable);
-
-    int getNumberOfFavorites(Long productId);
 }

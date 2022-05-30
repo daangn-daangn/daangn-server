@@ -31,6 +31,18 @@ public class FavoriteProductCustomRepositoryImpl implements FavoriteProductCusto
     }
 
     @Override
+    public Optional<FavoriteProduct> findByIdWithUser(Long id) {
+        FavoriteProduct favoriteProduct = jpaQueryFactory
+                .select(qFavoriteProduct)
+                .from(qFavoriteProduct)
+                .join(qFavoriteProduct.user).fetchJoin()
+                .where(qFavoriteProduct.id.eq(id))
+                .fetchOne();
+
+        return Optional.ofNullable(favoriteProduct);
+    }
+
+    @Override
     public List<FavoriteProduct> findAll(Long userId, Pageable pageable) {
         return jpaQueryFactory.select(qFavoriteProduct)
                 .from(qFavoriteProduct)
@@ -40,17 +52,5 @@ public class FavoriteProductCustomRepositoryImpl implements FavoriteProductCusto
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                 .fetch();
-    }
-
-    @Override
-    public int getNumberOfFavorites(Long productId) {
-        return jpaQueryFactory.select(qFavoriteProduct.id)
-                .from(qFavoriteProduct)
-                .where(
-                    qFavoriteProduct.product.id.eq(productId),
-                    qFavoriteProduct.isValid.eq(true)
-                )
-                .fetch()
-                .size();
     }
 }

@@ -44,4 +44,13 @@ public class ProductQueryService {
         }).collect(toList());
     }
 
+    //특정 사용자가 찜한 상품 목록만 조회
+    public List<ProductResponse.SimpleResponse> getFavoriteProducts(List<Long> productIds) {
+        List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productIds);
+
+        return productQueryDtos.stream().map(p -> {
+            long chattingCount = chattingInfoRepository.countAllByProductId(p.getId());
+            return ProductResponse.SimpleResponse.of(p, chattingCount);
+        }).collect(toList());
+    }
 }
