@@ -14,4 +14,6 @@ public interface FavoriteProductService {
     List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable);
 
     void delete(Long id);
+
+    boolean isOwner(Long favoriteProductId, Long userId);
 }

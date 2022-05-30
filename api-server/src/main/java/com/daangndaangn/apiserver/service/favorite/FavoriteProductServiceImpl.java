@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toList;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -61,7 +62,10 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     @Override
     public List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable) {
         checkArgument(userId != null, "userId 값은 필수입니다.");
-        return favoriteProductRepository.findAll(userId, pageable);
+        return favoriteProductRepository.findAll(userId, pageable)
+                .stream()
+                .filter(f -> f.isValid())
+                .collect(toList());
     }
 
     @Override
@@ -71,5 +75,16 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
 
         FavoriteProduct deletedFavoriteProduct = getFavoriteProduct(id);
         deletedFavoriteProduct.update(false);
+    }
+
+    @Override
+    public boolean isOwner(Long favoriteProductId, Long userId) {
+        checkArgument(favoriteProductId != null, "favoriteProductId 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+
+        FavoriteProduct favoriteProduct = favoriteProductRepository.findByIdWithUser(favoriteProductId)
+            .orElseThrow(() -> new NotFoundException(FavoriteProduct.class, String.format("favoriteProductId = %s", favoriteProductId)));;
+
+        return userId.equals(favoriteProduct.getUser().getId());
     }
 }
