@@ -7,6 +7,9 @@ import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 /**
  * 사용자의 위치 정보를 나타내는 Value Object
  */
@@ -19,10 +22,14 @@ import javax.persistence.Embeddable;
 @Access(AccessType.FIELD)
 public class Location {
 
-    @Column(name = "location")
+    @Column(name = "location", length = 20)
     private String address;
 
     public static Location from(String address) {
+        checkArgument(
+                isNotEmpty(address) && address.length() <= 20,
+                "주소는 20자 이하여야 합니다.");
+
         return new Location(address);
     }
 

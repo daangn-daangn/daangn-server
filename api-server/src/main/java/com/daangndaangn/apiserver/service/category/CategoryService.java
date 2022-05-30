@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void create(String name);
+    Long create(String name);
 
     Category getCategory(Long id);
 

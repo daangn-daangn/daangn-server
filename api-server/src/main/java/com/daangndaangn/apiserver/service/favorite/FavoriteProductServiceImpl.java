@@ -25,9 +25,9 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     private final UserService userService;
     private final ProductService productService;
 
-    @Transactional
     @Override
-    public FavoriteProduct create(Long productId, Long userId) {
+    @Transactional
+    public Long create(Long productId, Long userId) {
         checkArgument(productId != null, "productId 값은 필수입니다.");
         checkArgument(userId != null, "userId 값은 필수입니다.");
 
@@ -43,15 +43,15 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         });
 
         if (favoriteProduct.getId() == null) {
-            return favoriteProductRepository.save(favoriteProduct);
+            return favoriteProductRepository.save(favoriteProduct).getId();
         }
 
         favoriteProduct.update(true);
-        return favoriteProduct;
+        return favoriteProduct.getId();
     }
 
     @Override
-    public FavoriteProduct findById(Long id) {
+    public FavoriteProduct getFavoriteProduct(Long id) {
         checkArgument(id != null, "id 값은 필수입니다.");
 
         return favoriteProductRepository.findById(id)
@@ -59,23 +59,17 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     @Override
-    public List<FavoriteProduct> findAll(Long userId, Pageable pageable) {
+    public List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable) {
         checkArgument(userId != null, "userId 값은 필수입니다.");
         return favoriteProductRepository.findAll(userId, pageable);
     }
 
     @Override
-    public int getNumberOfFavorites(Long productId) {
-        checkArgument(productId != null, "productId 값은 필수입니다.");
-        return favoriteProductRepository.getNumberOfFavorites(productId);
-    }
-
     @Transactional
-    @Override
     public void delete(Long id) {
         checkArgument(id != null, "id 값은 필수입니다.");
 
-        FavoriteProduct deletedFavoriteProduct = findById(id);
+        FavoriteProduct deletedFavoriteProduct = getFavoriteProduct(id);
         deletedFavoriteProduct.update(false);
     }
 }

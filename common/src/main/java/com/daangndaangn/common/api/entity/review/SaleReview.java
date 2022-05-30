@@ -12,6 +12,7 @@ import javax.persistence.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,7 +47,7 @@ public class SaleReview extends AuditingCreateUpdateEntity {
     private SaleReview(User seller, User buyer, String content) {
         checkArgument(seller != null, "판매자 정보는 필수입니다.");
         checkArgument(buyer != null, "구매자 정보는 필수입니다.");
-        checkArgument(StringUtils.isNotEmpty(content), "리뷰 내용은 필수입니다.");
+        checkArgument(isNotEmpty(content), "리뷰 내용은 필수입니다.");
         checkArgument(content.length() <= 500, "리뷰 내용은 500자 이하여야 합니다.");
 
         this.seller = seller;

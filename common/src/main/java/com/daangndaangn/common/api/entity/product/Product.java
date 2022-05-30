@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -47,7 +48,7 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 100)
     private String description;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private Location location;
 
     @Column(nullable = false)
@@ -69,6 +70,12 @@ public class Product extends AuditingCreateUpdateEntity {
         checkArgument(isNotEmpty(name), "name must not be null");
         checkArgument(isNotEmpty(title), "title must not be null");
         checkArgument(isNotEmpty(description), "description must not be null");
+        checkArgument(
+                isNotEmpty(seller.getLocation()) && isNotEmpty(seller.getLocation().getAddress()),
+                "판매자의 주소 정보는 필수입니다.");
+        checkArgument(name.length() <= 50, "물품명은 50자 이하여야 합니다.");
+        checkArgument(title.length() <= 100, "판매글 제목은 100자 이하여야 합니다.");
+        checkArgument(description.length() <= 100, "판매글 내용은 100자 이하여야 합니다.");
 
         this.seller = seller;
         this.buyer = null;

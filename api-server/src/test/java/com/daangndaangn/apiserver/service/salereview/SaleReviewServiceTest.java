@@ -44,9 +44,9 @@ public class SaleReviewServiceTest {
 
     @BeforeAll
     public void init() {
-        userService.join(USER_OAUTH_ID, "");
-        userService.join(222L, "");
-        userService.join(333L, "");
+        userService.create(USER_OAUTH_ID, "");
+        userService.create(222L, "");
+        userService.create(333L, "");
 
         User seller = userService.getUserByOauthId(USER_OAUTH_ID);
         User buyer = userService.getUserByOauthId(222L);
@@ -63,7 +63,7 @@ public class SaleReviewServiceTest {
         Long InvalidReviewId = 999L;
 
         //then
-        assertThrows(NotFoundException.class, () -> saleReviewService.findSaleReview(InvalidReviewId));
+        assertThrows(NotFoundException.class, () -> saleReviewService.getSaleReview(InvalidReviewId));
     }
 
     @Test
@@ -72,9 +72,9 @@ public class SaleReviewServiceTest {
         Long InvalidReviewId = 999L;
 
         //when
-        List<SaleReview> userReviews = saleReviewService.findAllUserReview(InvalidReviewId, TEST_PAGINATION);
-        List<SaleReview> sellerReviews = saleReviewService.findAllSellerReview(InvalidReviewId, TEST_PAGINATION);
-        List<SaleReview> buyerReviews = saleReviewService.findAllBuyerReview(InvalidReviewId, TEST_PAGINATION);
+        List<SaleReview> userReviews = saleReviewService.getUserReviews(InvalidReviewId, TEST_PAGINATION);
+        List<SaleReview> sellerReviews = saleReviewService.getSellerReviews(InvalidReviewId, TEST_PAGINATION);
+        List<SaleReview> buyerReviews = saleReviewService.getBuyerReviews(InvalidReviewId, TEST_PAGINATION);
 
         //then
         assertThat(userReviews.size()).isEqualTo(0);
@@ -88,7 +88,7 @@ public class SaleReviewServiceTest {
         User user = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
-        List<SaleReview> userReviews = saleReviewService.findAllUserReview(user.getId(), TEST_PAGINATION);
+        List<SaleReview> userReviews = saleReviewService.getUserReviews(user.getId(), TEST_PAGINATION);
 
         //then
         assertThat(userReviews.size()).isEqualTo(3);
@@ -100,7 +100,7 @@ public class SaleReviewServiceTest {
         User seller = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
-        List<SaleReview> sellerReviews = saleReviewService.findAllSellerReview(seller.getId(), TEST_PAGINATION);
+        List<SaleReview> sellerReviews = saleReviewService.getSellerReviews(seller.getId(), TEST_PAGINATION);
 
         //then
         assertThat(sellerReviews.size()).isEqualTo(2);
@@ -112,7 +112,7 @@ public class SaleReviewServiceTest {
         User buyer = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //when
-        List<SaleReview> buyerReviews = saleReviewService.findAllBuyerReview(buyer.getId(), TEST_PAGINATION);
+        List<SaleReview> buyerReviews = saleReviewService.getBuyerReviews(buyer.getId(), TEST_PAGINATION);
 
         //then
         assertThat(buyerReviews.size()).isEqualTo(1);

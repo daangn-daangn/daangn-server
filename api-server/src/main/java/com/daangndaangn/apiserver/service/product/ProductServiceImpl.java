@@ -31,7 +31,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void create(Long sellerId, Long categoryId, String title, String name, Long price, String description) {
+    public Long create(Long sellerId, Long categoryId, String title, String name, Long price, String description) {
+        checkArgument(sellerId != null, "sellerId must not be null");
+        checkArgument(categoryId != null, "categoryId must not be null");
+        checkArgument(isNotEmpty(title), "title must not be null");
+        checkArgument(isNotEmpty(name), "name must not be null");
+        checkArgument(price != null, "price must not be null");
+        checkArgument(isNotEmpty(description), "description must not be null");
+
         User seller = userService.getUser(sellerId);
         Category category = categoryService.getCategory(categoryId);
 
@@ -44,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(description)
                 .build();
 
-        productRepository.save(product);
+        return productRepository.save(product).getId();
     }
 
     //TODO
@@ -73,8 +80,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void update(Long id, ProductState productState) {
+    public void update(Long id, int productStateCode) {
         Product product = getProduct(id);
+        ProductState productState = ProductState.from(productStateCode);
         product.updateState(productState);
     }
 

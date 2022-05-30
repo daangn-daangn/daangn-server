@@ -8,6 +8,7 @@ import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
 import com.daangndaangn.apiserver.security.oauth.OAuthResponse;
 import com.daangndaangn.apiserver.security.oauth.OAuthService;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.api.entity.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,12 @@ public class UserController {
     private final UserService userService;
 
     /**
+     * private UserResponse.JoinResponse convertToDto(User user) {
+     *         return UserResponse.JoinResponse.from(user);
+     *     }
+     */
+
+    /**
      * POST /api/users/join
      */
     @PostMapping("/join")
@@ -32,9 +39,9 @@ public class UserController {
         String accessToken = request.getAccessToken();
         OAuthResponse.LoginResponse userInfo = oAuthService.getUserInfo(OAuthRequest.LoginRequest.from(accessToken));
 
-        UserResponse.JoinResponse joinResponse = userService.join(userInfo.getId(), userInfo.getProfileImage());
-
-        return OK(joinResponse);
+        Long userId = userService.create(userInfo.getId(), userInfo.getProfileImage());
+        User user = userService.getUser(userId);
+        return OK(UserResponse.JoinResponse.from(user));
     }
 
     /**

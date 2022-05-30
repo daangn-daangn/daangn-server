@@ -1,7 +1,6 @@
 package com.daangndaangn.apiserver.service.user;
 
 import com.daangndaangn.common.api.entity.user.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
@@ -25,8 +26,26 @@ class UserServiceTest {
 
     @BeforeAll
     public void init() {
+        userService.create(USER_OAUTH_ID, null);
+    }
 
-        userService.join(USER_OAUTH_ID, null);
+    @Test
+    public void 유저는_닉네임과_사는_동네를_업데이트_할_수_있다() {
+        //given
+        User user = userService.getUserByOauthId(USER_OAUTH_ID);
+
+        assertThat(user.getNickname()).isNull();
+        assertThat(user.getLocation()).isNull();
+
+        String nickname = "테스트 유저";
+        String address = "노원구 상계동";
+
+        //when
+        userService.update(user.getId(), nickname, address);
+
+        //then
+        assertThat(user.getNickname()).isEqualTo(nickname);
+        assertThat(user.getLocation().getAddress()).isEqualTo(address);
     }
 
     @Test
@@ -40,7 +59,7 @@ class UserServiceTest {
         User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //then
-        Assertions.assertThat(afterUser.getManner()).isEqualTo(before + 0.1);
+        assertThat(afterUser.getManner()).isEqualTo(before + 0.1);
     }
 
     @Test
@@ -54,7 +73,7 @@ class UserServiceTest {
         User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
 
         //then
-        Assertions.assertThat(afterUser.getManner()).isEqualTo(before - 0.1);
+        assertThat(afterUser.getManner()).isEqualTo(before - 0.1);
     }
 
     @AfterAll

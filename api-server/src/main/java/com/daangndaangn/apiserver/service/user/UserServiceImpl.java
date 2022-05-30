@@ -1,14 +1,11 @@
 package com.daangndaangn.apiserver.service.user;
 
-import com.daangndaangn.apiserver.controller.user.UserResponse;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.error.DuplicateValueException;
 import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.UserRepository;
-import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +22,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse.JoinResponse join(Long oauthId, String profileUrl) {
+    public Long create(Long oauthId, String profileUrl) {
 
         User user = User.builder()
                 .oauthId(oauthId)
                 .profileUrl(profileUrl)
                 .build();
 
-        return convertToDto(userRepository.save(user));
+        return userRepository.save(user).getId();
     }
 
     @Override
@@ -91,10 +88,6 @@ public class UserServiceImpl implements UserService {
         } else {
             user.decreaseManner();
         }
-    }
-
-    private UserResponse.JoinResponse convertToDto(User user) {
-        return UserResponse.JoinResponse.from(user);
     }
 }
 

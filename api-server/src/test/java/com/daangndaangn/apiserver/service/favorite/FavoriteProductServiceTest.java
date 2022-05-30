@@ -4,7 +4,7 @@ import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.common.api.entity.favorite.FavoriteProduct;
 import com.daangndaangn.common.api.entity.product.Product;
-import com.daangndaangn.common.api.entity.product.ProductState;
+import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
@@ -49,6 +49,7 @@ class FavoriteProductServiceTest {
     public void init() {
         mockUser = User.builder().oauthId(1234L).profileUrl(null).build();
         User mockBuyer = User.builder().oauthId(5678L).profileUrl(null).build();
+        mockUser.update("테스트 유저", Location.from("노원구 상계동"));
 
         mockProduct = Product.builder()
                 .seller(mockUser)
@@ -67,15 +68,18 @@ class FavoriteProductServiceTest {
 
     // create Test
     @Test
-    public void 물품을_찜할_수_있다_처음_찜하는_상품은_findUser와_findProduct를_사용한다() {
+    public void 물품을_찜할_수_있다_처음_찜하는_상품은_getUser와_getProduct를_사용한다() {
         //given
         given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.empty());
         given(userService.getUser(any())).willReturn(mockUser);
         given(productService.getProduct(any())).willReturn(mockProduct);
         given(favoriteProductRepository.save(any())).willReturn(mockFavoriteProduct);
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
 
         //when
-        FavoriteProduct favoriteProduct = favoriteProductService.create(1L, 1L);
+        Long mockFavoriteProductId = 1L;
+        favoriteProductService.create(1L, 1L);
+        FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
 
         //then
         assertThat(favoriteProduct).isEqualTo(mockFavoriteProduct);
@@ -92,15 +96,18 @@ class FavoriteProductServiceTest {
 
     // create Test
     @Test
-    public void 물품을_찜할_수_있다_이미_찜했던_상품은_findUser와_findProduct를_하지_않는다() {
+    public void 물품을_찜할_수_있다_이미_찜했던_상품은_getUser와_getProduct를_하지_않는다() {
         //given
         given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.of(mockFavoriteProduct));
         lenient().when(userService.getUser(any())).thenReturn(mockUser);
         lenient().when(productService.getProduct(any())).thenReturn(mockProduct);
         given(favoriteProductRepository.save(any())).willReturn(mockFavoriteProduct);
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
 
         //when
-        FavoriteProduct favoriteProduct = favoriteProductService.create(1L, 1L);
+        Long mockFavoriteProductId = 1L;
+        favoriteProductService.create(1L, 1L);
+        FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
 
         //then
         assertThat(favoriteProduct).isEqualTo(mockFavoriteProduct);
@@ -130,21 +137,11 @@ class FavoriteProductServiceTest {
         given(favoriteProductRepository.findAll(anyLong(), any(PageRequest.class))).willReturn(mockFavoriteProducts);
 
         //when
-        List<FavoriteProduct> result = favoriteProductService.findAll(userId, mockPageRequest);
+        List<FavoriteProduct> result = favoriteProductService.getFavoriteProducts(userId, mockPageRequest);
 
         //then
         assertThat(result.size()).isEqualTo(mockFavoriteProducts.size());
         verify(favoriteProductRepository).findAll(anyLong(), any(PageRequest.class));
-    }
-
-    // countAllByProductAndValid Test
-    @Test
-    public void 특정_물품에_대해_찜하기_한_갯수를_구할_수_있다() {
-        //given
-
-        //when
-
-        //then
     }
 
     // delete Test

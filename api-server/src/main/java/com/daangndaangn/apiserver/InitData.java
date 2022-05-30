@@ -45,11 +45,11 @@ public class InitData {
         private final FavoriteProductService favoriteProductService;
 
         public void initUsers() {
-            userService.join(12L, null);
-            userService.join(34L, null);
-            userService.join(56L, null);
-            userService.join(78L, null);
-            userService.join(910L, null);
+            userService.create(12L, null);
+            userService.create(34L, null);
+            userService.create(56L, null);
+            userService.create(78L, null);
+            userService.create(910L, null);
 
             userService.update(1L, "테스트닉네임1", "노원구 상계동");
             userService.update(2L, "테스트닉네임2", "노원구 상계동");
