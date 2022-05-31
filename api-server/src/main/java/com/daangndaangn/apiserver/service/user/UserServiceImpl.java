@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
@@ -88,6 +89,15 @@ public class UserServiceImpl implements UserService {
         } else {
             user.decreaseManner();
         }
+    }
+
+    @Override
+    public boolean isValidNickname(String nickname) {
+        if (isEmpty(nickname) || nickname.length() > 20) {
+            return false;
+        }
+
+        return !userRepository.existsUserByNickname(nickname);
     }
 }
 

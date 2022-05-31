@@ -68,4 +68,12 @@ public class UserController {
 
         return OK(null);
     }
+
+    /**
+     * GET /api/users/nickname
+     */
+    @GetMapping("/nickname")
+    public ApiResult<Boolean> isValidNickname(@RequestParam("name") String name) {
+        return OK(userService.isValidNickname(name));
+    }
 }
