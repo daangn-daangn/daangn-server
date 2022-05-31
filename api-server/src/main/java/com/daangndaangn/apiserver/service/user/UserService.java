@@ -18,4 +18,6 @@ public interface UserService {
     void delete(Long userId);
 
     void updateManner(Long userId, int manner);
+
+    boolean isValidNickname(String nickname);
 }

@@ -76,6 +76,25 @@ class UserServiceTest {
         assertThat(afterUser.getManner()).isEqualTo(before - 0.1);
     }
 
+    @Test
+    public void 닉네임_중복여부를_확인할_수_있다() {
+        //given
+        User user = userService.getUserByOauthId(USER_OAUTH_ID);
+
+        String nickname = "테스트 유저";
+        String address = "노원구 상계동";
+
+        userService.update(user.getId(), nickname, address);
+
+        //when
+        String duplicatedNickname = nickname;
+        String validNickname = "테스트 유저2";
+
+        //then
+        assertThat(userService.isValidNickname(duplicatedNickname)).isEqualTo(false);
+        assertThat(userService.isValidNickname(validNickname)).isEqualTo(true);
+    }
+
     @AfterAll
     public void destroy() {
         User user = userService.getUserByOauthId(USER_OAUTH_ID);
