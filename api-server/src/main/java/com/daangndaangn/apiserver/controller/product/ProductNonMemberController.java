@@ -25,10 +25,10 @@ public class ProductNonMemberController {
     /**
      * 물품 리스트 조회(비회원 전용)
      *
-     * GET /api/products
-     * GET /api/products?title=맥북
-     * GET /api/products?category=1,2,3,4,5
-     * GET /api/products?title=맥북&category=1,2,3,4,5
+     * GET /api/non-member/products
+     * GET /api/non-member/products?title=맥북
+     * GET /api/non-member/products?category=1,2,3,4,5
+     * GET /api/non-member/products?title=맥북&category=1,2,3,4,5
      */
     @GetMapping
     public ApiResult<List<SimpleResponse>> getProducts(ProductSearchOption productSearchOption,
