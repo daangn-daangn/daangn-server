@@ -1,6 +1,8 @@
 package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
+import com.daangndaangn.apiserver.controller.user.UserResponse.JoinResponse;
+import com.daangndaangn.apiserver.controller.user.UserResponse.UserInfoResponse;
 import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
@@ -26,16 +28,24 @@ public class UserController {
     private final UserService userService;
 
     /**
+     * GET /api/users/{userId}
+     */
+    @GetMapping("/{userId}")
+    public ApiResult<UserInfoResponse> getUser(@PathVariable("userId") Long userId) {
+        return OK(UserInfoResponse.from(userService.getUser(userId)));
+    }
+
+    /**
      * POST /api/users/join
      */
     @PostMapping("/join")
-    public ApiResult<UserResponse.JoinResponse> join(@Valid @RequestBody UserRequest.JoinRequest request) {
+    public ApiResult<JoinResponse> join(@Valid @RequestBody UserRequest.JoinRequest request) {
         String accessToken = request.getAccessToken();
         OAuthResponse.LoginResponse userInfo = oAuthService.getUserInfo(OAuthRequest.LoginRequest.from(accessToken));
 
         Long userId = userService.create(userInfo.getId(), userInfo.getProfileImage());
         User user = userService.getUser(userId);
-        return OK(UserResponse.JoinResponse.from(user));
+        return OK(JoinResponse.from(user));
     }
 
     /**
@@ -56,7 +66,7 @@ public class UserController {
     /**
      * POST /api/users/manner
      */
-    @PostMapping
+    @PostMapping("/manner")
     public ApiResult<Void> updateManner(@AuthenticationPrincipal JwtAuthentication authentication,
                                         @Valid @RequestBody UserRequest.MannerRequest request) {
 
