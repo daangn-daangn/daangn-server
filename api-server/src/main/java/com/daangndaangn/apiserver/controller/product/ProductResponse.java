@@ -15,6 +15,7 @@ public class ProductResponse {
     @Builder
     @JsonNaming(SnakeCaseStrategy.class)
     public static class SimpleResponse {
+        private Long productId;
         private String title;
         private String location;
         private Long price;
@@ -25,6 +26,7 @@ public class ProductResponse {
 
         public static SimpleResponse of(ProductQueryDto productQueryDto, Long chattingCount) {
             return SimpleResponse.builder()
+                    .productId(productQueryDto.getId())
                     .title(productQueryDto.getTitle())
                     .location(productQueryDto.getLocation())
                     .price(productQueryDto.getPrice())
