@@ -2,6 +2,7 @@ package com.daangndaangn.common.api.repository.product.query;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,12 +19,16 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class ProductSearchOption {
     List<Long> categories;
     private String title;
+    private long minPrice;
+    private long maxPrice;
 
-    public static ProductSearchOption of(String title, String category) {
+    public static ProductSearchOption of(String title, String category, long minPrice, long maxPrice) {
         if (isEmpty(category)) {
             return ProductSearchOption.builder()
                     .title(title)
                     .categories(Collections.emptyList())
+                    .minPrice(minPrice)
+                    .maxPrice(maxPrice)
                     .build();
         } else {
             /**
@@ -38,6 +43,8 @@ public class ProductSearchOption {
             return ProductSearchOption.builder()
                     .title(title)
                     .categories(categoryIds)
+                    .minPrice(minPrice)
+                    .maxPrice(maxPrice)
                     .build();
         }
     }

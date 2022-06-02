@@ -2,6 +2,7 @@ package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.user.UserResponse.JoinResponse;
+import com.daangndaangn.apiserver.controller.user.UserResponse.NicknameResponse;
 import com.daangndaangn.apiserver.controller.user.UserResponse.UserInfoResponse;
 import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.common.api.entity.user.Location;
@@ -83,7 +84,7 @@ public class UserController {
      * GET /api/users/nickname
      */
     @GetMapping("/nickname")
-    public ApiResult<Boolean> isValidNickname(@RequestParam("name") String name) {
-        return OK(userService.isValidNickname(name));
+    public ApiResult<NicknameResponse> isValidNickname(@RequestParam("name") String name) {
+        return OK(NicknameResponse.from(userService.isValidNickname(name)));
     }
 }

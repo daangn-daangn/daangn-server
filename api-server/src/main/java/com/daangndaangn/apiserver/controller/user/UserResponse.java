@@ -3,9 +3,9 @@ package com.daangndaangn.apiserver.controller.user;
 import com.daangndaangn.common.api.entity.user.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.commons.lang3.ObjectUtils;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
@@ -54,5 +54,17 @@ public class UserResponse {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class NicknameResponse {
+        private boolean result;
+
+        public static NicknameResponse from(boolean result) {
+            return new NicknameResponse(result);
+        }
+    }
+
 }
 
