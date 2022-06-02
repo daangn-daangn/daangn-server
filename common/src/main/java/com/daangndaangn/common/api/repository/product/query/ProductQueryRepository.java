@@ -75,9 +75,10 @@ public class ProductQueryRepository {
                 .where(
                     categoriesEq(productSearchOption.getCategories()),
                     titleContains(productSearchOption.getTitle()),
-                    addressContains(address)
+                    addressContains(address),
+                    priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice())
                 )
-                .groupBy(product.id)
+                .groupBy(product.id, product.title)
                 .orderBy(product.id.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
@@ -103,5 +104,19 @@ public class ProductQueryRepository {
             return null;
         }
         return product.location.address.contains(address);
+    }
+
+    private BooleanExpression priceCondition(long minPrice, long maxPrice) {
+        final long UN_USED_VALUE = -1L;
+
+        if (minPrice == UN_USED_VALUE && maxPrice == UN_USED_VALUE) {
+            return null;
+        } else if (minPrice == UN_USED_VALUE) {
+            return product.price.loe(maxPrice);
+        } else if (maxPrice == UN_USED_VALUE) {
+            return product.price.goe(minPrice);
+        }
+
+        return product.price.between(minPrice, maxPrice);
     }
 }
