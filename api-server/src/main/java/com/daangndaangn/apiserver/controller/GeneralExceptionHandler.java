@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartException;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +85,14 @@ public class GeneralExceptionHandler {
         } catch (JsonProcessingException ignored) {
             return "유효성 검사 예외가 발생했습니다.";
         }
+    }
+
+    @ExceptionHandler({
+        AwsServiceException.class, SdkClientException.class
+    })
+    public ResponseEntity<?> handleAwsErrorException(Exception e) {
+        log.info("AwsClientError exception occurred: {}", e.getMessage(), e);
+        return createResponseByThrowable(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)

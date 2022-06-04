@@ -66,7 +66,7 @@ public class FavoriteProductServiceTest {
         String name = "mockProduct";
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
-        mockProductId = productService.create(mockUserId, mockCategoryId, title, name, price, description);
+        mockProductId = productService.create(mockUserId, mockCategoryId, title, name, price, description, null).getId();
     }
 
     @Test
