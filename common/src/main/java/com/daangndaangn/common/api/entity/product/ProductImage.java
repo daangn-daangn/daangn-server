@@ -2,9 +2,9 @@ package com.daangndaangn.common.api.entity.product;
 
 import com.daangndaangn.common.api.entity.AuditingCreateUpdateEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -25,7 +25,10 @@ public class ProductImage extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 500)
     private String imageUrl;
 
-    @Builder
+    public static ProductImage of(Product product, String imageUrl) {
+        return new ProductImage(product, imageUrl);
+    }
+
     private ProductImage(Product product, String imageUrl) {
         this.product = product;
         this.imageUrl = imageUrl;

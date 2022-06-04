@@ -14,7 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
@@ -53,7 +56,7 @@ class ProductServiceTest {
     }
 
     @Test
-    public void product를_생성할_수_있다() {
+    public void 이미지_없이_product를_생성할_수_있다() {
         //given
         String title = "mockProduct 팝니다.";
         String name = "mockProduct";
@@ -61,7 +64,7 @@ class ProductServiceTest {
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
         //when
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
         Product product = productService.getProduct(productId);
 
         //then
@@ -71,7 +74,57 @@ class ProductServiceTest {
         assertThat(product.getName()).isEqualTo(name);
         assertThat(product.getPrice()).isEqualTo(price);
         assertThat(product.getDescription()).isEqualTo(description);
+        assertThat(product.getThumbNailImage()).isNull();
+        assertThat(product.getProductImages()).isEmpty();
         assertThat(product.getBuyer()).isNull();
+    }
+
+    @Test
+    public void 이미지와_함께_product를_생성할_수_있다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+        String[] productImageUrls = {"test001.jpg, test002.png, test003.jpeg"};
+
+        //when
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls)).getId();
+        Product product = productService.getProduct(productId);
+
+        //then
+        assertThat(product.getSeller().getId()).isEqualTo(mockSellerId);
+        assertThat(product.getCategory().getId()).isEqualTo(mockCategoryId);
+        assertThat(product.getTitle()).isEqualTo(title);
+        assertThat(product.getName()).isEqualTo(name);
+        assertThat(product.getPrice()).isEqualTo(price);
+        assertThat(product.getDescription()).isEqualTo(description);
+        assertThat(product.getThumbNailImage()).isNotNull();
+        assertThat(product.getProductImages()).isNotEmpty();
+        assertThat(product.getBuyer()).isNull();
+    }
+
+    @Test
+    public void 업로드_가능한_이미지_형식은_jpg_jpeg_png만_가능하다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+        String[] productImageUrls1 = {"test000", "test001.jpg", "test002.png", "test003.jpeg"};
+        String[] productImageUrls2 = {"test000.gif", "test001.jpg", "test002.png", "test003.jpeg"};
+        String[] productImageUrls3 = {"", "test001.jpg", "test002.png", "test003.jpeg"};
+        String[] productImageUrls4 = {" ", "test001.jpg", "test002.png", "test003.jpeg"};
+        String[] productImageUrls5 = {"test000.JPG", "test001.jpg", "test002.png", "test003.jpeg"};
+        String[] productImageUrls6 = {"test000.PNG", "test001.jpg", "test002.png", "test003.jpeg"};
+
+        //when
+        assertThrows(IllegalArgumentException.class, () -> productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls1)));
+        assertThrows(IllegalArgumentException.class, () -> productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls2)));
+        assertThrows(IllegalArgumentException.class, () -> productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls3)));
+        assertThrows(IllegalArgumentException.class, () -> productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls4)));
+        assertThat(productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls5))).isNotNull();
+        assertThat(productService.create(mockSellerId, mockCategoryId, title, name, price, description, List.of(productImageUrls6))).isNotNull();
     }
 
     @Test
@@ -82,7 +135,7 @@ class ProductServiceTest {
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
         assertThat(productService.getProduct(productId).getBuyer()).isNull();
 
         //when
@@ -101,17 +154,17 @@ class ProductServiceTest {
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.FOR_SALE);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.FOR_SALE);
 
         //when
         int soldOutCode = ProductState.SOLD_OUT.getCode();
         productService.update(productId, soldOutCode);
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.SOLD_OUT);
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.SOLD_OUT);
 
         int deleteCode = ProductState.DELETED.getCode();
         productService.update(productId, deleteCode);
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.DELETED);
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.DELETED);
     }
 
     //void update(Long id, String title, String name, Long categoryId, Long price, String description);
@@ -128,7 +181,8 @@ class ProductServiceTest {
                                                 beforeTitle,
                                                 beforeName,
                                                 beforePrice,
-                                                beforeDescription);
+                                                beforeDescription,
+                                 null).getId();
 
         //when
         String newTitle = "newProduct 팝니다.";
@@ -155,13 +209,13 @@ class ProductServiceTest {
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
 
         //when
         productService.delete(productId);
 
         //then
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.DELETED);
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.DELETED);
     }
 
     @Test
@@ -172,16 +226,16 @@ class ProductServiceTest {
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
 
         assertThat(productService.getProduct(productId).getBuyer()).isNull();
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.FOR_SALE);
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.FOR_SALE);
 
         //when
         productService.updateToSoldOut(productId, mockBuyerId);
 
         //then
-        assertThat(productService.getProduct(productId).getState()).isEqualTo(ProductState.SOLD_OUT);
+        assertThat(productService.getProduct(productId).getProductState()).isEqualTo(ProductState.SOLD_OUT);
         assertThat(productService.getProduct(productId).getBuyer().getId()).isEqualTo(mockBuyerId);
     }
 
@@ -193,7 +247,7 @@ class ProductServiceTest {
         Long price = 10000L;
         String description = "mockProduct 팝니다. 새 상품입니다.";
 
-        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description);
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
 
         //when
         //then

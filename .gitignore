@@ -39,3 +39,6 @@ out/
 
 .DS_store
 **/.DS_store
+
+### AWS ###
+/api-server/src/main/resources/aws.properties

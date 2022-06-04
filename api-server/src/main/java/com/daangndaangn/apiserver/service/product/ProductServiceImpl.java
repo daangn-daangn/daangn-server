@@ -8,14 +8,20 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductState;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.product.ProductRepository;
+import com.daangndaangn.common.util.UploadUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Transactional(readOnly = true)
@@ -29,15 +35,27 @@ public class ProductServiceImpl implements ProductService {
 
     private final CategoryService categoryService;
 
+    private final UploadUtil uploadUtil;
+
     @Override
     @Transactional
-    public Long create(Long sellerId, Long categoryId, String title, String name, Long price, String description) {
+    public Product create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls) {
         checkArgument(sellerId != null, "sellerId must not be null");
         checkArgument(categoryId != null, "categoryId must not be null");
         checkArgument(isNotEmpty(title), "title must not be null");
         checkArgument(isNotEmpty(name), "name must not be null");
         checkArgument(price != null, "price must not be null");
         checkArgument(isNotEmpty(description), "description must not be null");
+        checkArgument(isEmpty(productImageUrls) || productImageUrls.size() <= 10, "사진은 최대 10장만 등록할 수 있습니다.");
+
+        if (isNotEmpty(productImageUrls)) {
+
+            boolean isNotValid = productImageUrls.stream().anyMatch(uploadUtil::isNotImageFile);
+
+            if (isNotValid) {
+                throw new IllegalArgumentException("png, jpeg, jpg에 해당하는 파일만 업로드할 수 있습니다.");
+            }
+        }
 
         User seller = userService.getUser(sellerId);
         Category category = categoryService.getCategory(categoryId);
@@ -51,7 +69,21 @@ public class ProductServiceImpl implements ProductService {
                 .description(description)
                 .build();
 
-        return productRepository.save(product).getId();
+        if (isNotEmpty(productImageUrls)) {
+
+            List<String> randomProductImageUrls = productImageUrls.stream()
+                                                    .filter(StringUtils::isNotEmpty)
+                                                    .map(productImageUrl -> UUID.randomUUID() + productImageUrl)
+                                                    .collect(toList());
+
+            product.setThumbnailImage(randomProductImageUrls.get(0));
+
+            for (String randomProductImageUrl : randomProductImageUrls) {
+                product.addProductImage(randomProductImageUrl);
+            }
+        }
+
+        return productRepository.save(product);
     }
 
     //TODO
@@ -66,6 +98,14 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findByProductId(id)
             .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", id)));
+    }
+
+    @Override
+    public Product getProductWithProductImages(Long id) {
+        checkArgument(id != null, "product id must not be null");
+
+        return productRepository.findByProductIdWithProductImages(id)
+                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", id)));
     }
 
     @Override
