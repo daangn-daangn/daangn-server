@@ -6,6 +6,8 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductRequest {
 
@@ -22,6 +24,8 @@ public class ProductRequest {
         private Long price;
         @NotEmpty
         private String description;
+
+        private List<String> productImages = new ArrayList<>();
     }
 
     @Getter

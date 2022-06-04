@@ -7,12 +7,14 @@ import java.util.List;
 
 public interface ProductService {
 
-    Long create(Long sellerId, Long categoryId, String title, String name, Long price, String description);
+    Product create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls);
 
     //TODO
     List<Product> getProducts(Pageable pageable);
 
     Product getProduct(Long id);
+
+    Product getProductWithProductImages(Long id);
 
     void updateToSoldOut(Long id, Long buyerId);
 

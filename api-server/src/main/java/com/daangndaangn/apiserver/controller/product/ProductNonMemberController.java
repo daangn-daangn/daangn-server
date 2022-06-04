@@ -4,7 +4,9 @@ import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
+import com.daangndaangn.common.util.PresignerUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import static com.daangndaangn.apiserver.controller.ApiResult.OK;
 public class ProductNonMemberController {
 
     private final ProductQueryService productQueryService;
+    private final PresignerUtils presignerUtils;
 
     /**
      * 물품 리스트 조회(비회원 전용)
@@ -34,6 +37,13 @@ public class ProductNonMemberController {
     public ApiResult<List<SimpleResponse>> getProducts(ProductSearchOption productSearchOption,
                                                        @PageableDefault(size = 5) Pageable pageable) {
 
-        return OK(productQueryService.getProducts(productSearchOption, pageable));
+        List<SimpleResponse> products = productQueryService.getProducts(productSearchOption, pageable);
+
+        products
+            .stream()
+            .filter(p -> StringUtils.isNotEmpty(p.getImageUrl()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+
+        return OK(products);
     }
 }
