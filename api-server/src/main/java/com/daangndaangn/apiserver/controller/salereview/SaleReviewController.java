@@ -1,10 +1,10 @@
 package com.daangndaangn.apiserver.controller.salereview;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.common.api.entity.review.SaleReview;
-import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
+import com.daangndaangn.common.error.UnauthorizedException;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.OK;
+import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
 

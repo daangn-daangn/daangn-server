@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.controller.category;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.category.CategoryResponse.GetResponse;
 import com.daangndaangn.apiserver.service.category.CategoryService;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.OK;
+import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/api/categories")

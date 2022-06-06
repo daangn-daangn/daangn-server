@@ -2,9 +2,9 @@ package com.daangndaangn.apiserver.service.user;
 
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.apiserver.error.DuplicateValueException;
-import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.UserRepository;
+import com.daangndaangn.common.error.DuplicateValueException;
+import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
                 .profileUrl(profileUrl)
                 .build();
 
-        return userRepository.save(user).getId();
+        User savedUser = userRepository.save(user);
+        return savedUser.getId();
     }
 
     @Override

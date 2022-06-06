@@ -1,10 +1,8 @@
 package com.daangndaangn.apiserver.controller.user;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.user.UserResponse.JoinResponse;
 import com.daangndaangn.apiserver.controller.user.UserResponse.NicknameResponse;
 import com.daangndaangn.apiserver.controller.user.UserResponse.UserInfoResponse;
-import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
@@ -12,13 +10,15 @@ import com.daangndaangn.apiserver.security.oauth.OAuthResponse;
 import com.daangndaangn.apiserver.security.oauth.OAuthService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.user.User;
+import com.daangndaangn.common.error.UnauthorizedException;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.*;
+import static com.daangndaangn.common.web.ApiResult.OK;
 
 @RequestMapping("/api/users")
 @RestController

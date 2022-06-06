@@ -1,6 +1,6 @@
-package com.daangndaangn.apiserver.error;
+package com.daangndaangn.common.error;
 
-import com.daangndaangn.apiserver.util.MessageUtils;
+import com.daangndaangn.common.util.MessageUtils;
 
 /**
  * 권한이 없는 API를 호출할 경우 사용하는 Exception

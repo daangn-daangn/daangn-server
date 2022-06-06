@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: ./chat-server/Dockerfile.dev
     ports:
-      - "8880:8880"
+      - "9080:9080"
 #    environment:
 #      SPRING_PROFILES_ACTIVE:
 #      SPRING_DATASOURCE_URL:

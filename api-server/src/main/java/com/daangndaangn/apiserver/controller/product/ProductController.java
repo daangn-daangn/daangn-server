@@ -1,10 +1,8 @@
 package com.daangndaangn.apiserver.controller.product;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.CreateResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.DetailResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
-import com.daangndaangn.apiserver.error.UnauthorizedException;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
@@ -13,7 +11,9 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductImage;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
+import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.util.PresignerUtils;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.OK;
+import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 

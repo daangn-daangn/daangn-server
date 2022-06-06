@@ -1,10 +1,10 @@
 package com.daangndaangn.apiserver.controller.product;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import com.daangndaangn.common.util.PresignerUtils;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.OK;
+import static com.daangndaangn.common.web.ApiResult.OK;
+
 
 @RequestMapping("/api/non-member/products")
 @RestController

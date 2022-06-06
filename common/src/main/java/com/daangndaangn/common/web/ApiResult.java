@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.controller;
+package com.daangndaangn.common.web;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -6,10 +6,6 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
-/**
- * API 응답 스펙
- * 모든 응답(정상 예외)은 ApiResult로 래핑되어 클라이언트에게 전달된다.
- */
 @ToString
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

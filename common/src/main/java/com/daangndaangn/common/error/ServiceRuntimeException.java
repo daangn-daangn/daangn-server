@@ -1,12 +1,8 @@
-package com.daangndaangn.apiserver.error;
+package com.daangndaangn.common.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * 사용자 정의 예외 최상위 클래스.
- * 모든 사용자 정의 예외 클래스는 ServiceRuntimeException을 상속받아 구현한다.
- */
 @Getter
 @AllArgsConstructor
 public abstract class ServiceRuntimeException extends RuntimeException {

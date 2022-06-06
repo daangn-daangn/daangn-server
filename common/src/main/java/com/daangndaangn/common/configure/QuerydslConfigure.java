@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 @Configuration
 public class QuerydslConfigure {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "default")
     private EntityManager entityManager;
 
     @Bean

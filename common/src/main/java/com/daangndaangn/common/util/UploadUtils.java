@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class UploadUtil {
+public class UploadUtils {
 
     private static final String[] CONTENT_TYPES = {"png", "jpeg", "jpg"};
 

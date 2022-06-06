@@ -1,20 +1,25 @@
 package com.daangndaangn.common.chat.document;
 
+import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+
 /**
- *  message : {
- *               sender : "닉네임 or 이메일",
- *               text   : 채팅 메세지 내용,
- *               time   : 년/월/일/시간
- *  },
+ * 채팅 메시지
  */
+@Builder
 @Getter
+@Document(collection = "chatting_message")
 public class ChattingMessage {
-    private String sender;
+    @Id
+    private String id;
+    private String roomId;
+    private String senderId;
     private String message;
-    private String imgUrl;
-    private LocalDateTime time;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

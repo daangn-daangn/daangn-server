@@ -2,9 +2,9 @@ package com.daangndaangn.apiserver.service.salereview;
 
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
