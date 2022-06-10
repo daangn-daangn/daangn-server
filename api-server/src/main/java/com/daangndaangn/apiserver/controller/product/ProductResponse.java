@@ -1,5 +1,6 @@
 package com.daangndaangn.apiserver.controller.product;
 
+import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
@@ -61,21 +62,29 @@ public class ProductResponse {
         private String productState;
         private String thumbNailImage;
         private List<String> productImages;
+        private Long favoriteCount;
+        private Long chattingCount;
+        private LocalDateTime createdAt;
 
-        public static DetailResponse from(Product product, List<String> presignedProductImages) {
+        public static DetailResponse from(ProductDetailQueryDto productDetailQueryDto,
+                                          List<String> presignedProductImages) {
+
             return DetailResponse.builder()
-                    .id(product.getId())
-                    .seller(product.getSeller().getNickname())
-                    .buyer(isEmpty(product.getBuyer()) ? null : product.getBuyer().getNickname())
-                    .categoryId(product.getCategory().getId())
-                    .name(product.getName())
-                    .price(product.getPrice())
-                    .title(product.getTitle())
-                    .description(product.getDescription())
-                    .location(product.getLocation().getAddress())
-                    .productState(product.getProductState().getState())
+                    .id(productDetailQueryDto.getId())
+                    .seller(productDetailQueryDto.getSeller().getNickname())
+                    .buyer(isEmpty(productDetailQueryDto.getBuyer()) ? null : productDetailQueryDto.getBuyer().getNickname())
+                    .categoryId(productDetailQueryDto.getCategory().getId())
+                    .name(productDetailQueryDto.getName())
+                    .price(productDetailQueryDto.getPrice())
+                    .title(productDetailQueryDto.getTitle())
+                    .description(productDetailQueryDto.getDescription())
+                    .location(productDetailQueryDto.getLocation().getAddress())
+                    .productState(productDetailQueryDto.getProductState().getState())
                     .thumbNailImage(isEmpty(presignedProductImages) ? null : presignedProductImages.get(0))
                     .productImages(presignedProductImages)
+                    .favoriteCount(productDetailQueryDto.getFavoriteCount())
+                    .chattingCount(productDetailQueryDto.getChattingCount())
+                    .createdAt(productDetailQueryDto.getCreatedAt())
                     .build();
         }
     }

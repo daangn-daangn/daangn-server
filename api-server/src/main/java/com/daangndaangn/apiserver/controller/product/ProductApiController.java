@@ -5,11 +5,13 @@ import com.daangndaangn.apiserver.controller.product.ProductResponse.DetailRespo
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductImage;
 import com.daangndaangn.common.api.entity.user.User;
+import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.util.PresignerUtils;
@@ -31,10 +33,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @RequestMapping("/api/products")
 @RestController
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductApiController {
 
     private final ProductService productService;
     private final ProductQueryService productQueryService;
+    private final ProductDetailQueryService productDetailQueryService;
     private final PresignerUtils presignerUtils;
     private final UserService userService;
 
@@ -71,14 +74,14 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ApiResult<DetailResponse> getProduct(@PathVariable("productId") Long productId) {
 
-        Product product = productService.getProductWithProductImages(productId);
+        ProductDetailQueryDto productDetailQueryDto = productDetailQueryService.getProductDetail(productId);
 
-        List<String> productImageUrls = product.getProductImages().stream()
+        List<String> productImageUrls = productDetailQueryDto.getProductImages().stream()
                 .map(ProductImage::getImageUrl)
                 .map(presignerUtils::getProductPresignedGetUrl)
                 .collect(toList());
 
-        return OK(DetailResponse.from(product, productImageUrls));
+        return OK(DetailResponse.from(productDetailQueryDto, productImageUrls));
     }
 
     /**

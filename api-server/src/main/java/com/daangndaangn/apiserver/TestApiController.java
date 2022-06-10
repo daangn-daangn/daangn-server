@@ -7,8 +7,8 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
-import com.daangndaangn.common.chat.document.ChattingInfo;
-import com.daangndaangn.common.chat.repository.ChattingInfoRepository;
+import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.chat.repository.ChatRoomRepository;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class TestApiController {
     private final ProductService productService;
     private final ProductQueryService productQueryService;
     private final ProductQueryRepository productQueryRepository;
-    private final ChattingInfoRepository chattingInfoRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @GetMapping("/no-product-image")
     public TestProductDto funcNoProductImages(@RequestParam(value = "id", required = false) Long id) {
@@ -59,34 +59,43 @@ public class TestApiController {
 
     @GetMapping
     public void func000() {
-        ChattingInfo chattingInfo1 = ChattingInfo.builder().chattingId("1")
+
+        ChatRoom chatRoom1 = ChatRoom.builder()
                 .productId(1L)
-                .sellerId(1L)
-                .buyerId(2L)
+                .productImage(null)
+                .firstUserId(1L)
+                .secondUserId(2L)
+                .identifier("1-2")
                 .build();
 
-        ChattingInfo chattingInfo2 = ChattingInfo.builder().chattingId("2")
+        ChatRoom chatRoom2 = ChatRoom.builder()
                 .productId(1L)
-                .sellerId(1L)
-                .buyerId(3L)
+                .productImage(null)
+                .firstUserId(1L)
+                .secondUserId(3L)
+                .identifier("1-3")
                 .build();
 
-        ChattingInfo chattingInfo3 = ChattingInfo.builder().chattingId("3")
+        ChatRoom chatRoom3 = ChatRoom.builder()
                 .productId(1L)
-                .sellerId(1L)
-                .buyerId(4L)
+                .productImage(null)
+                .firstUserId(1L)
+                .secondUserId(4L)
+                .identifier("1-4")
                 .build();
 
-        ChattingInfo chattingInfo4 = ChattingInfo.builder().chattingId("4")
+        ChatRoom chatRoom4 = ChatRoom.builder()
                 .productId(1L)
-                .sellerId(1L)
-                .buyerId(5L)
+                .productImage(null)
+                .firstUserId(1L)
+                .secondUserId(5L)
+                .identifier("1-5")
                 .build();
 
-        chattingInfoRepository.save(chattingInfo1);
-        chattingInfoRepository.save(chattingInfo2);
-        chattingInfoRepository.save(chattingInfo3);
-        chattingInfoRepository.save(chattingInfo4);
+        chatRoomRepository.save(chatRoom1);
+        chatRoomRepository.save(chatRoom2);
+        chatRoomRepository.save(chatRoom3);
+        chatRoomRepository.save(chatRoom4);
     }
 
     @GetMapping("/v1")
