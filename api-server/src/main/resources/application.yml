@@ -1,6 +1,14 @@
 spring:
   profiles:
     active: local
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
 
 jwt:
   header: api_key
@@ -15,6 +23,15 @@ oauth:
     login-url: https://kapi.kakao.com/v2/user/me
     logout-url: https://kapi.kakao.com/v1/user/logout
 
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+
 ---
 spring:
   config:
@@ -23,26 +40,16 @@ spring:
   datasource:
     hikari:
       driver-class-name: org.h2.Driver
-#      jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL;
-      jdbc-url: jdbc:h2:tcp://localhost/~/daangn;MODE=MYSQL;
+      jdbc-url: jdbc:h2:tcp://localhost/~/daangn;MODE=MYSQL;DB_CLOSE_DELAY=-1
       username: sa
       password:
   jpa:
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
   data:
     mongodb:
       database: daangn_test
-      port: 27017
-      host: localhost
-      authentication-database: admin
+      uri: mongodb://localhost:27017/daangn_test
   sql:
     init:
       mode: always
@@ -52,18 +59,16 @@ spring:
   config:
     activate:
       on-profile: dev
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
   sql:
     init:
       mode: never # schema.sql 실행 금지
+
 ---
 spring:
   config:

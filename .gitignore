@@ -40,6 +40,8 @@ out/
 .DS_store
 **/.DS_store
 
-### AWS ###
+### PROPERTIES ###
 /api-server/src/main/resources/aws.properties
+/api-server/src/main/resources/application-dev.properties
 /chat-server/src/main/resources/aws.properties
+/chat-server/src/main/resources/application-dev.properties

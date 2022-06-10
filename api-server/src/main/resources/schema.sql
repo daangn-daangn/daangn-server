@@ -1,3 +1,5 @@
+SET foreign_key_checks = 0;
+
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
@@ -100,3 +102,5 @@ CREATE TABLE sale_reviews
     CONSTRAINT fk_sale_reviews_to_seller FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_sale_reviews_to_buyer FOREIGN KEY (buyer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) COMMENT '거래후기 테이블';
+
+SET foreign_key_checks = 1;

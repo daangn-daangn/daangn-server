@@ -25,7 +25,7 @@ public class Participant {
 
     // private String chattingRoomId;
     @DBRef
-    private ChattingRoom chattingRoom;
+    private ChatRoom chatRoom;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -34,9 +34,9 @@ public class Participant {
     private LocalDateTime updatedAt;
 
     @Builder
-    private Participant(String id, Long userId, ChattingRoom chattingRoom) {
+    private Participant(String id, Long userId, ChatRoom chatRoom) {
         this.id = id;
         this.userId = userId;
-        this.chattingRoom = chattingRoom;
+        this.chatRoom = chatRoom;
     }
 }
