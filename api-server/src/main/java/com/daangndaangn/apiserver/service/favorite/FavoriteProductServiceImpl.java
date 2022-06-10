@@ -1,12 +1,12 @@
 package com.daangndaangn.apiserver.service.favorite;
 
-import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.favorite.FavoriteProduct;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -25,6 +25,7 @@ public class InitData {
     public void init() {
         log.info("start initTestSetting");
         initDataService.initUsers();
+        initDataService.updateUsers();
         initDataService.initCategories();
         initDataService.initProducts();
         initDataService.initFavoriteProducts();
@@ -51,7 +52,9 @@ public class InitData {
             userService.create(56L, null);
             userService.create(78L, null);
             userService.create(910L, null);
+        }
 
+        public void updateUsers() {
             userService.update(1L, "테스트닉네임1", "노원구 상계동");
             userService.update(2L, "테스트닉네임2", "노원구 상계동");
             userService.update(3L, "테스트닉네임3", "노원구 상계동");

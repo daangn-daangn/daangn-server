@@ -1,9 +1,9 @@
-package com.daangndaangn.apiserver.controller;
+package com.daangndaangn.common.web;
 
-import com.daangndaangn.apiserver.error.DuplicateValueException;
-import com.daangndaangn.apiserver.error.NotFoundException;
-import com.daangndaangn.apiserver.error.ServiceRuntimeException;
-import com.daangndaangn.apiserver.error.UnauthorizedException;
+import com.daangndaangn.common.error.DuplicateValueException;
+import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.error.ServiceRuntimeException;
+import com.daangndaangn.common.error.UnauthorizedException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +25,6 @@ import software.amazon.awssdk.core.exception.SdkClientException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * controller 계층에서 발생하는 모든 Exception 처리 전담
- */
 @Slf4j
 @RestControllerAdvice
 public class GeneralExceptionHandler {
@@ -46,9 +42,9 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler({
-        IllegalStateException.class, IllegalArgumentException.class,
-        TypeMismatchException.class, HttpMessageNotReadableException.class,
-        MissingServletRequestParameterException.class, MultipartException.class,
+            IllegalStateException.class, IllegalArgumentException.class,
+            TypeMismatchException.class, HttpMessageNotReadableException.class,
+            MissingServletRequestParameterException.class, MultipartException.class,
     })
     public ResponseEntity<?> handleBadRequestException(Exception e) {
         log.info("Bad request exception occurred: {}", e.getMessage(), e);
@@ -88,7 +84,7 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler({
-        AwsServiceException.class, SdkClientException.class
+            AwsServiceException.class, SdkClientException.class
     })
     public ResponseEntity<?> handleAwsErrorException(Exception e) {
         log.info("AwsClientError exception occurred: {}", e.getMessage(), e);

@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.controller;
 
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
+import com.daangndaangn.common.web.ApiResult;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

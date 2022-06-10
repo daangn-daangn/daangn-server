@@ -1,8 +1,6 @@
 package com.daangndaangn.apiserver;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.api.entity.product.Product;
@@ -11,7 +9,7 @@ import com.daangndaangn.common.api.repository.product.query.ProductQueryReposito
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import com.daangndaangn.common.chat.document.ChattingInfo;
 import com.daangndaangn.common.chat.repository.ChattingInfoRepository;
-import com.daangndaangn.common.util.PresignerUtils;
+import com.daangndaangn.common.web.ApiResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,23 +29,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/test")
 @RequiredArgsConstructor
 @RestController
-public class TestController {
+public class TestApiController {
 
-    private final PresignerUtils presignerUtils;
     private final ProductService productService;
     private final ProductQueryService productQueryService;
     private final ProductQueryRepository productQueryRepository;
     private final ChattingInfoRepository chattingInfoRepository;
-
-//    @GetMapping("/pre")
-//    public String func001() {
-//        return presignerUtils.getPresignedGetUrl();
-//    }
-//
-//    @GetMapping("/pre2")
-//    public String func002() {
-//        return presignerUtils.getPresignedPutUrl();
-//    }
 
     @GetMapping("/no-product-image")
     public TestProductDto funcNoProductImages(@RequestParam(value = "id", required = false) Long id) {
@@ -115,7 +101,7 @@ public class TestController {
 
     @GetMapping("/v3")
     public ApiResult<List<ProductResponse.SimpleResponse>> func3(ProductSearchOption productSearchOption,
-                                                                @PageableDefault(size = 5) Pageable pageable) {
+                                                                 @PageableDefault(size = 5) Pageable pageable) {
 
         return ApiResult.OK(productQueryService.getProducts(productSearchOption, pageable));
     }

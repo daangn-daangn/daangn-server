@@ -1,6 +1,6 @@
-package com.daangndaangn.apiserver.error;
+package com.daangndaangn.common.error;
 
-import com.daangndaangn.apiserver.util.MessageUtils;
+import com.daangndaangn.common.util.MessageUtils;
 
 /**
  * 중복된 값을 넣으려고 한 경우 내려주는 Exception

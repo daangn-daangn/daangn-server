@@ -1,6 +1,5 @@
 package com.daangndaangn.apiserver.service.product;
 
-import com.daangndaangn.apiserver.error.NotFoundException;
 import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.category.Category;
@@ -8,7 +7,8 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductState;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.product.ProductRepository;
-import com.daangndaangn.common.util.UploadUtil;
+import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final CategoryService categoryService;
 
-    private final UploadUtil uploadUtil;
+    private final UploadUtils uploadUtils;
 
     @Override
     @Transactional
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (isNotEmpty(productImageUrls)) {
 
-            boolean isNotValid = productImageUrls.stream().anyMatch(uploadUtil::isNotImageFile);
+            boolean isNotValid = productImageUrls.stream().anyMatch(uploadUtils::isNotImageFile);
 
             if (isNotValid) {
                 throw new IllegalArgumentException("png, jpeg, jpg에 해당하는 파일만 업로드할 수 있습니다.");

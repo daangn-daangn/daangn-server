@@ -1,35 +1,60 @@
 spring:
   profiles:
     active: local
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
 
 server:
-  port: 8880
+  port: 9080
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
 
 ---
 spring:
   config:
     activate:
       on-profile: local
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:tcp://localhost/~/daangn;MODE=MYSQL;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
   data:
     mongodb:
-      database: daangn_test # 임의로 적어봤습니다
-      port: 27017
-      host: localhost
+      database: daangn_test
+      uri: mongodb://localhost:27017/daangn_test
 
 ---
 spring:
   config:
     activate:
       on-profile: dev
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
+  sql:
+    init:
+      mode: never # schema.sql 실행 금지
 
 ---
 spring:

@@ -1,17 +1,10 @@
-package com.daangndaangn.apiserver.error;
+package com.daangndaangn.common.error;
 
-import com.daangndaangn.apiserver.util.MessageUtils;
+import com.daangndaangn.common.util.MessageUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
-/**
- * 엔티티를 조회하지 못한 경우 내려주는 Exception
- *
- * // 사용 예시
- * new NotFoundException(User.class, "userId = 12345");
- * new NotFoundException(Product.class, "userId = 12345", 12345);
- */
 public class NotFoundException extends ServiceRuntimeException {
 
     static final String MESSAGE_KEY = "error.notfound";

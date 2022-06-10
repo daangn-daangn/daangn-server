@@ -1,12 +1,8 @@
-package com.daangndaangn.apiserver.controller;
+package com.daangndaangn.common.web;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-/**
- * API 예외 스펙
- * 모든 예외응답은 ApiError로 래핑되어 클라이언트에게 전달된다.
- */
 @Getter
 public class ApiError {
 

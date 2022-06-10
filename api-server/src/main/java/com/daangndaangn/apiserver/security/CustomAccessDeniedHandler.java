@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.security;
 
-import com.daangndaangn.apiserver.controller.ApiResult;
+import com.daangndaangn.common.web.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static com.daangndaangn.apiserver.controller.ApiResult.ERROR;
+import static com.daangndaangn.common.web.ApiResult.ERROR;
 
 /**
  * 인가 실패 시 403 응답을 내려주는 Handler
