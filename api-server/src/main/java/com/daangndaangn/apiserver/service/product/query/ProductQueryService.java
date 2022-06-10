@@ -5,7 +5,7 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
-import com.daangndaangn.common.chat.repository.ChattingInfoRepository;
+import com.daangndaangn.common.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ import static java.util.stream.Collectors.toList;
 public class ProductQueryService {
 
     private final ProductQueryRepository productQueryRepository;
-    private final ChattingInfoRepository chattingInfoRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     //회원 전용
     public List<ProductResponse.SimpleResponse> getProducts(ProductSearchOption productSearchOption, Location location, Pageable pageable) {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productSearchOption, location.getAddress(), pageable);
 
         return productQueryDtos.stream().map(p -> {
-            long chattingCount = chattingInfoRepository.countAllByProductId(p.getId());
+            long chattingCount = chatRoomRepository.countAllByProductId(p.getId());
             return ProductResponse.SimpleResponse.of(p, chattingCount);
         }).collect(toList());
     }
@@ -39,7 +39,7 @@ public class ProductQueryService {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productSearchOption, null, pageable);
 
         return productQueryDtos.stream().map(p -> {
-            long chattingCount = chattingInfoRepository.countAllByProductId(p.getId());
+            long chattingCount = chatRoomRepository.countAllByProductId(p.getId());
             return ProductResponse.SimpleResponse.of(p, chattingCount);
         }).collect(toList());
     }
@@ -49,7 +49,7 @@ public class ProductQueryService {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productIds);
 
         return productQueryDtos.stream().map(p -> {
-            long chattingCount = chattingInfoRepository.countAllByProductId(p.getId());
+            long chattingCount = chatRoomRepository.countAllByProductId(p.getId());
             return ProductResponse.SimpleResponse.of(p, chattingCount);
         }).collect(toList());
     }

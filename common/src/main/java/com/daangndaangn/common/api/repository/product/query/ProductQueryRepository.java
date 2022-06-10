@@ -5,9 +5,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.daangndaangn.common.api.entity.category.QCategory.category;
 import static com.daangndaangn.common.api.entity.favorite.QFavoriteProduct.favoriteProduct;
@@ -16,10 +17,34 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @RequiredArgsConstructor
-@Component
+@Repository
 public class ProductQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public Optional<ProductQueryDto> findById(Long id) {
+        ProductQueryDto result = jpaQueryFactory
+                .select(
+                        Projections.constructor(ProductQueryDto.class,
+                                product.id,
+                                product.title,
+                                product.location.address,
+                                product.price,
+                                product.thumbNailImage,
+                                product.createdAt,
+                                favoriteProduct.id.count()
+                        )
+                ).from(product)
+                .join(product.category, category)
+                .leftJoin(favoriteProduct)
+                .on(product.id.eq(favoriteProduct.product.id))
+                .on(favoriteProduct.isValid.eq(true))
+                .where(product.id.eq(id))
+                .groupBy(product.id)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
     /**
      * 특정 사용자가 찜한 product list 조회
