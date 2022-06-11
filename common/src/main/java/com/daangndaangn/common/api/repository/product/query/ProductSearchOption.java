@@ -2,7 +2,6 @@ package com.daangndaangn.common.api.repository.product.query;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -171,4 +171,49 @@ public class ProductApiController {
 
         throw new UnauthorizedException("물품 판매 완료 처리는 판매자만 가능합니다.");
     }
+
+    /**
+     * 판매내역 조회
+     *
+     * GET /api/products/sales-history?state=0
+     * GET /api/products/sales-history?state=1
+     * GET /api/products/sales-history?state=2
+     *
+     * productState == 판매중/거래완료/숨김
+     */
+    @GetMapping("/sales-history")
+    public ApiResult<List<SimpleResponse>> getProductsBySeller(@RequestParam("state") int productState,
+                                                               @AuthenticationPrincipal JwtAuthentication authentication,
+                                                               @PageableDefault(size = 5) Pageable pageable) {
+
+        List<SimpleResponse> products = productQueryService.getProductsBySeller(authentication.getId(),
+                                                                                productState,
+                                                                                pageable);
+
+        products
+                .stream()
+                .filter(p -> isNotEmpty(p.getImageUrl()))
+                .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+
+        return OK(products);
+    }
+
+    /**
+     * 구매내역 조회
+     *
+     * GET /api/products/purchase-history
+     */
+    @GetMapping("/purchase-history")
+    public ApiResult<List<SimpleResponse>> getProductsByBuyer(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                              @PageableDefault(size = 5) Pageable pageable) {
+
+        List<SimpleResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
+
+        products
+                .stream()
+                .filter(p -> isNotEmpty(p.getImageUrl()))
+                .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+
+        return OK(products);
+    }
 }

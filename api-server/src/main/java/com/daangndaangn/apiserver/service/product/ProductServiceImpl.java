@@ -11,7 +11,6 @@ import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,12 +83,6 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return productRepository.save(product);
-    }
-
-    //TODO
-    @Override
-    public List<Product> getProducts(Pageable pageable) {
-        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.daangndaangn.common.api.repository.product.query;
 
+import com.daangndaangn.common.api.entity.product.ProductState;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import static com.daangndaangn.common.api.entity.category.QCategory.category;
 import static com.daangndaangn.common.api.entity.favorite.QFavoriteProduct.favoriteProduct;
 import static com.daangndaangn.common.api.entity.product.QProduct.product;
+import static com.daangndaangn.common.api.entity.user.QUser.user;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -35,15 +37,77 @@ public class ProductQueryRepository {
                                 favoriteProduct.id.count()
                         )
                 ).from(product)
-                .join(product.category, category)
-                .leftJoin(favoriteProduct)
-                .on(product.id.eq(favoriteProduct.product.id))
-                .on(favoriteProduct.isValid.eq(true))
+                    .join(product.category, category)
+                    .leftJoin(favoriteProduct)
+                        .on(product.id.eq(favoriteProduct.product.id))
+                        .on(favoriteProduct.isValid.eq(true))
                 .where(product.id.eq(id))
                 .groupBy(product.id)
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    /**
+     * 특정 사용자의 판매 내역 조회
+     */
+    public List<ProductQueryDto> findAllBySeller(Long sellerId, ProductState productState, Pageable pageable) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(ProductQueryDto.class,
+                                product.id,
+                                product.title,
+                                product.location.address,
+                                product.price,
+                                product.thumbNailImage,
+                                product.createdAt,
+                                favoriteProduct.id.count()
+                        )
+                ).from(product)
+                    .join(product.category, category)
+                    .join(product.seller, user)
+                    .leftJoin(favoriteProduct)
+                        .on(product.id.eq(favoriteProduct.product.id))
+                        .on(favoriteProduct.isValid.eq(true))
+                .where(product.seller.id.eq(sellerId),
+                       product.productState.eq(productState)
+                )
+                .groupBy(product.id)
+                .orderBy(product.id.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    /**
+     * 특정 사용자의 구매 내역 조회
+     */
+    public List<ProductQueryDto> findAllByBuyer(Long buyerId, Pageable pageable) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(ProductQueryDto.class,
+                                product.id,
+                                product.title,
+                                product.location.address,
+                                product.price,
+                                product.thumbNailImage,
+                                product.createdAt,
+                                favoriteProduct.id.count()
+                        )
+                ).from(product)
+                    .join(product.category, category)
+                    .join(product.buyer, user)
+                    .leftJoin(favoriteProduct)
+                        .on(product.id.eq(favoriteProduct.product.id))
+                        .on(favoriteProduct.isValid.eq(true))
+                .where(product.buyer.id.eq(buyerId),
+                       product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
+                )
+                .groupBy(product.id)
+                .orderBy(product.id.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                .fetch();
     }
 
     /**
@@ -66,7 +130,9 @@ public class ProductQueryRepository {
                 .leftJoin(favoriteProduct)
                     .on(product.id.eq(favoriteProduct.product.id))
                     .on(favoriteProduct.isValid.eq(true))
-                .where(product.id.in(productIds))
+                .where(product.id.in(productIds),
+                       product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
+                )
                 .groupBy(product.id)
                 .orderBy(product.id.desc())
                 .fetch();
@@ -101,7 +167,8 @@ public class ProductQueryRepository {
                     categoriesEq(productSearchOption.getCategories()),
                     titleContains(productSearchOption.getTitle()),
                     addressContains(address),
-                    priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice())
+                    priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice()),
+                    product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )
                 .groupBy(product.id, product.title)
                 .orderBy(product.id.desc())
