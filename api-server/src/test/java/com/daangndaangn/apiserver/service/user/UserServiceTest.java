@@ -49,34 +49,6 @@ class UserServiceTest {
     }
 
     @Test
-    public void 매너평가를_오십점_이상으로_받으면_매너점수가_상승한다() {
-        //given
-        User beforeUser = userService.getUserByOauthId(USER_OAUTH_ID);
-        double before = beforeUser.getManner();
-
-        //when
-        userService.updateManner(beforeUser.getId(), 50);
-        User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
-
-        //then
-        assertThat(afterUser.getManner()).isEqualTo(before + 0.1);
-    }
-
-    @Test
-    public void 매너평가를_오십점_미만으로_받으면_매너점수가_하락한다() {
-        //given
-        User beforeUser = userService.getUserByOauthId(USER_OAUTH_ID);
-        double before = beforeUser.getManner();
-
-        //when
-        userService.updateManner(beforeUser.getId(), 10);
-        User afterUser = userService.getUserByOauthId(USER_OAUTH_ID);
-
-        //then
-        assertThat(afterUser.getManner()).isEqualTo(before - 0.1);
-    }
-
-    @Test
     public void 닉네임_중복여부를_확인할_수_있다() {
         //given
         User user = userService.getUserByOauthId(USER_OAUTH_ID);

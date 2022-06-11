@@ -4,7 +4,7 @@ import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.common.api.repository.UserRepository;
+import com.daangndaangn.common.api.repository.user.UserRepository;
 import com.daangndaangn.common.api.repository.category.CategoryRepository;
 import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
 import com.daangndaangn.common.api.repository.product.ProductRepository;

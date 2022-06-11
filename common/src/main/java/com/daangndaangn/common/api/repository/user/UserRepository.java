@@ -1,4 +1,4 @@
-package com.daangndaangn.common.api.repository;
+package com.daangndaangn.common.api.repository.user;
 
 import com.daangndaangn.common.api.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

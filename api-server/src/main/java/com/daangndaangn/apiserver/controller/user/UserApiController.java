@@ -1,8 +1,10 @@
 package com.daangndaangn.apiserver.controller.user;
 
 import com.daangndaangn.apiserver.controller.user.UserResponse.JoinResponse;
+import com.daangndaangn.apiserver.controller.user.UserResponse.MannerResponse;
 import com.daangndaangn.apiserver.controller.user.UserResponse.NicknameResponse;
 import com.daangndaangn.apiserver.controller.user.UserResponse.UserInfoResponse;
+import com.daangndaangn.apiserver.service.manner.MannerService;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
@@ -18,18 +20,22 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.daangndaangn.common.web.ApiResult.OK;
+import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/api/users")
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserApiController {
 
     private final OAuthService oAuthService;
     private final UserService userService;
+    private final MannerService mannerService;
 
     /**
-     * GET /api/users/{userId}
+     * GET /api/users/:userId
      */
     @GetMapping("/{userId}")
     public ApiResult<UserInfoResponse> getUser(@PathVariable("userId") Long userId) {
@@ -75,9 +81,21 @@ public class UserController {
             throw new UnauthorizedException("자기 자신은 매너평가를 할 수 없습니다.");
         }
 
-        userService.updateManner(request.getUserId(), request.getScore());
+        mannerService.createManner(request.getUserId(), authentication.getId(), request.getScore());
 
         return OK(null);
+    }
+
+    /**
+     * GET /api/users/manner/:userId
+     */
+    @GetMapping("/manner/{userId}")
+    public ApiResult<List<MannerResponse>> getUserManner(@PathVariable("userId") Long userId) {
+        List<MannerResponse> mannerResponses = userService.getUserMannerEvaluations(userId).stream()
+                .map(userQueryDto -> MannerResponse.of(userQueryDto.getScore(), userQueryDto.getScoreCount()))
+                .collect(toList());
+
+        return OK(mannerResponses);
     }
 
     /**

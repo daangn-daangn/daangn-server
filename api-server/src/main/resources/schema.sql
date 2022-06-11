@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS product_images CASCADE;
 DROP TABLE IF EXISTS favorite_products CASCADE;
 DROP TABLE IF EXISTS sale_reviews CASCADE;
+DROP TABLE IF EXISTS manner_evaluations CASCADE;
 
 
 CREATE TABLE users
@@ -102,5 +103,21 @@ CREATE TABLE sale_reviews
     CONSTRAINT fk_sale_reviews_to_seller FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_sale_reviews_to_buyer FOREIGN KEY (buyer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) COMMENT '거래후기 테이블';
+
+
+CREATE TABLE manner_evaluations
+(
+    id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
+    user_id             bigint          DEFAULT NULL COMMENT '평가받는 사람 id',
+    evaluator_id        bigint          DEFAULT NULL COMMENT '평가자 id',
+    score               int             NOT NULL COMMENT '매너평가점수 (-10 ~ 10)',
+    created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+    updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
+    PRIMARY KEY (id),
+    KEY manner_evaluations_idx_user_id (user_id),
+    KEY manner_evaluations_idx_evaluator_id (evaluator_id),
+    CONSTRAINT fk_manner_evaluations_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_manner_evaluations_to_evaluator FOREIGN KEY (evaluator_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+) COMMENT '매너평가 테이블';
 
 SET foreign_key_checks = 1;
