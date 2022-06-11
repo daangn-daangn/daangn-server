@@ -3,7 +3,7 @@ package com.daangndaangn.apiserver.service.salereview;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
-import com.daangndaangn.common.api.repository.UserRepository;
+import com.daangndaangn.common.api.repository.user.UserRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
 import org.junit.jupiter.api.AfterAll;

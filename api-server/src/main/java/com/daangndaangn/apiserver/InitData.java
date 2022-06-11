@@ -2,6 +2,7 @@ package com.daangndaangn.apiserver;
 
 import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.favorite.FavoriteProductService;
+import com.daangndaangn.apiserver.service.manner.MannerService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class InitData {
         initDataService.initCategories();
         initDataService.initProducts();
         initDataService.initFavoriteProducts();
+//        initDataService.initManners();
         log.info("end initTestSetting");
     }
 
@@ -45,6 +47,7 @@ public class InitData {
         private final CategoryService categoryService;
         private final ProductService productService;
         private final FavoriteProductService favoriteProductService;
+        private final MannerService mannerService;
 
         public void initUsers() {
             userService.create(12L, null);
@@ -168,6 +171,21 @@ public class InitData {
             favoriteProductService.create(2L,3L);
             favoriteProductService.create(2L,4L);
             favoriteProductService.create(2L,5L);
+        }
+
+        public void initManners() {
+            mannerService.createManner(1L, 2L, -5);
+            mannerService.createManner(1L, 2L, -4);
+            mannerService.createManner(1L, 2L, -3);
+            mannerService.createManner(1L, 2L, -2);
+            mannerService.createManner(1L, 2L, -1);
+            mannerService.createManner(1L, 3L, 1);
+            mannerService.createManner(1L, 3L, 2);
+            mannerService.createManner(1L, 3L, 3);
+            mannerService.createManner(1L, 3L, 4);
+            mannerService.createManner(1L, 3L, 5);
+            mannerService.createManner(1L, 4L, 5);
+            mannerService.createManner(1L, 4L, -5);
         }
     }
 

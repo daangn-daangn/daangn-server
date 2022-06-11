@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class SaleReviewRepositoryImpl implements SaleReviewCustom {
+public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepository {
 
     private static final QSaleReview qSaleReview = QSaleReview.saleReview;
     private final JPAQueryFactory jpaQueryFactory;

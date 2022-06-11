@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * SpringData Jpa Repository 기능 외에 Querydsl을 사용할 추가 기능을 정의
  */
-public interface SaleReviewCustom {
+public interface SaleReviewCustomRepository {
     Optional<SaleReview> findBySaleReviewId(Long saleReviewId);
     List<SaleReview> findAllUserReview(Long userId, Pageable pageable);
     List<SaleReview> findAllSellerReview(Long sellerId, Pageable pageable);

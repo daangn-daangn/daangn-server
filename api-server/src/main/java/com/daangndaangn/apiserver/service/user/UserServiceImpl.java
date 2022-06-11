@@ -2,12 +2,16 @@ package com.daangndaangn.apiserver.service.user;
 
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.common.api.repository.UserRepository;
+import com.daangndaangn.common.api.repository.user.UserRepository;
+import com.daangndaangn.common.api.repository.user.query.UserQueryDto;
+import com.daangndaangn.common.api.repository.user.query.UserQueryRepository;
 import com.daangndaangn.common.error.DuplicateValueException;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -20,6 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
 
     @Override
     @Transactional
@@ -99,6 +104,13 @@ public class UserServiceImpl implements UserService {
         }
 
         return !userRepository.existsUserByNickname(nickname);
+    }
+
+    @Override
+    public List<UserQueryDto> getUserMannerEvaluations(Long userId) {
+        checkArgument(userId != null, "userId must not be null");
+
+        return userQueryRepository.findAll(userId);
     }
 }
 

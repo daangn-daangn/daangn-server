@@ -58,6 +58,19 @@ public class UserResponse {
     @Getter
     @AllArgsConstructor
     @JsonNaming(SnakeCaseStrategy.class)
+    public static class MannerResponse {
+        private int score;
+        private Long scoreCount;
+
+        public static MannerResponse of(int score, Long scoreCount) {
+            return new MannerResponse(score, scoreCount);
+        }
+    }
+
+
+    @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
     public static class NicknameResponse {
         private boolean result;
 

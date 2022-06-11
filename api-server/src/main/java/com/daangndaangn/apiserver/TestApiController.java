@@ -1,12 +1,15 @@
 package com.daangndaangn.apiserver;
 
 import com.daangndaangn.apiserver.controller.product.ProductResponse;
+import com.daangndaangn.apiserver.service.manner.MannerService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
+import com.daangndaangn.common.api.repository.user.query.UserQueryDto;
+import com.daangndaangn.common.api.repository.user.query.UserQueryRepository;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.repository.ChatRoomRepository;
 import com.daangndaangn.common.web.ApiResult;
@@ -35,6 +38,23 @@ public class TestApiController {
     private final ProductQueryService productQueryService;
     private final ProductQueryRepository productQueryRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MannerService mannerService;
+
+    @GetMapping("/manner")
+    public void getManners(@RequestParam(value = "id") Long userId) {
+        mannerService.createManner(userId, 2L, -5);
+        mannerService.createManner(userId, 2L, -4);
+        mannerService.createManner(userId, 2L, -3);
+        mannerService.createManner(userId, 2L, -2);
+        mannerService.createManner(userId, 2L, -1);
+        mannerService.createManner(userId, 3L, 1);
+        mannerService.createManner(userId, 3L, 2);
+        mannerService.createManner(userId, 3L, 3);
+        mannerService.createManner(userId, 3L, 4);
+        mannerService.createManner(userId, 3L, 5);
+        mannerService.createManner(userId, 4L, 5);
+        mannerService.createManner(userId, 4L, -5);
+    }
 
     @GetMapping("/no-product-image")
     public TestProductDto funcNoProductImages(@RequestParam(value = "id", required = false) Long id) {
