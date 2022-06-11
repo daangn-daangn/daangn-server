@@ -100,6 +100,7 @@ public class Product extends AuditingCreateUpdateEntity {
 
         this.thumbNailImage = thumbNailImage;
     }
+
     // 연관관계 편의 메서드: 양방향 매핑 관계시 양쪽에 셋팅하는 걸 원자적으로 묶어주는 메서드
     public void addProductImage(String productImageUrl) {
         productImages.add(ProductImage.of(this, productImageUrl));

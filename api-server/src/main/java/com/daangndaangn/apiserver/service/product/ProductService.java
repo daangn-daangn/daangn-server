@@ -9,9 +9,6 @@ public interface ProductService {
 
     Product create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls);
 
-    //TODO
-    List<Product> getProducts(Pageable pageable);
-
     Product getProduct(Long id);
 
     Product getProductWithProductImages(Long id);

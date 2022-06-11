@@ -12,10 +12,11 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @Getter
 @AllArgsConstructor
 public enum ProductState {
-    DELETED(1, "삭제상품"),
-    REVERSED(2, "예약중"),
-    FOR_SALE(3, "판매중"),
-    SOLD_OUT(4, "판매완료");
+    FOR_SALE(0, "판매중"),
+    SOLD_OUT(1, "거래완료"),
+    HIDE(2, "숨기기"),
+    DELETED(3, "삭제상품"),
+    REVERSED(4, "예약중");
 
     private static final Map<Integer, ProductState> productStateMap =
             Stream.of(values()).collect(toMap(ProductState::getCode, value -> value));
