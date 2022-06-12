@@ -1,6 +1,9 @@
 package com.daangndaangn.apiserver.service.salereview;
 
+import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.review.SaleReviewType;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
@@ -21,22 +24,32 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Service
 public class SaleReviewServiceImpl implements SaleReviewService {
 
-    private final UserService userService;
     private final SaleReviewRepository saleReviewRepository;
+    private final ProductService productService;
+    private final UserService userService;
 
     @Override
     @Transactional
-    public Long create(Long sellerId, Long buyerId, String content) {
-        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
-        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+    public Long create(Long productId,
+                       Long reviewerId,
+                       Long revieweeId,
+                       SaleReviewType saleReviewTypeCode,
+                       String content) {
+
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(reviewerId != null, "reviewerId 값은 필수입니다.");
+        checkArgument(revieweeId != null, "revieweeId 값은 필수입니다.");
         checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
 
-        User seller = userService.getUser(sellerId);
-        User buyer = userService.getUser(buyerId);
+        Product product = productService.getProduct(productId);
+        User reviewer = userService.getUser(reviewerId);
+        User reviewee = userService.getUser(revieweeId);
 
         SaleReview saleReview = SaleReview.builder()
-                                        .seller(seller)
-                                        .buyer(buyer)
+                                        .product(product)
+                                        .reviewer(reviewer)
+                                        .reviewee(reviewee)
+                                        .saleReviewType(saleReviewTypeCode)
                                         .content(content)
                                         .build();
 
@@ -59,35 +72,45 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     }
 
     @Override
-    public List<SaleReview> getSellerReviews(Long sellerId, Pageable pageable) {
-        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+    public List<SaleReview> getSellerReviews(Long userId, Pageable pageable) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        return saleReviewRepository.findAllSellerReview(sellerId, pageable);
+        return saleReviewRepository.findAllSellerReview(userId, pageable);
     }
 
     @Override
-    public List<SaleReview> getBuyerReviews(Long buyerId, Pageable pageable) {
-        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+    public List<SaleReview> getBuyerReviews(Long userId, Pageable pageable) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        return saleReviewRepository.findAllBuyerReview(buyerId, pageable);
+        return saleReviewRepository.findAllBuyerReview(userId, pageable);
     }
 
     @Override
-    public boolean isSellerReviewWriter(Long reviewId, Long sellerId) {
-        checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
-        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+    public boolean isSellerReviewWriter(Long saleReviewId, Long userId) {
+        checkArgument(saleReviewId != null, "reviewId 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        SaleReview saleReview = getSaleReview(reviewId);
-        return saleReview.getSeller().getId().equals(sellerId);
+        SaleReview saleReview = getSaleReview(saleReviewId);
+        return saleReview.getReviewer().getId().equals(userId)
+                && saleReview.getSaleReviewType().equals(SaleReviewType.SELLER_REVIEW);
     }
 
     @Override
-    public boolean isBuyerReviewWriter(Long reviewId, Long buyerId) {
-        checkArgument(reviewId != null, "reviewId 값은 필수입니다.");
-        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
+    public boolean isBuyerReviewWriter(Long saleReviewId, Long userId) {
+        checkArgument(saleReviewId != null, "saleReviewId 값은 필수입니다.");
+        checkArgument(userId != null, "buyerId 값은 필수입니다.");
 
-        SaleReview saleReview = getSaleReview(reviewId);
-        return saleReview.getBuyer().getId().equals(buyerId);
+        SaleReview saleReview = getSaleReview(saleReviewId);
+        return saleReview.getReviewer().getId().equals(userId)
+                && saleReview.getSaleReviewType().equals(SaleReviewType.BUYER_REVIEW);
+    }
+
+    @Override
+    public boolean existBuyerReview(Long productId, Long userId) {
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(userId != null, "buyerId 값은 필수입니다.");
+
+        return saleReviewRepository.existBuyerReview(productId, userId);
     }
 
     @Override

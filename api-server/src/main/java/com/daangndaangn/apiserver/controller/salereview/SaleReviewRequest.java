@@ -11,11 +11,22 @@ public class SaleReviewRequest {
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
-    public static class CreateRequest {
+    public static class SellerReviewCreateRequest {
         @NotNull
-        private Long sellerId;
+        private Long productId;
         @NotNull
         private Long buyerId;
+        @NotEmpty
+        private String content;
+    }
+
+    @Getter
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class BuyerReviewCreateRequest {
+        @NotNull
+        private Long productId;
+        @NotNull
+        private Long sellerId;
         @NotEmpty
         private String content;
     }

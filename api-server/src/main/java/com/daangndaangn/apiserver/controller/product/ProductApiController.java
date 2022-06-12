@@ -2,14 +2,17 @@ package com.daangndaangn.apiserver.controller.product;
 
 import com.daangndaangn.apiserver.controller.product.ProductResponse.CreateResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.DetailResponse;
+import com.daangndaangn.apiserver.controller.product.ProductResponse.PurchaseHistoryResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
+import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductImage;
+import com.daangndaangn.common.api.entity.product.ProductState;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
@@ -40,6 +43,7 @@ public class ProductApiController {
     private final ProductDetailQueryService productDetailQueryService;
     private final PresignerUtils presignerUtils;
     private final UserService userService;
+    private final SaleReviewService saleReviewService;
 
     /**
      * 물품 리스트 조회(회원 전용)
@@ -151,25 +155,31 @@ public class ProductApiController {
     }
 
     /**
-     * 물품 판매 완료 처리
+     * 물품 상태 변경(1-판매중,2-거래완료,3-예약중)
      *
-     * PUT /api/products/sold-out/:productId
+     * PUT /api/products/state/:productId
      */
-    @PutMapping("/sold-out/{productId}")
-    public ApiResult<Void> updateSoldOutProduct(@PathVariable("productId") Long productId,
-                                         @AuthenticationPrincipal JwtAuthentication authentication,
-                                         @Valid @RequestBody ProductRequest.SoldOutRequest request) {
+    @PutMapping("/state/{productId}")
+    public ApiResult<Void> updateState(@PathVariable("productId") Long productId,
+                                       @AuthenticationPrincipal JwtAuthentication authentication,
+                                       @Valid @RequestBody ProductRequest.UpdateStateRequest request) {
 
-        if (authentication.getId() != null && authentication.getId().equals(request.getBuyerId())) {
-            throw new UnauthorizedException("자기 자신을 구매자로 물품 판매 완료 처리를 할 수 없습니다.");
+        if (!productService.isSeller(productId, authentication.getId())) {
+            throw new UnauthorizedException("물품 상태 변경은 판매자만 가능합니다.");
         }
 
-        if (productService.isSeller(productId, authentication.getId())) {
+        if (request.getState().equals(ProductState.SOLD_OUT.getCode())) {
+
+            if (authentication.getId().equals(request.getBuyerId())) {
+                throw new UnauthorizedException("자기 자신을 구매자로 물품 거래완료 처리를 할 수 없습니다.");
+            }
+
             productService.updateToSoldOut(productId, request.getBuyerId());
-            return OK(null);
+        } else {
+            productService.update(productId, request.getState());
         }
 
-        throw new UnauthorizedException("물품 판매 완료 처리는 판매자만 가능합니다.");
+        return OK(null);
     }
 
     /**
@@ -191,9 +201,9 @@ public class ProductApiController {
                                                                                 pageable);
 
         products
-                .stream()
-                .filter(p -> isNotEmpty(p.getImageUrl()))
-                .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .stream()
+            .filter(p -> isNotEmpty(p.getImageUrl()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
 
         return OK(products);
     }
@@ -204,16 +214,23 @@ public class ProductApiController {
      * GET /api/products/purchase-history
      */
     @GetMapping("/purchase-history")
-    public ApiResult<List<SimpleResponse>> getProductsByBuyer(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                              @PageableDefault(size = 5) Pageable pageable) {
+    public ApiResult<List<PurchaseHistoryResponse>> getProductsByBuyer(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @PageableDefault(size = 5) Pageable pageable) {
 
         List<SimpleResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
 
         products
-                .stream()
-                .filter(p -> isNotEmpty(p.getImageUrl()))
-                .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .stream()
+            .filter(p -> isNotEmpty(p.getImageUrl()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
 
-        return OK(products);
+        List<PurchaseHistoryResponse> historyResponses =
+            products.stream().map(product -> {
+                boolean exist = saleReviewService.existBuyerReview(product.getId(), authentication.getId());
+                return PurchaseHistoryResponse.of(product, exist);
+            }).collect(toList());
+
+        return OK(historyResponses);
     }
 }

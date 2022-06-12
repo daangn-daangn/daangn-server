@@ -1,12 +1,12 @@
 package com.daangndaangn.common.api.entity.review;
 
 import com.daangndaangn.common.api.entity.AuditingCreateUpdateEntity;
+import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -25,12 +25,19 @@ public class SaleReview extends AuditingCreateUpdateEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private User seller;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "buyer_id")
-    private User buyer;
+    @JoinColumn(name = "reviewer_id")
+    private User reviewer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewee_id")
+    private User reviewee;
+
+    @Column(nullable = false)
+    private SaleReviewType saleReviewType;
 
     @Column(nullable = false, length = 500)
     private String content;
@@ -44,14 +51,17 @@ public class SaleReview extends AuditingCreateUpdateEntity {
     }
 
     @Builder
-    private SaleReview(User seller, User buyer, String content) {
-        checkArgument(seller != null, "판매자 정보는 필수입니다.");
-        checkArgument(buyer != null, "구매자 정보는 필수입니다.");
+    private SaleReview(Product product, User reviewer, User reviewee, SaleReviewType saleReviewType, String content) {
+        checkArgument(product != null, "물품 정보는 필수입니다.");
+        checkArgument(reviewer != null, "리뷰 작성자 정보는 필수입니다.");
+        checkArgument(reviewee != null, "리뷰 작성대상자 정보는 필수입니다.");
         checkArgument(isNotEmpty(content), "리뷰 내용은 필수입니다.");
         checkArgument(content.length() <= 500, "리뷰 내용은 500자 이하여야 합니다.");
 
-        this.seller = seller;
-        this.buyer = buyer;
+        this.product = product;
+        this.reviewer = reviewer;
+        this.reviewee = reviewee;
+        this.saleReviewType = saleReviewType;
         this.content = content;
     }
 }

@@ -1,8 +1,11 @@
 package com.daangndaangn.apiserver.controller.salereview;
 
+import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest.BuyerReviewCreateRequest;
+import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest.SellerReviewCreateRequest;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
+import com.daangndaangn.common.api.entity.review.SaleReviewType;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.AllArgsConstructor;
@@ -22,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api/sale-reviews")
 @RestController
 @RequiredArgsConstructor
-public class SaleReviewController {
+public class SaleReviewApiController {
 
     private final SaleReviewService saleReviewService;
 
@@ -106,14 +109,16 @@ public class SaleReviewController {
      */
     @PostMapping("/seller")
     public ApiResult<Long> createSellerReview(@AuthenticationPrincipal JwtAuthentication authentication,
-                                              @Valid @RequestBody SaleReviewRequest.CreateRequest request) {
+                                              @Valid @RequestBody SellerReviewCreateRequest request) {
 
-        if (authentication.getId().equals(request.getSellerId())) {
-            Long saleReviewId = saleReviewService.create(request.getSellerId(), request.getBuyerId(), request.getContent());
-            return OK(saleReviewId);
-        }
+        Long saleReviewId = saleReviewService.create(
+                request.getProductId(),
+                authentication.getId(),  //reviewer
+                request.getBuyerId(),   //reviewee
+                SaleReviewType.SELLER_REVIEW,
+                request.getContent());
 
-        throw new UnauthorizedException("판매자는 본인이어야 합니다.");
+        return OK(saleReviewId);
     }
 
     /**
@@ -123,14 +128,16 @@ public class SaleReviewController {
      */
     @PostMapping("/buyer")
     public ApiResult<Long> createBuyerReview(@AuthenticationPrincipal JwtAuthentication authentication,
-                                             @Valid @RequestBody SaleReviewRequest.CreateRequest request) {
+                                             @Valid @RequestBody BuyerReviewCreateRequest request) {
 
-        if (authentication.getId().equals(request.getBuyerId())) {
-            Long saleReviewId = saleReviewService.create(request.getSellerId(), request.getBuyerId(), request.getContent());
-            return OK(saleReviewId);
-        }
+        Long saleReviewId = saleReviewService.create(
+                request.getProductId(),
+                authentication.getId(),   //reviewer
+                request.getSellerId(),  //reviewee
+                SaleReviewType.BUYER_REVIEW,
+                request.getContent());
 
-        throw new UnauthorizedException("구매자는 본인이어야 합니다.");
+        return OK(saleReviewId);
     }
 
     /**
@@ -145,7 +152,7 @@ public class SaleReviewController {
 
         SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
-        if (authentication.getId().equals(saleReview.getSeller().getId())) {
+        if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.update(saleReviewId, request.getContent());
             return OK(null);
         }
@@ -165,7 +172,7 @@ public class SaleReviewController {
 
         SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
-        if (authentication.getId().equals(saleReview.getBuyer().getId())) {
+        if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.update(saleReviewId, request.getContent());
             return OK(null);
         }
@@ -184,7 +191,7 @@ public class SaleReviewController {
 
         SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
-        if (authentication.getId().equals(saleReview.getSeller().getId())) {
+        if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.delete(saleReviewId);
             return OK(null);
         }
@@ -203,7 +210,7 @@ public class SaleReviewController {
 
         SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
 
-        if (authentication.getId().equals(saleReview.getBuyer().getId())) {
+        if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.delete(saleReviewId);
             return OK(null);
         }
