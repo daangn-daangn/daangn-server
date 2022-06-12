@@ -45,8 +45,10 @@ public class ProductRequest {
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
-    public static class SoldOutRequest {
+    public static class UpdateStateRequest {
         @NotNull
+        private Integer state;
+
         private Long buyerId;
     }
 

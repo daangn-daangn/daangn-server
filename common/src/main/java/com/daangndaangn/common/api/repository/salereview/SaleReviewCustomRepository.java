@@ -11,7 +11,15 @@ import java.util.Optional;
  */
 public interface SaleReviewCustomRepository {
     Optional<SaleReview> findBySaleReviewId(Long saleReviewId);
+
+    // 특정 사용자가 받은 후기 조회. 즉, 특정 사용자와 거래한 사람들이 남긴 후기에 대한 조회
     List<SaleReview> findAllUserReview(Long userId, Pageable pageable);
-    List<SaleReview> findAllSellerReview(Long sellerId, Pageable pageable);
-    List<SaleReview> findAllBuyerReview(Long buyerId, Pageable pageable);
+
+    // 특정 사용자가 받은 판매자 후기 조회. 즉, 특정 사용자와 거래한 판매자가 남긴 후기에 대한 조회
+    List<SaleReview> findAllSellerReview(Long userId, Pageable pageable);
+
+    // 특정 사용자가 받은 구매자 후기 조회. 즉, 특정 사용자와 거래한 구매자가 남긴 후기에 대한 조회
+    List<SaleReview> findAllBuyerReview(Long userId, Pageable pageable);
+
+    boolean existBuyerReview(Long productId, Long userId);
 }

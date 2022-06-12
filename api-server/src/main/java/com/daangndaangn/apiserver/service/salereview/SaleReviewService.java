@@ -1,14 +1,14 @@
 package com.daangndaangn.apiserver.service.salereview;
 
-import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest;
 import com.daangndaangn.common.api.entity.review.SaleReview;
+import com.daangndaangn.common.api.entity.review.SaleReviewType;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface SaleReviewService {
 
-    Long create(Long sellerId, Long buyerId, String content);
+    Long create(Long productId, Long reviewerId, Long revieweeId, SaleReviewType saleReviewTypeCode, String content);
 
     SaleReview getSaleReview(Long id);
 
@@ -16,14 +16,16 @@ public interface SaleReviewService {
     List<SaleReview> getUserReviews(Long userId, Pageable pageable);
 
     // 판매자 후기
-    List<SaleReview> getSellerReviews(Long sellerId, Pageable pageable);
+    List<SaleReview> getSellerReviews(Long userId, Pageable pageable);
 
     // 구매자 후기
-    List<SaleReview> getBuyerReviews(Long buyerId, Pageable pageable);
+    List<SaleReview> getBuyerReviews(Long userId, Pageable pageable);
 
-    boolean isSellerReviewWriter(Long reviewId, Long sellerId);
+    boolean isSellerReviewWriter(Long saleReviewId, Long userId);
 
-    boolean isBuyerReviewWriter(Long reviewId, Long buyerId);
+    boolean isBuyerReviewWriter(Long saleReviewId, Long userId);
+
+    boolean existBuyerReview(Long productId, Long userId);
 
     void update(Long id, String content);
 

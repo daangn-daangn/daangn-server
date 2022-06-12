@@ -23,8 +23,8 @@ public class SaleReviewResponse {
         public static GetResponse from(SaleReview saleReview) {
             return GetResponse.builder()
                     .id(saleReview.getId())
-                    .seller(saleReview.getSeller().getNickname())
-                    .buyer(saleReview.getBuyer().getNickname())
+                    .seller(saleReview.getReviewer().getNickname())
+                    .buyer(saleReview.getReviewee().getNickname())
                     .content(saleReview.getContent())
                     .build();
         }

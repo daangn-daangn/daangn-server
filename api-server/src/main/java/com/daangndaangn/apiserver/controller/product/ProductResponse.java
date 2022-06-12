@@ -46,6 +46,38 @@ public class ProductResponse {
         }
     }
 
+    /**
+     * SimpleResponse + reviewExisted field
+     */
+    @Getter
+    @Builder
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class PurchaseHistoryResponse {
+        private Long id;
+        private String title;
+        private String location;
+        private Long price;
+        private String imageUrl;
+        private Long favoriteCount;
+        private Long chattingCount;
+        private boolean reviewExisted;
+        private LocalDateTime createdAt;
+
+        public static PurchaseHistoryResponse of(SimpleResponse simpleResponse, boolean reviewExisted) {
+            return PurchaseHistoryResponse.builder()
+                    .id(simpleResponse.getId())
+                    .title(simpleResponse.getTitle())
+                    .location(simpleResponse.getLocation())
+                    .price(simpleResponse.getPrice())
+                    .imageUrl(simpleResponse.getImageUrl())
+                    .favoriteCount(simpleResponse.getFavoriteCount())
+                    .chattingCount(simpleResponse.getChattingCount())
+                    .reviewExisted(reviewExisted)
+                    .createdAt(simpleResponse.getCreatedAt())
+                    .build();
+        }
+    }
+
     @Getter
     @Builder
     @JsonNaming(SnakeCaseStrategy.class)

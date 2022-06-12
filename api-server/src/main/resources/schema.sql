@@ -44,7 +44,7 @@ CREATE TABLE products
     title               varchar(100)    NOT NULL COMMENT '제목',
     description         varchar(500)    NOT NULL COMMENT '상세 내용',
     location            varchar(50)     NOT NULL COMMENT '지역',
-    product_state       int             NOT NULL COMMENT '물품상태 (삭제, 예약중, 판매중, 판매완료)',
+    product_state       int             NOT NULL COMMENT '물품상태 (삭제, 예약중, 판매중, 거래완료, 숨기기)',
     thumb_nail_image    varchar(500)    DEFAULT NULL COMMENT '대표이미지 url',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
@@ -92,16 +92,20 @@ CREATE TABLE favorite_products
 CREATE TABLE sale_reviews
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
+    sale_review_type    int             NOT NULL COMMENT '후기 타입 (판매자 후기, 구매자 후기)',
     content             varchar(500)    NOT NULL COMMENT '내용',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
-    seller_id           bigint          DEFAULT NULL COMMENT '판매자 id',
-    buyer_id            bigint          DEFAULT NULL COMMENT '구매자 id',
+    product_id          bigint          DEFAULT NULL COMMENT '물품 id',
+    reviewer_id         bigint          DEFAULT NULL COMMENT '리뷰 작성자 id',
+    reviewee_id         bigint          DEFAULT NULL COMMENT '리뷰 작성 대상자 id',
     PRIMARY KEY (id),
-    KEY sale_reviews_idx_seller (seller_id),
-    KEY sale_reviews_idx_buyer (buyer_id),
-    CONSTRAINT fk_sale_reviews_to_seller FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_sale_reviews_to_buyer FOREIGN KEY (buyer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+    KEY sale_reviews_idx_reviewer (reviewer_id),
+    KEY sale_reviews_idx_reviewee (reviewee_id),
+    KEY sale_reviews_idx_product (product_id),
+    CONSTRAINT fk_sale_reviews_to_reviewer FOREIGN KEY (reviewer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_sale_reviews_to_reviewee FOREIGN KEY (reviewee_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_sale_reviews_to_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) COMMENT '거래후기 테이블';
 
 
