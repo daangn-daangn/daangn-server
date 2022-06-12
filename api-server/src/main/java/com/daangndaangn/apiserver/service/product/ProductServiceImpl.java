@@ -153,13 +153,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean isSeller(Long productId, Long userId) {
-        checkArgument(productId != null, "productId must not be null");
+    public boolean isSeller(Long id, Long userId) {
+        checkArgument(id != null, "id must not be null");
         checkArgument(userId != null, "userId must not be null");
 
-        Product product = productRepository.findByProductIdWithOnlySeller(productId)
-                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+        Product product = productRepository.findByProductIdWithOnlySeller(id)
+                .orElseThrow(() -> new NotFoundException(Product.class, String.format("id = %s", id)));
 
         return userId.equals(product.getSeller().getId());
+    }
+
+    @Override
+    @Transactional
+    public void refresh(Long id) {
+        Product product = getProduct(id);
+        product.refresh();
     }
 }

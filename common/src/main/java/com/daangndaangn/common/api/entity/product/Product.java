@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -60,6 +61,9 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(length = 250)
     private String thumbNailImage;
 
+    @Column(nullable = false)
+    private int refreshCnt;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages = new ArrayList<>();
 
@@ -92,6 +96,7 @@ public class Product extends AuditingCreateUpdateEntity {
         this.description = description;
         this.location = seller.getLocation();
         this.productState = ProductState.FOR_SALE;
+        this.refreshCnt = 0;
     }
 
     public void setThumbnailImage(String thumbNailImage) {
@@ -131,5 +136,10 @@ public class Product extends AuditingCreateUpdateEntity {
     public void updateBuyer(User buyer) {
         checkArgument(buyer != null, "buyer must not be null");
         this.buyer = buyer;
+    }
+
+    public void refresh() {
+        checkState(refreshCnt + 1 <= 5, "새로 고침은 5회이상 할 수 없습니다.");
+        refreshCnt++;
     }
 }
