@@ -73,7 +73,7 @@ public class ProductQueryRepository {
                        product.productState.eq(productState)
                 )
                 .groupBy(product.id)
-                .orderBy(product.id.desc())
+                .orderBy(product.updatedAt.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                 .fetch();
@@ -104,7 +104,7 @@ public class ProductQueryRepository {
                        product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )
                 .groupBy(product.id)
-                .orderBy(product.id.desc())
+                .orderBy(product.updatedAt.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                 .fetch();
@@ -134,7 +134,7 @@ public class ProductQueryRepository {
                        product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )
                 .groupBy(product.id)
-                .orderBy(product.id.desc())
+                .orderBy(product.updatedAt.desc())
                 .fetch();
     }
 
@@ -171,7 +171,7 @@ public class ProductQueryRepository {
                     product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )
                 .groupBy(product.id, product.title)
-                .orderBy(product.id.desc())
+                .orderBy(product.updatedAt.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                 .fetch();

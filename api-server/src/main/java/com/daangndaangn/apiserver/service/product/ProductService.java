@@ -23,5 +23,7 @@ public interface ProductService {
 
     void delete(Long id);
 
-    boolean isSeller(Long productId, Long userId);
+    boolean isSeller(Long id, Long userId);
+
+    void refresh(Long id); // 끌어올리기
 }

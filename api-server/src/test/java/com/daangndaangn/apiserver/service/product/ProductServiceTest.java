@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -253,6 +255,54 @@ class ProductServiceTest {
         //then
         assertThat(productService.isSeller(productId, mockSellerId)).isEqualTo(true);
         assertThat(productService.isSeller(productId, mockBuyerId)).isEqualTo(false);
+    }
+
+    @Test
+    public void 끌어올리기를_할_수_있다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+
+        //when
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
+
+        Product before = productService.getProduct(productId);
+        LocalDateTime beforeUpdatedAt = before.getUpdatedAt();
+        int beforeRefreshCount = before.getRefreshCnt();
+
+        productService.refresh(productId);
+
+        Product after = productService.getProduct(productId);
+        LocalDateTime afterUpdatedAt = after.getUpdatedAt();
+        int afterRefreshCount = after.getRefreshCnt();
+
+        //then
+        assertThat(beforeRefreshCount).isEqualTo(0);
+        assertThat(afterRefreshCount).isEqualTo(1);
+        assertThat(beforeUpdatedAt).isBefore(afterUpdatedAt);
+    }
+
+    @Test
+    public void 끌어올리기는_5회이상_할_수_없다() {
+        //given
+        String title = "mockProduct 팝니다.";
+        String name = "mockProduct";
+        Long price = 10000L;
+        String description = "mockProduct 팝니다. 새 상품입니다.";
+
+        //when
+        Long productId = productService.create(mockSellerId, mockCategoryId, title, name, price, description, null).getId();
+
+        productService.refresh(productId);  //1
+        productService.refresh(productId);  //2
+        productService.refresh(productId);  //3
+        productService.refresh(productId);  //4
+        productService.refresh(productId);  //5
+
+        //then
+        assertThrows(IllegalStateException.class, () -> productService.refresh(productId));
     }
 
     @AfterAll

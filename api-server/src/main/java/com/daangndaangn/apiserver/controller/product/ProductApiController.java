@@ -233,4 +233,22 @@ public class ProductApiController {
 
         return OK(historyResponses);
     }
+
+    /**
+     * 물품 끌어올리기
+     *
+     * PUT /api/products/refreshment/:productId
+     */
+    @PutMapping("/refreshment/{productId}")
+    public ApiResult<Void> refreshProduct(@PathVariable("productId") Long productId,
+                                          @AuthenticationPrincipal JwtAuthentication authentication) {
+
+        if (!productService.isSeller(productId, authentication.getId())) {
+            throw new UnauthorizedException("물품 끌어올리기는 판매자만 가능합니다.");
+        }
+
+        productService.refresh(productId);
+
+        return OK(null);
+    }
 }

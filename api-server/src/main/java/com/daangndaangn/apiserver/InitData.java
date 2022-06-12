@@ -30,7 +30,7 @@ public class InitData {
         initDataService.initCategories();
         initDataService.initProducts();
         initDataService.initFavoriteProducts();
-//        initDataService.initManners();
+        initDataService.initManners();
         log.info("end initTestSetting");
     }
 
