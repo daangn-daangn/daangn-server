@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.configure.support;
+package com.daangndaangn.apiserver.config.support;
 
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import org.springframework.core.MethodParameter;

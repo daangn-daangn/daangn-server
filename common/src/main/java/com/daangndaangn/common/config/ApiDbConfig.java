@@ -1,4 +1,4 @@
-package com.daangndaangn.common.configure;
+package com.daangndaangn.common.config;
 
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,7 +20,7 @@ import javax.sql.DataSource;
     entityManagerFactoryRef = "apiEntityManager",
     transactionManagerRef = "apiTransactionManager"
 )
-public class ApiDbConfigure {
+public class ApiDbConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari")

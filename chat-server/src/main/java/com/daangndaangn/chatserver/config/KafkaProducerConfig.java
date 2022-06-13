@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.configure;
+package com.daangndaangn.chatserver.config;
 
 import com.daangndaangn.chatserver.constants.KafkaConstants;
 import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;

@@ -1,4 +1,4 @@
-package com.daangndaangn.common.configure;
+package com.daangndaangn.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Configuration
-public class QuerydslConfigure {
+public class QuerydslConfig {
 
     @PersistenceContext(unitName = "default")
     private EntityManager entityManager;
