@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.configure;
+package com.daangndaangn.apiserver.config;
 
 import com.daangndaangn.apiserver.security.jwt.Jwt;
 import com.daangndaangn.apiserver.util.MessageUtils;
@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
  * 프로젝트에서 사용하는 각종 Bean 모음
  */
 @Configuration
-public class ServiceConfigure {
+public class ServiceConfig {
 
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer paginationConfigure() {
@@ -29,8 +29,8 @@ public class ServiceConfigure {
     }
 
     @Bean
-    public Jwt jwt(JwtConfigure jwtConfigure) {
-        return new Jwt(jwtConfigure.getIssuer(), jwtConfigure.getClientSecret(), jwtConfigure.getExpirySeconds());
+    public Jwt jwt(JwtConfig jwtConfig) {
+        return new Jwt(jwtConfig.getIssuer(), jwtConfig.getClientSecret(), jwtConfig.getExpirySeconds());
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.configure;
+package com.daangndaangn.apiserver.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ConfigurationProperties(prefix = "oauth.kakao")
-public class OAuthConfigure {
+public class OAuthConfig {
 
     private String headerKey;   // "Authorization"
 

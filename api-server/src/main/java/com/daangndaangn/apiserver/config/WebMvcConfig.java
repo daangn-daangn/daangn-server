@@ -1,6 +1,6 @@
-package com.daangndaangn.apiserver.configure;
+package com.daangndaangn.apiserver.config;
 
-import com.daangndaangn.apiserver.configure.support.ProductSearchArgumentResolver;
+import com.daangndaangn.apiserver.config.support.ProductSearchArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-public class WebMvcConfigure implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

@@ -1,4 +1,4 @@
-package com.daangndaangn.common.configure;
+package com.daangndaangn.common.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +13,18 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class AwsServiceConfigure {
+public class AwsServiceConfig {
 
-    private final AwsConfigure awsConfigure;
+    private final AwsConfig awsConfig;
 
     @Bean
     public S3Presigner s3Presigner() {
+        log.info("awsConfigure.getAccessKey(): {}", awsConfig.getAccessKey());
+        log.info("awsConfigure.getSecretKey(): {}", awsConfig.getSecretKey());
+
         AwsCredentialsProvider credentialsProvider =
             StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(awsConfigure.getAccessKey(), awsConfigure.getSecretKey())
+                AwsBasicCredentials.create(awsConfig.getAccessKey(), awsConfig.getSecretKey())
             );
 
         return S3Presigner.builder()

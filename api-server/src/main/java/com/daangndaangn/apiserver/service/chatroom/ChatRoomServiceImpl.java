@@ -5,6 +5,7 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.repository.ChatRoomRepository;
+import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,19 +31,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         checkArgument(userIds != null, "userIds는 null일 수 없습니다.");
         checkArgument(userIds.size() == 2, "userIds size는 2여야 합니다.");
         checkArgument(userIds.get(0) != null && userIds.get(1) != null, "userIds 내 값은 null일 수 없습니다.");
+        checkArgument(!userIds.get(0).equals(userIds.get(1)), "두 userId는 같을 수 없습니다.");
 
         Long userId1 = userIds.get(0);
         Long userId2 = userIds.get(1);
 
         String identifier = toIdentifier(userId1, userId2);
 
-        //TODO 예외 변경
         if (chatRoomRepository.existsByProductIdAndIdentifier(productId, identifier)) {
             return chatRoomRepository.findByProductIdAndIdentifier(productId, identifier)
-                    .orElseThrow(() -> new RuntimeException("chattingRoom을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new NotFoundException(ChatRoom.class,
+                            String.format("productId = %s, identifier = %s", productId, identifier)));
         }
 
-        String productImage = productRepository.findById(productId).map(Product::getThumbNailImage).orElse(null);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+
+        String productImage = product.getThumbNailImage();
 
         long firstUserId = Math.min(userId1, userId2);
         long secondUserId = Math.max(userId1, userId2);
@@ -72,10 +77,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public ChatRoom getChattingRoom(String id) {
         return chatRoomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new NotFoundException(ChatRoom.class, String.format("id = %s", id)));
     }
 
-    private String toIdentifier(Long userId1, Long userId2) {
+    @Override
+    public String toIdentifier(Long userId1, Long userId2) {
         checkArgument(userId1 != null, "userId1은 null일 수 없습니다.");
         checkArgument(userId2 != null, "userId2는 null일 수 없습니다.");
 

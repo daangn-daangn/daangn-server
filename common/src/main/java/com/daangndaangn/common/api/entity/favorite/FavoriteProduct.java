@@ -42,10 +42,11 @@ public class FavoriteProduct extends AuditingCreateUpdateEntity {
     }
 
     @Builder
-    private FavoriteProduct(User user, Product product) {
+    private FavoriteProduct(Long id, User user, Product product) {
         checkArgument(user != null, "사용자 정보는 필수입니다.");
         checkArgument(product != null, "물품 정보는 필수입니다.");
 
+        this.id = id;
         this.user = user;
         this.product = product;
         this.isValid = true;

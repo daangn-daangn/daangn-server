@@ -1,6 +1,5 @@
-package com.daangndaangn.apiserver.configure;
+package com.daangndaangn.apiserver.config;
 
-import com.daangndaangn.common.api.entity.user.Role;
 import com.daangndaangn.apiserver.security.CustomAccessDeniedHandler;
 import com.daangndaangn.apiserver.security.CustomUnauthorizedHandler;
 import com.daangndaangn.apiserver.security.jwt.Jwt;
@@ -24,17 +23,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Jwt jwt;
-    private final JwtConfigure jwtConfigure;
+    private final JwtConfig jwtConfig;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final CustomUnauthorizedHandler unauthorizedHandler;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
-        return new JwtAuthenticationTokenFilter(jwt, jwtConfigure.getHeader());
+        return new JwtAuthenticationTokenFilter(jwt, jwtConfig.getHeader());
     }
 
     @Bean

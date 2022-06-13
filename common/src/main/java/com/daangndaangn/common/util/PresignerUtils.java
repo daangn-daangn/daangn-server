@@ -1,10 +1,9 @@
 package com.daangndaangn.common.util;
 
-import com.daangndaangn.common.configure.AwsConfigure;
+import com.daangndaangn.common.config.AwsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -21,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class PresignerUtils {
 
     private static final String PRODUCT_IMAGE_FOLDER = "product-image";
-    private final AwsConfigure awsConfigure;
+    private final AwsConfig awsConfig;
     private final S3Presigner presigner;
 
     public String getProductPresignedGetUrl(String filename) {
@@ -39,7 +38,7 @@ public class PresignerUtils {
         String filePathKey = toKey(folder, filename);
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(awsConfigure.getBucket())
+                .bucket(awsConfig.getBucket())
                 .key(filePathKey)
                 .build();
 
@@ -54,7 +53,7 @@ public class PresignerUtils {
         String filePathKey = toKey(folder, filename);
 
         PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(awsConfigure.getBucket())
+                .bucket(awsConfig.getBucket())
                 .key(filePathKey)
 //                .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();

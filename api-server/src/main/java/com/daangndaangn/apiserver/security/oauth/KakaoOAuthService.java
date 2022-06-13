@@ -1,6 +1,6 @@
 package com.daangndaangn.apiserver.security.oauth;
 
-import com.daangndaangn.apiserver.configure.OAuthConfigure;
+import com.daangndaangn.apiserver.config.OAuthConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -22,13 +22,13 @@ public class KakaoOAuthService implements OAuthService {
 
     private final RestTemplate restTemplate;
 
-    private final OAuthConfigure oAuthConfigure;
+    private final OAuthConfig oAuthConfig;
 
     @Override
     public OAuthResponse.LoginResponse getUserInfo(OAuthRequest.LoginRequest request) {
 
         HttpEntity authRequest = createLoginRequest(request);
-        String requestUrl = oAuthConfigure.getLoginUrl();
+        String requestUrl = oAuthConfig.getLoginUrl();
 
         ResponseEntity<OAuthResponse.LoginResponse> oauthResponse
                 = restTemplate.exchange(requestUrl, HttpMethod.GET, authRequest, OAuthResponse.LoginResponse.class);
@@ -42,7 +42,7 @@ public class KakaoOAuthService implements OAuthService {
     public OAuthResponse.LogoutResponse logout(OAuthRequest.LogoutRequest request) {
 
         HttpEntity logoutRequest = createLogoutRequest(request);
-        String requestUrl = oAuthConfigure.getLogoutUrl();
+        String requestUrl = oAuthConfig.getLogoutUrl();
 
         ResponseEntity<OAuthResponse.LogoutResponse> oauthResponse
                 = restTemplate.exchange(requestUrl, HttpMethod.POST, logoutRequest, OAuthResponse.LogoutResponse.class);
@@ -62,7 +62,7 @@ public class KakaoOAuthService implements OAuthService {
         String headerValue = createRequestHeader(loginRequest.getAccessToken());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(oAuthConfigure.getHeaderKey(), headerValue);
+        headers.set(oAuthConfig.getHeaderKey(), headerValue);
 
         return new HttpEntity(headers);
     }
@@ -77,7 +77,7 @@ public class KakaoOAuthService implements OAuthService {
         String headerValue = createRequestHeader(logoutRequest.getAccessToken());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(oAuthConfigure.getHeaderKey(), headerValue);
+        headers.set(oAuthConfig.getHeaderKey(), headerValue);
 
         return new HttpEntity(headers);
     }
@@ -86,6 +86,6 @@ public class KakaoOAuthService implements OAuthService {
      * @return Bearer ${ACCESS_TOKEN}
      */
     private String createRequestHeader(String accessToken) {
-        return String.format("%s %s", oAuthConfigure.getHeaderValue(), accessToken);
+        return String.format("%s %s", oAuthConfig.getHeaderValue(), accessToken);
     }
 }

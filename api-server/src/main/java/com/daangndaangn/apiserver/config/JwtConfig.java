@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.configure;
+package com.daangndaangn.apiserver.config;
 
 
 import lombok.Getter;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ConfigurationProperties(prefix = "jwt")
-public class JwtConfigure {
+public class JwtConfig {
 
     private String header;
 
