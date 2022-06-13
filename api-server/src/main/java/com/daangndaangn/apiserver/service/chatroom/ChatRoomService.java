@@ -11,4 +11,6 @@ public interface ChatRoomService {
     List<ChatRoom> getChattingRooms(Long userId, Pageable pageable);
 
     ChatRoom getChattingRoom(String id);
+
+    String toIdentifier(Long userId1, Long userId2);
 }
