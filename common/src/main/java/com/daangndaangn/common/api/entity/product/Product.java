@@ -68,7 +68,8 @@ public class Product extends AuditingCreateUpdateEntity {
     private List<ProductImage> productImages = new ArrayList<>();
 
     @Builder
-    private Product(User seller,
+    private Product(Long id,
+                    User seller,
                     Category category,
                     String name,
                     long price,
@@ -87,6 +88,7 @@ public class Product extends AuditingCreateUpdateEntity {
         checkArgument(title.length() <= 100, "판매글 제목은 100자 이하여야 합니다.");
         checkArgument(description.length() <= 100, "판매글 내용은 100자 이하여야 합니다.");
 
+        this.id = id;
         this.seller = seller;
         this.buyer = null;
         this.category = category;
