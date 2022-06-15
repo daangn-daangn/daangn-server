@@ -2,34 +2,80 @@ package com.daangndaangn.apiserver.service.participant;
 
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
-import com.daangndaangn.common.chat.repository.ParticipantRepository;
+import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
+import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
+import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
-@Transactional(readOnly = true)
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+@Transactional(readOnly = true, value = "mongoTransactionManager")
 @Service
 @RequiredArgsConstructor
 public class ParticipantServiceImpl implements ParticipantService {
 
     private final ParticipantRepository participantRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     @Transactional(value = "mongoTransactionManager")
-    public Participant create(Long userId, ChatRoom chatRoom) {
+    public Participant create(Long userId, String chatRoomId) {
+        checkArgument(userId != null, "userId must not be null");
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
+
         Participant participant = Participant.builder()
                 .userId(userId)
-                .chatRoom(chatRoom)
+                .chatRoomId(chatRoomId)
                 .build();
 
         return participantRepository.save(participant);
     }
 
     @Override
-    public List<Participant> getParticipants(Long userId, Pageable pageable) {
-        return participantRepository.findAllByUserId(userId, pageable);
+    public Participant getParticipant(String id) {
+        checkArgument(isNotEmpty(id), "id must not be null");
+
+        return participantRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(Participant.class, String.format("id = %s", id)));
+    }
+
+    @Override
+    public Participant getParticipant(String chatRoomId, Long userId) {
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
+        checkArgument(userId != null, "userId must not be null");
+
+        return participantRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
+                .orElseThrow(() -> new NotFoundException(Participant.class,
+                        String.format("chatRoomId = %s, userId = %s", chatRoomId, userId)));
+    }
+
+    @Override
+    @Transactional(value = "mongoTransactionManager")
+    public void delete(String id) {
+        Participant participant = getParticipant(id);
+        participant.update(true);
+        participantRepository.save(participant);
+    }
+
+    @Override
+    @Transactional(value = "mongoTransactionManager")
+    public void updateReadMessageSize(String participantId, String chatRoomId) {
+        checkArgument(isNotEmpty(participantId), "participantId must not be null");
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
+
+        if (chatRoomRepository.existsById(chatRoomId)) {
+            Participant participant = getParticipant(participantId);
+            Long readMessageSize = chatRoomRepository.getChatRoomMessageSize(chatRoomId);
+            participant.update(readMessageSize);
+            participantRepository.save(participant);
+
+            return;
+        }
+
+        throw new NotFoundException(ChatRoom.class, String.format("chatRoomId = %s", chatRoomId));
     }
 }

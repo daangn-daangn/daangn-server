@@ -1,28 +1,34 @@
 package com.daangndaangn.apiserver.service.chatroom;
 
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
+import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.product.Product;
-import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.chat.document.ChatRoom;
-import com.daangndaangn.common.chat.repository.ChatRoomRepository;
+import com.daangndaangn.common.chat.document.message.ChatMessage;
+import com.daangndaangn.common.chat.document.message.MessageType;
+import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+@Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, value = "mongoTransactionManager")
 @RequiredArgsConstructor
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ParticipantService participantService;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     @Override
     @Transactional(value = "mongoTransactionManager")
@@ -44,8 +50,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             String.format("productId = %s, identifier = %s", productId, identifier)));
         }
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", productId)));
+        Product product = productService.getProduct(productId);
 
         String productImage = product.getThumbNailImage();
 
@@ -62,21 +67,39 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         ChatRoom savedChattingRoom = chatRoomRepository.save(chattingRoom);
 
-        participantService.create(userId1, savedChattingRoom);
-        participantService.create(userId2, savedChattingRoom);
+        participantService.create(userId1, savedChattingRoom.getId());
+        participantService.create(userId2, savedChattingRoom.getId());
 
         return savedChattingRoom;
     }
 
     @Override
-    public List<ChatRoom> getChattingRooms(Long userId, Pageable pageable) {
+    public List<ChatRoom> getChatRooms(Long userId, Pageable pageable) {
         checkArgument(userId != null, "userId는 null일 수 없습니다.");
         return chatRoomRepository.findAllByFirstUserIdOrSecondUserId(userId, userId, pageable);
     }
 
     @Override
-    public ChatRoom getChattingRoom(String id) {
-        return chatRoomRepository.findById(id)
+    public ChatRoom getChatRoomWithMessages(String id, int page) {
+        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+
+        final int chatMessageSize = 10;
+
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomWithChatMessages(id, page, chatMessageSize)
+                .orElseThrow(() -> new NotFoundException(ChatRoom.class, String.format("id = %s", id)));
+
+        Collections.reverse(chatRoom.getChatMessages());
+
+        log.info("chatRoom: {}", chatRoom);
+
+        return chatRoom;
+    }
+
+    @Override
+    public ChatRoom getChatRoom(String id) {
+        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+
+        return chatRoomRepository.findChatRoomById(id)
                 .orElseThrow(() -> new NotFoundException(ChatRoom.class, String.format("id = %s", id)));
     }
 
@@ -89,5 +112,30 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         long secondUserId = Math.max(userId1, userId2);
 
         return firstUserId + "-" + secondUserId;
+    }
+
+    @Override
+    @Transactional(value = "mongoTransactionManager")
+    public long addChatMessage(String id, Long senderId, int messageTypeCode, String message) {
+        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+        checkArgument(senderId != null, "senderId는 null일 수 없습니다.");
+        checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
+                "messageTypeCode는 1,2,3 중에 하나여야 합니다.");
+        checkArgument(isNotEmpty(message), "message는 null일 수 없습니다.");
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .senderId(senderId)
+                .messageType(MessageType.from(messageTypeCode))
+                .message(message)
+                .build();
+
+        return chatRoomRepository.insertChatMessage(id, chatMessage);
+    }
+
+    @Override
+    public long getChatRoomMessageSize(String id) {
+        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+
+        return chatRoomRepository.getChatRoomMessageSize(id);
     }
 }

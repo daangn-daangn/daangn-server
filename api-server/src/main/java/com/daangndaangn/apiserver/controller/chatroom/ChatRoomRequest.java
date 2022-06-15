@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 public class ChatRoomRequest {
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class CreateRequest {
+        @NotNull
         private Long productId;
-        private List<Long> userIds;
+        @NotNull
+        private Long otherUserId;
     }
 
 }

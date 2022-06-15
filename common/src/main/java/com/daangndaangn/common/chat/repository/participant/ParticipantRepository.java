@@ -1,13 +1,15 @@
-package com.daangndaangn.common.chat.repository;
+package com.daangndaangn.common.chat.repository.participant;
 
 import com.daangndaangn.common.chat.document.Participant;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ParticipantRepository extends MongoRepository<Participant, String> {
-    List<Participant> findAllByUserId(Long userId, Pageable pageable);
+    /**
+     * Participant 정보를 chatRoomId와 userId로 조회
+     */
+    Optional<Participant> findByChatRoomIdAndUserId(String chatRoomId, Long userId);
 }

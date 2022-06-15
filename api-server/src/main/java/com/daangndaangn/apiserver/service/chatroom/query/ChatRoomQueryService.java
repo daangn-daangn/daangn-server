@@ -3,7 +3,7 @@ package com.daangndaangn.apiserver.service.chatroom.query;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.user.UserRepository;
 import com.daangndaangn.common.chat.document.ChatRoom;
-import com.daangndaangn.common.chat.repository.ChatRoomRepository;
+import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

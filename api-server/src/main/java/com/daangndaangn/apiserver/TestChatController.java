@@ -5,6 +5,7 @@ import com.daangndaangn.apiserver.service.chatroom.query.ChatRoomQueryDto;
 import com.daangndaangn.apiserver.service.chatroom.query.ChatRoomQueryService;
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.chat.document.Participant;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -24,25 +25,30 @@ import java.util.stream.Collectors;
 public class TestChatController {
 
     private final ParticipantService participantService;
-    private final ChatRoomService chattingRoomService;
-    private final ChatRoomQueryService chattingRoomQueryService;
+    private final ChatRoomService chatRoomService;
+    private final ChatRoomQueryService chatRoomQueryService;
 
-    @PostMapping("/chatting-rooms")
-    public void func(@RequestBody ChattingRoomDto chattingRoomDto) {
-        ChatRoom chattingRoom = chattingRoomService.create(chattingRoomDto.getProductId(),
-                List.of(chattingRoomDto.getUserId1(), chattingRoomDto.getUserId2())
-        );
-
-        log.info("chattingRoom.getId(): {}", chattingRoom.getId());
-        log.info("chattingRoom.getProductId(): {}", chattingRoom.getProductId());
-        log.info("chattingRoom.getProductImage(): {}", chattingRoom.getProductImage());
-        log.info("chattingRoom.getCreatedAt(): {}", chattingRoom.getCreatedAt());
-        log.info("chattingRoom.getUpdatedAt(): {}", chattingRoom.getUpdatedAt());
+    /**
+     * /api/chat/test/messages
+     */
+    @PostMapping("/messages")
+    public void addMessage(@RequestParam("id") String id, @RequestBody ChatMessageDto chatMessageDto) {
+        chatRoomService.addChatMessage(id,
+                                        chatMessageDto.getSenderId(),
+                                        chatMessageDto.getMessageType(),
+                                        chatMessageDto.getMessage());
     }
+
+    @GetMapping("/v2/messages")
+    public void getMessagesV2(@RequestParam("id") String id, @RequestParam("page") Integer page) {
+        chatRoomService.getChatRoomWithMessages(id, page);
+    }
+
+
 
     @GetMapping("/chatting-rooms/v1/{userId}")
     public List<ChattingRoomDto> getChattingRooms(@PathVariable("userId") Long userId, Pageable pageable) {
-        List<ChatRoom> chattingRooms = chattingRoomService.getChattingRooms(userId, pageable);
+        List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(userId, pageable);
 
         return chattingRooms.stream()
                 .map(ChattingRoomDto::from)
@@ -51,7 +57,7 @@ public class TestChatController {
 
     @GetMapping("/chatting-rooms/v2/{userId}")
     public List<ChatRoomQueryDto> getChattingRoomQueryDtos(@PathVariable("userId") Long userId, Pageable pageable) {
-        List<ChatRoomQueryDto> queryDtos = chattingRoomQueryService.getChattingRoomQueryDtos(userId, pageable);
+        List<ChatRoomQueryDto> queryDtos = chatRoomQueryService.getChattingRoomQueryDtos(userId, pageable);
         return queryDtos;
     }
 
@@ -70,5 +76,17 @@ public class TestChatController {
                     .userId2(chattingRoom.getSecondUserId())
                     .build();
         }
+    }
+
+    /**
+     * Long senderId, MessageType messageType, String message
+     */
+    @Getter
+    @Builder
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class ChatMessageDto {
+        Long senderId;
+        Integer messageType;
+        String message;
     }
 }
