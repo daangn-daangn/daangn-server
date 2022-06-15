@@ -37,13 +37,15 @@ public class ChatRoomResponse {
         private String productImage;
         private String lastChat;
         private Long notReadChatCount;
-        private Long lastReadMessageSize;
+        private Long pageOffset;
+        private Integer pageSize;
         private LocalDateTime updatedAt;
 
         public static SimpleResponse of(ChatRoom chatRoom,
                                         User user,
                                         String profileImage,
-                                        Participant participant,
+                                        long pageOffset,
+                                        int pageSize,
                                         String productImage,
                                         long notReadChatCount) {
 
@@ -57,7 +59,8 @@ public class ChatRoomResponse {
                     .lastChat(isEmpty(chatRoom.getChatMessages()) ?
                             null : chatRoom.getChatMessages().get(0).getMessage())
                     .notReadChatCount(notReadChatCount)
-                    .lastReadMessageSize(participant.getReadMessageSize())
+                    .pageOffset(pageOffset)
+                    .pageSize(pageSize)
                     .updatedAt(chatRoom.getUpdatedAt())
                     .build();
         }

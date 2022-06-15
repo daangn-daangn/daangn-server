@@ -1,6 +1,6 @@
 package com.daangndaangn.chatserver;
 
-import com.daangndaangn.chatserver.service.ChatMessageServiceImpl;
+import com.daangndaangn.chatserver.service.chatroom.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -30,30 +30,30 @@ public class InitData {
     @RequiredArgsConstructor
     static class InitDataService {
 
-        private final ChatMessageServiceImpl chatMessageService;
+        private final ChatMessageService chatMessageService;
 
         public void initChatMessages() {
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요1");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요2");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요3");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요4");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요5");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요6");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요7");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요8");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요9");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요10");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요11");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요12");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요13");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요14");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요15");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요16");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요17");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요18");
-            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요19");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요20");
-            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요21");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요1");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요2");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요3");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요4");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요5");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요6");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요7");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요8");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요9");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요10");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요11");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요12");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요13");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요14");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요15");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요16");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요17");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요18");
+//            chatMessageService.create(ROOM_ID, 2L, 1, "안녕하세요19");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요20");
+//            chatMessageService.create(ROOM_ID, 1L, 1, "안녕하세요21");
         }
     }
 }

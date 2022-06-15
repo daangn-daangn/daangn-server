@@ -1,7 +1,7 @@
 package com.daangndaangn.chatserver.config;
 
 import com.daangndaangn.chatserver.constants.KafkaConstants;
-import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
+import com.daangndaangn.chatserver.controller.chatroom.ChatMessageRequest.CreateRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;

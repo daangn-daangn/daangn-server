@@ -27,14 +27,14 @@ public class InitApiController {
         chatRoomService.create(5L, List.of(authentication.getId(), 5L));
     }
 
-    @PostMapping("/chat-messages")
-    public void initChatMessages(@RequestParam("id") String id, @AuthenticationPrincipal JwtAuthentication authentication) {
-
-        int messageType = 1;
-        int loopSize = 10;
-
-        for (int loop = 0; loop < loopSize; ++loop) {
-            chatRoomService.addChatMessage(id, authentication.getId(), messageType, String.format("메시지%d", loop));
-        }
-    }
+//    @PostMapping("/chat-messages")
+//    public void initChatMessages(@RequestParam("id") String id, @AuthenticationPrincipal JwtAuthentication authentication) {
+//
+//        int messageType = 1;
+//        int loopSize = 10;
+//
+//        for (int loop = 0; loop < loopSize; ++loop) {
+//            chatRoomService.addChatMessage(id, authentication.getId(), messageType, String.format("메시지%d", loop));
+//        }
+//    }
 }

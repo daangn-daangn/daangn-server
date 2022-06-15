@@ -4,8 +4,6 @@ import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.chat.document.ChatRoom;
-import com.daangndaangn.common.chat.document.message.ChatMessage;
-import com.daangndaangn.common.chat.document.message.MessageType;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -80,22 +77,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public ChatRoom getChatRoomWithMessages(String id, int page) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
-
-        final int chatMessageSize = 10;
-
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomWithChatMessages(id, page, chatMessageSize)
-                .orElseThrow(() -> new NotFoundException(ChatRoom.class, String.format("id = %s", id)));
-
-        Collections.reverse(chatRoom.getChatMessages());
-
-        log.info("chatRoom: {}", chatRoom);
-
-        return chatRoom;
-    }
-
-    @Override
     public ChatRoom getChatRoom(String id) {
         checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
 
@@ -112,24 +93,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         long secondUserId = Math.max(userId1, userId2);
 
         return firstUserId + "-" + secondUserId;
-    }
-
-    @Override
-    @Transactional(value = "mongoTransactionManager")
-    public long addChatMessage(String id, Long senderId, int messageTypeCode, String message) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
-        checkArgument(senderId != null, "senderId는 null일 수 없습니다.");
-        checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
-                "messageTypeCode는 1,2,3 중에 하나여야 합니다.");
-        checkArgument(isNotEmpty(message), "message는 null일 수 없습니다.");
-
-        ChatMessage chatMessage = ChatMessage.builder()
-                .senderId(senderId)
-                .messageType(MessageType.from(messageTypeCode))
-                .message(message)
-                .build();
-
-        return chatRoomRepository.insertChatMessage(id, chatMessage);
     }
 
     @Override

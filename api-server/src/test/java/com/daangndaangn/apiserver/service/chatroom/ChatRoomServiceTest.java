@@ -312,23 +312,23 @@ class ChatRoomServiceTest {
         verify(chatRoomRepository).findChatRoomById(anyString());
     }
 
-    @Test
-    public void 올바르지_않은_메시지_타입은_예외를_반환한다() {
-        //given
-        String id = "testId";
-        long senderId = 1L;
-        int invalidMessageType1 = 0;
-        int invalidMessageType2 = 4;
-        String message = "test";
-
-        //when
-        assertThrows(IllegalArgumentException.class,
-                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType1, message));
-
-        assertThrows(IllegalArgumentException.class,
-                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType2, message));
-
-        //then
-        verify(chatRoomQueryRepository, never()).insertChatMessage(anyString(), any());
-    }
+//    @Test
+//    public void 올바르지_않은_메시지_타입은_예외를_반환한다() {
+//        //given
+//        String id = "testId";
+//        long senderId = 1L;
+//        int invalidMessageType1 = 0;
+//        int invalidMessageType2 = 4;
+//        String message = "test";
+//
+//        //when
+//        assertThrows(IllegalArgumentException.class,
+//                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType1, message));
+//
+//        assertThrows(IllegalArgumentException.class,
+//                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType2, message));
+//
+//        //then
+//        verify(chatRoomQueryRepository, never()).insertChatMessage(anyString(), any());
+//    }
 }

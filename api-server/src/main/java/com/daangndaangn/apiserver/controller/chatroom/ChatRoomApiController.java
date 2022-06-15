@@ -61,6 +61,8 @@ public class ChatRoomApiController {
     public ApiResult<List<SimpleResponse>> getChatRooms(@AuthenticationPrincipal JwtAuthentication authentication,
                                                         Pageable pageable) {
 
+        final int MESSAGE_PAGE_SIZE = 10;
+
         List<ChatRoom> chatRooms = chatRoomService.getChatRooms(authentication.getId(), pageable);
 
         List<SimpleResponse> simpleResponses = chatRooms.stream().map(chatRoom -> {
@@ -76,10 +78,16 @@ public class ChatRoomApiController {
 
             Participant participant = participantService.getParticipant(chatRoom.getId(), user.getId());
             long totalMessageSize = chatRoomService.getChatRoomMessageSize(chatRoom.getId());
+            long messagePageOffset = Math.max(0, totalMessageSize - MESSAGE_PAGE_SIZE);
             long notReadChatCount = totalMessageSize - participant.getReadMessageSize();
 
-            return SimpleResponse.of(chatRoom, user, profileImage, participant, productImage, notReadChatCount);
-
+            return SimpleResponse.of(chatRoom,
+                                    user,
+                                    profileImage,
+                                    messagePageOffset,
+                                    MESSAGE_PAGE_SIZE,
+                                    productImage,
+                                    notReadChatCount);
         }).collect(toList());
 
         return OK(simpleResponses);
