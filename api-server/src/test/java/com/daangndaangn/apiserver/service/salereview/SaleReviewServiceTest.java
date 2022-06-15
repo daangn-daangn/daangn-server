@@ -168,16 +168,55 @@ public class SaleReviewServiceTest {
     @Test
     public void 내가_구매자_리뷰를_남겼는지_여부를_알_수_있다() {
         //given
-        User user = userService.getUserByOauthId(USER1_OAUTH_ID);
-        boolean before = saleReviewService.existBuyerReview(productId2, user.getId());
+        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
+        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+        boolean before = saleReviewService.existBuyerReview(productId2, user1.getId());
 
         //when
-        saleReviewService.create(productId2, user.getId(), 1L, SaleReviewType.BUYER_REVIEW, "구매자 리뷰");
-        boolean after = saleReviewService.existBuyerReview(productId2, user.getId());
+        saleReviewService.create(productId2, user1.getId(), user2.getId(), SaleReviewType.BUYER_REVIEW, "구매자 리뷰");
+        boolean after = saleReviewService.existBuyerReview(productId2, user1.getId());
 
         //then
         assertThat(before).isEqualTo(false);
         assertThat(after).isEqualTo(true);
+    }
+
+    // existSellerReview
+    @Test
+    public void 내가_판매자_리뷰를_남겼는지_여부를_알_수_있다() {
+        //given
+        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
+        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+        boolean before = saleReviewService.existSellerReview(productId1, user1.getId());
+
+        //when
+        saleReviewService.create(productId1, user1.getId(), user2.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
+        boolean after = saleReviewService.existSellerReview(productId1, user1.getId());
+
+        //then
+        assertThat(before).isEqualTo(false);
+        assertThat(after).isEqualTo(true);
+    }
+
+    // hide
+    @Test
+    public void 내가_받았던_리뷰를_숨길_수_있다() {
+        //given
+        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
+        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+
+        Long saleReviewId = saleReviewService.create(productId1, user1.getId(), user2.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
+
+        int beforeState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
+
+        //when
+        saleReviewService.hide(saleReviewId, user2.getId());
+
+        //then
+        int afterState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
+
+        assertThat(beforeState).isEqualTo(SaleReviewType.SELLER_REVIEW.getCode());
+        assertThat(afterState).isEqualTo(SaleReviewType.HIDE.getCode());
     }
 
     @AfterAll

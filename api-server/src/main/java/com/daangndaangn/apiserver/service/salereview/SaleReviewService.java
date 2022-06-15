@@ -27,7 +27,11 @@ public interface SaleReviewService {
 
     boolean existBuyerReview(Long productId, Long userId);
 
+    boolean existSellerReview(Long productId, Long userId);
+
     void update(Long id, String content);
+
+    void hide(Long id, Long userId);
 
     void delete(Long id);
 }

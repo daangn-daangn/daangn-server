@@ -114,6 +114,14 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     }
 
     @Override
+    public boolean existSellerReview(Long productId, Long userId) {
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(userId != null, "sellerId 값은 필수입니다.");
+
+        return saleReviewRepository.existSellerReview(productId, userId);
+    }
+
+    @Override
     @Transactional
     public void update(Long id, String content) {
         checkArgument(id != null, "id 값은 필수입니다.");
@@ -121,6 +129,22 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
         SaleReview updatedReview = getSaleReview(id);
         updatedReview.update(content);
+    }
+
+    @Override
+    @Transactional
+    public void hide(Long id, Long userId) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+
+        SaleReview updatedReview = getSaleReview(id);
+        long revieweeId = updatedReview.getReviewee().getId();
+
+        if (userId.equals(revieweeId)) {
+            updatedReview.update(SaleReviewType.HIDE);
+            return;
+        }
+
+        throw new IllegalArgumentException("리뷰를 받은 사람만 받은 리뷰를 숨길 수 있습니다.");
     }
 
     @Override

@@ -13,7 +13,8 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @AllArgsConstructor
 public enum SaleReviewType {
     SELLER_REVIEW(0, "판매자 후기"),
-    BUYER_REVIEW(1, "구매자 후기");
+    BUYER_REVIEW(1, "구매자 후기"),
+    HIDE(2, "숨김");
 
     private static final Map<Integer, SaleReviewType> saleReviewTypeMap =
             Stream.of(values()).collect(toMap(SaleReviewType::getCode, value -> value));

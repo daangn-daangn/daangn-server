@@ -181,6 +181,20 @@ public class SaleReviewApiController {
     }
 
     /**
+     * PUT /api/sale-reviews/hide/:sale-review-id
+     *
+     * 사용자는 자신이 받은 후기를 숨길 수 있다.
+     */
+    @PutMapping("/hide/{sale-review-id}")
+    public ApiResult<Void> hideSaleReview(@PathVariable("sale-review-id") Long saleReviewId,
+                                          @AuthenticationPrincipal JwtAuthentication authentication) {
+
+        saleReviewService.hide(saleReviewId, authentication.getId());
+
+        return OK(null);
+    }
+
+    /**
      * DELETE /api/sale-reviews/seller/:sale-review-id
      *
      * 사용자는 판매자 후기를 삭제할 수 있다.

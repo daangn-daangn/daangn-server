@@ -1,9 +1,6 @@
 package com.daangndaangn.apiserver.controller.product;
 
-import com.daangndaangn.apiserver.controller.product.ProductResponse.CreateResponse;
-import com.daangndaangn.apiserver.controller.product.ProductResponse.DetailResponse;
-import com.daangndaangn.apiserver.controller.product.ProductResponse.PurchaseHistoryResponse;
-import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
+import com.daangndaangn.apiserver.controller.product.ProductResponse.*;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
@@ -192,9 +189,9 @@ public class ProductApiController {
      * productState == 판매중/거래완료/숨김
      */
     @GetMapping("/sales-history")
-    public ApiResult<List<SimpleResponse>> getProductsBySeller(@RequestParam("state") int productState,
-                                                               @AuthenticationPrincipal JwtAuthentication authentication,
-                                                               @PageableDefault(size = 5) Pageable pageable) {
+    public ApiResult<List<SaleHistoryResponse>> getProductsBySeller(@RequestParam("state") int productState,
+                                                                    @AuthenticationPrincipal JwtAuthentication authentication,
+                                                                    @PageableDefault(size = 5) Pageable pageable) {
 
         List<SimpleResponse> products = productQueryService.getProductsBySeller(authentication.getId(),
                                                                                 productState,
@@ -205,7 +202,21 @@ public class ProductApiController {
             .filter(p -> isNotEmpty(p.getImageUrl()))
             .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
 
-        return OK(products);
+        if (ProductState.SOLD_OUT.getCode().equals(productState)) {
+            List<SaleHistoryResponse> saleHistoryResponses =
+                products.stream().map(product -> {
+                    boolean hasReview = saleReviewService.existSellerReview(product.getId(), authentication.getId());
+                    return SaleHistoryResponse.of(product, hasReview);
+                }).collect(toList());
+
+            return OK(saleHistoryResponses);
+        }
+
+        List<SaleHistoryResponse> saleHistoryResponses = products.stream()
+                                                                .map(SaleHistoryResponse::from)
+                                                                .collect(toList());
+
+        return OK(saleHistoryResponses);
     }
 
     /**
@@ -227,8 +238,8 @@ public class ProductApiController {
 
         List<PurchaseHistoryResponse> historyResponses =
             products.stream().map(product -> {
-                boolean exist = saleReviewService.existBuyerReview(product.getId(), authentication.getId());
-                return PurchaseHistoryResponse.of(product, exist);
+                boolean hasReview = saleReviewService.existBuyerReview(product.getId(), authentication.getId());
+                return PurchaseHistoryResponse.of(product, hasReview);
             }).collect(toList());
 
         return OK(historyResponses);

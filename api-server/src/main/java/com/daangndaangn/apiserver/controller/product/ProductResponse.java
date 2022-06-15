@@ -46,7 +46,53 @@ public class ProductResponse {
     }
 
     /**
-     * SimpleResponse + reviewExisted field
+     * SimpleResponse + hasReview field
+     */
+    @Getter
+    @Builder
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class SaleHistoryResponse {
+        private Long id;
+        private String title;
+        private String location;
+        private Long price;
+        private String imageUrl;
+        private Long favoriteCount;
+        private Long chattingCount;
+        private boolean hasReview;
+        private LocalDateTime createdAt;
+
+        public static SaleHistoryResponse of(SimpleResponse simpleResponse, boolean hasReview) {
+            return SaleHistoryResponse.builder()
+                    .id(simpleResponse.getId())
+                    .title(simpleResponse.getTitle())
+                    .location(simpleResponse.getLocation())
+                    .price(simpleResponse.getPrice())
+                    .imageUrl(simpleResponse.getImageUrl())
+                    .favoriteCount(simpleResponse.getFavoriteCount())
+                    .chattingCount(simpleResponse.getChattingCount())
+                    .hasReview(hasReview)
+                    .createdAt(simpleResponse.getCreatedAt())
+                    .build();
+        }
+
+        public static SaleHistoryResponse from(SimpleResponse simpleResponse) {
+            return SaleHistoryResponse.builder()
+                    .id(simpleResponse.getId())
+                    .title(simpleResponse.getTitle())
+                    .location(simpleResponse.getLocation())
+                    .price(simpleResponse.getPrice())
+                    .imageUrl(simpleResponse.getImageUrl())
+                    .favoriteCount(simpleResponse.getFavoriteCount())
+                    .chattingCount(simpleResponse.getChattingCount())
+                    .hasReview(false)
+                    .createdAt(simpleResponse.getCreatedAt())
+                    .build();
+        }
+    }
+
+    /**
+     * SimpleResponse + hasReview field
      */
     @Getter
     @Builder
@@ -59,10 +105,10 @@ public class ProductResponse {
         private String imageUrl;
         private Long favoriteCount;
         private Long chattingCount;
-        private boolean reviewExisted;
+        private boolean hasReview;
         private LocalDateTime createdAt;
 
-        public static PurchaseHistoryResponse of(SimpleResponse simpleResponse, boolean reviewExisted) {
+        public static PurchaseHistoryResponse of(SimpleResponse simpleResponse, boolean hasReview) {
             return PurchaseHistoryResponse.builder()
                     .id(simpleResponse.getId())
                     .title(simpleResponse.getTitle())
@@ -71,7 +117,7 @@ public class ProductResponse {
                     .imageUrl(simpleResponse.getImageUrl())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
-                    .reviewExisted(reviewExisted)
+                    .hasReview(hasReview)
                     .createdAt(simpleResponse.getCreatedAt())
                     .build();
         }
