@@ -102,47 +102,6 @@ class ParticipantServiceTest {
     }
 
     @Test
-    public void readMessageSize를_내가_속한_채팅방의_채팅_갯수만큼_업데이트_할_수_있다() {
-        //given
-        long testMessageSize = 25L;
-        given(chatRoomRepository.existsById(anyString())).willReturn(true);
-        given(participantRepository.findById(anyString())).willReturn(Optional.ofNullable(mockParticipant));
-        given(chatRoomRepository.getChatRoomMessageSize(anyString())).willReturn(testMessageSize);
-        given(participantRepository.save(any())).willReturn(mockParticipant);
-        long beforeUpdate = mockParticipant.getReadMessageSize();
-
-        //when
-        participantService.updateReadMessageSize(mockParticipant.getId(), mockChatRoomId);
-        long afterUpdate = mockParticipant.getReadMessageSize();
-
-        //then
-        verify(chatRoomRepository).existsById(anyString());
-        verify(participantRepository).findById(anyString());
-        verify(chatRoomRepository).getChatRoomMessageSize(anyString());
-        verify(participantRepository).save(any());
-        assertThat(beforeUpdate).isEqualTo(0);
-        assertThat(afterUpdate).isEqualTo(testMessageSize);
-    }
-
-    @Test
-    public void 채팅방_id_가_유효하지_않으면_readMessageSize를_업데이트_하지않고_예외를_반환한다() {
-        //given
-        String invalidChatRoomId = "invalidChatRoomId";
-
-        given(chatRoomRepository.existsById(anyString())).willReturn(false);
-
-        //when
-        assertThrows(NotFoundException.class,
-                () -> participantService.updateReadMessageSize(mockParticipant.getId(), invalidChatRoomId));
-
-        //then
-        verify(chatRoomRepository).existsById(anyString());
-        verify(participantRepository, never()).findById(anyString());
-        verify(chatRoomRepository, never()).getChatRoomMessageSize(anyString());
-        verify(participantRepository, never()).save(any());
-    }
-
-    @Test
     public void chatRoomId와_userId의_조합으로_조회할_수_있다() {
         //given
         given(participantRepository.findByChatRoomIdAndUserId(anyString(), anyLong()))

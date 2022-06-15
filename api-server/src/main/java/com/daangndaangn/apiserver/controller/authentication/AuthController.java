@@ -1,9 +1,9 @@
 package com.daangndaangn.apiserver.controller.authentication;
 
-import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationToken;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
 import com.daangndaangn.apiserver.security.oauth.OAuthResponse;
 import com.daangndaangn.apiserver.security.oauth.OAuthService;
+import com.daangndaangn.common.jwt.JwtAuthenticationToken;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

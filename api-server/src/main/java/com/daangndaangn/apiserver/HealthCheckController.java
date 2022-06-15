@@ -1,6 +1,6 @@
-package com.daangndaangn.apiserver.controller;
+package com.daangndaangn.apiserver;
 
-import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
+import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * 향후 삭제 예정
  */
-@RequestMapping("/api/hcheck")
+@RequestMapping("/api/health")
 @RestController
 public class HealthCheckController {
 

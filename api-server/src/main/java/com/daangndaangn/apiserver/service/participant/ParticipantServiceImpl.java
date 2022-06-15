@@ -60,22 +60,4 @@ public class ParticipantServiceImpl implements ParticipantService {
         participant.update(true);
         participantRepository.save(participant);
     }
-
-    @Override
-    @Transactional(value = "mongoTransactionManager")
-    public void updateReadMessageSize(String participantId, String chatRoomId) {
-        checkArgument(isNotEmpty(participantId), "participantId must not be null");
-        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
-
-        if (chatRoomRepository.existsById(chatRoomId)) {
-            Participant participant = getParticipant(participantId);
-            Long readMessageSize = chatRoomRepository.getChatRoomMessageSize(chatRoomId);
-            participant.update(readMessageSize);
-            participantRepository.save(participant);
-
-            return;
-        }
-
-        throw new NotFoundException(ChatRoom.class, String.format("chatRoomId = %s", chatRoomId));
-    }
 }

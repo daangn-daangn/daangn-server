@@ -19,9 +19,4 @@ public interface ParticipantService {
      * 채팅방 나가기
      */
     void delete(String id);
-
-    /**
-     * 사용자가 채팅방 나갈 때 채팅방 내 읽은 메시지 갯수 갱신
-     */
-    void updateReadMessageSize(String participantId, String chatRoomId);
 }

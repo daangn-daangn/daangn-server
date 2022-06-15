@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security.jwt;
+package com.daangndaangn.common.jwt;
 
 import com.daangndaangn.common.api.entity.user.Location;
 import lombok.RequiredArgsConstructor;
@@ -62,25 +62,25 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         response.setHeader(headerKey, refreshedToken);
                     }
 
-                    Long id = claims.id;
-                    Long oauthId = claims.oauthId;
-                    String nickname = claims.nickname;
-                    Location location = claims.location;
-                    String profileUrl = claims.profileUrl;
-                    Double manner = claims.manner;
+                    Long id = claims.getId();
+                    Long oauthId = claims.getOauthId();
+                    String nickname = claims.getNickname();
+                    Location location = claims.getLocation();
+                    String profileUrl = claims.getProfileUrl();
+                    Double manner = claims.getManner();
 
                     List<GrantedAuthority> authorities = getAuthorities(claims);
 
                     if (nonNull(id) && nonNull(oauthId) && authorities.size() > 0) {
 
                         JwtAuthentication principal = JwtAuthentication.builder()
-                                                                        .id(id)
-                                                                        .oauthId(oauthId)
-                                                                        .nickname(nickname)
-                                                                        .location(location)
-                                                                        .profileUrl(profileUrl)
-                                                                        .manner(manner)
-                                                                        .build();
+                                .id(id)
+                                .oauthId(oauthId)
+                                .nickname(nickname)
+                                .location(location)
+                                .profileUrl(profileUrl)
+                                .manner(manner)
+                                .build();
 
                         JwtAuthenticationToken authentication = JwtAuthenticationToken.of(principal, authorities);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -107,10 +107,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     }
 
     private List<GrantedAuthority> getAuthorities(Jwt.Claims claims) {
-        String[] roles = claims.roles;
+        String[] roles = claims.getRoles();
         return isEmpty(roles) ? Collections.emptyList() : Arrays.stream(roles)
-                                                                .map(SimpleGrantedAuthority::new)
-                                                                .collect(toList());
+                .map(SimpleGrantedAuthority::new)
+                .collect(toList());
     }
 
     private String getAuthorizationToken(HttpServletRequest request) {

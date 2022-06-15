@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security;
+package com.daangndaangn.common.security;
 
 import com.daangndaangn.common.web.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 import static com.daangndaangn.common.web.ApiResult.ERROR;

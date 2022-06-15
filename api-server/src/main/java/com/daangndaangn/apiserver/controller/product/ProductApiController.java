@@ -4,7 +4,6 @@ import com.daangndaangn.apiserver.controller.product.ProductResponse.CreateRespo
 import com.daangndaangn.apiserver.controller.product.ProductResponse.DetailResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.PurchaseHistoryResponse;
 import com.daangndaangn.apiserver.controller.product.ProductResponse.SimpleResponse;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
@@ -17,6 +16,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import com.daangndaangn.common.error.UnauthorizedException;
+import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;

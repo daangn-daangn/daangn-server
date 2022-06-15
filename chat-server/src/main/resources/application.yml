@@ -13,6 +13,12 @@ spring:
 server:
   port: 9080
 
+jwt:
+  header: api_key
+  issuer: daangn-server
+  client-secret: daangn-server
+  expiry-seconds: 7200 # 2시간
+
 logging:
   level:
     org:

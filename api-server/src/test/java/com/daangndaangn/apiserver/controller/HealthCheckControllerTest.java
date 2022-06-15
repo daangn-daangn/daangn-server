@@ -1,5 +1,6 @@
 package com.daangndaangn.apiserver.controller;
 
+import com.daangndaangn.apiserver.HealthCheckController;
 import com.daangndaangn.apiserver.security.WithMockJwtAuthentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class HealthCheckControllerTest {
     @DisplayName("회원 인증이 필요한 API는 @WithMockJwtAuthentication을 사용해서 호출할 수 있다.")
     void getSystemTimeMillisWithUserSuccessTest() throws Exception {
         ResultActions result = mockMvc.perform(
-                get("/api/hcheck/with-user")
+                get("/api/health/with-user")
                     .accept(MediaType.APPLICATION_JSON)
         );
 

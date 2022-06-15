@@ -57,8 +57,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         Collections.reverse(chatRoom.getChatMessages());
 
-        log.info("chatRoom: {}", chatRoom);
-
         return chatRoom;
     }
 
@@ -68,10 +66,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
         checkArgument(userId != null, "userId는 null일 수 없습니다.");
 
-        Long chatRoomMessageSize = chatRoomRepository.getChatRoomMessageSize(id);
         Participant participant = participantRepository.findByChatRoomIdAndUserId(id, userId)
                 .orElseThrow(() -> new NotFoundException(Participant.class,
-                                                        String.format("id = %s, userId = %d", id, userId)));
+                        String.format("id = %s, userId = %d", id, userId)));
+
+        Long chatRoomMessageSize = chatRoomRepository.getChatRoomMessageSize(id);
 
         participant.update(chatRoomMessageSize);
         participantRepository.save(participant);

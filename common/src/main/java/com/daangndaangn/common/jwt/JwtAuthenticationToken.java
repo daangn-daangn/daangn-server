@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security.jwt;
+package com.daangndaangn.common.jwt;
 
 import lombok.ToString;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security.jwt;
+package com.daangndaangn.common.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -41,8 +41,8 @@ public final class Jwt {
         this.expirySeconds = expirySeconds;
         this.algorithm = Algorithm.HMAC512(clientSecret);
         this.jwtVerifier = JWT.require(algorithm)
-                                .withIssuer(issuer)
-                                .build();
+                .withIssuer(issuer)
+                .build();
     }
 
     public String createApiToken(User user, String[] roles) {
@@ -82,17 +82,18 @@ public final class Jwt {
     }
 
 
+    @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Claims {
-        Long id;
-        Long oauthId;
-        String nickname;
-        Location location;
-        Double manner;
-        String profileUrl;
-        String[] roles;
-        Date iat;
-        Date exp;
+        private Long id;
+        private Long oauthId;
+        private String nickname;
+        private Location location;
+        private Double manner;
+        private String profileUrl;
+        private String[] roles;
+        private Date iat;
+        private Date exp;
 
         private Claims(DecodedJWT decodedJWT) {
             Claim id = decodedJWT.getClaim("id");
@@ -142,19 +143,19 @@ public final class Jwt {
             return claims;
         }
 
-        long iat() {
+        public long iat() {
             return ObjectUtils.isNotEmpty(iat) ? iat.getTime() : -1;
         }
 
-        long exp() {
+        public long exp() {
             return ObjectUtils.isNotEmpty(exp) ? exp.getTime() : -1;
         }
 
-        void eraseIat() {
+        public void eraseIat() {
             iat = null;
         }
 
-        void eraseExp() {
+        public void eraseExp() {
             exp = null;
         }
 
@@ -162,16 +163,16 @@ public final class Jwt {
         @Override
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
-                .append("oauthId", oauthId)
-                .append("nickname", nickname)
-                .append("location", location)
-                .append("manner", manner)
-                .append("profileUrl", profileUrl)
-                .append("roles", Arrays.toString(roles))
-                .append("iat", iat)
-                .append("exp", exp)
-                .toString();
+                    .append("id", id)
+                    .append("oauthId", oauthId)
+                    .append("nickname", nickname)
+                    .append("location", location)
+                    .append("manner", manner)
+                    .append("profileUrl", profileUrl)
+                    .append("roles", Arrays.toString(roles))
+                    .append("iat", iat)
+                    .append("exp", exp)
+                    .toString();
         }
     }
 }

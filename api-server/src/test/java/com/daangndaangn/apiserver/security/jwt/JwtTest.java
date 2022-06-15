@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.security.jwt;
 
 import com.daangndaangn.common.api.entity.user.Location;
+import com.daangndaangn.common.jwt.Jwt;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,12 +42,12 @@ class JwtTest {
         Jwt.Claims decodedJWT = jwt.verify(encodedJWT);
         log.info("decodedJWT: {}", decodedJWT);
 
-        assertThat(claims.id).isEqualTo(decodedJWT.id);
-        assertThat(claims.oauthId).isEqualTo(decodedJWT.oauthId);
-        assertThat(claims.nickname).isEqualTo(decodedJWT.nickname);
-        assertThat(claims.location).isEqualTo(decodedJWT.location);
-        assertThat(claims.manner).isEqualTo(decodedJWT.manner);
-        assertArrayEquals(claims.roles, decodedJWT.roles);
+        assertThat(claims.getId()).isEqualTo(decodedJWT.getId());
+        assertThat(claims.getOauthId()).isEqualTo(decodedJWT.getOauthId());
+        assertThat(claims.getNickname()).isEqualTo(decodedJWT.getNickname());
+        assertThat(claims.getLocation()).isEqualTo(decodedJWT.getLocation());
+        assertThat(claims.getManner()).isEqualTo(decodedJWT.getManner());
+        assertArrayEquals(claims.getRoles(), decodedJWT.getRoles());
     }
 
     @Test

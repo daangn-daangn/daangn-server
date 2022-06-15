@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.security;
 
 import com.daangndaangn.common.api.entity.user.Location;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthentication;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationToken;
+import com.daangndaangn.common.jwt.JwtAuthentication;
+import com.daangndaangn.common.jwt.JwtAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;

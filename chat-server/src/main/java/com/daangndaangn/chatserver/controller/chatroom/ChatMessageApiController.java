@@ -5,9 +5,11 @@ import com.daangndaangn.chatserver.controller.chatroom.ChatMessageResponse.GetRe
 import com.daangndaangn.chatserver.controller.MessageSender;
 import com.daangndaangn.chatserver.service.chatroom.ChatMessageService;
 import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,8 +76,15 @@ public class ChatMessageApiController {
         return OK(getResponses);
     }
 
-//    @PutMapping("/read-size")
-//    public ApiResult<> updateReadMessageSize() {
-//
-//    }
+    @PutMapping("/read-size")
+    public ApiResult<Void> updateReadMessageSize(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                 @RequestBody ChatMessageRequest.UpdateRequest request) {
+
+        log.info("authentication.getId(): {}", authentication.getId());
+        log.info("request.getRoomId(): {}", request.getRoomId());
+
+        chatMessageService.updateReadMessageSize(request.getRoomId(), authentication.getId());
+
+        return OK(null);
+    }
 }

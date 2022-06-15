@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security;
+package com.daangndaangn.common.security;
 
 import com.daangndaangn.common.web.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;

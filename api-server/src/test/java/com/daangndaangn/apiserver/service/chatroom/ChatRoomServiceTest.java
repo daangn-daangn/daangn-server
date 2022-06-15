@@ -46,9 +46,6 @@ class ChatRoomServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    @Mock
-    private ChatRoomCustomRepositoryImpl chatRoomQueryRepository;
-
     private User mockUser;
     private Product mockProduct;
     private ChatRoom mockChatRoom;
@@ -312,23 +309,18 @@ class ChatRoomServiceTest {
         verify(chatRoomRepository).findChatRoomById(anyString());
     }
 
-//    @Test
-//    public void 올바르지_않은_메시지_타입은_예외를_반환한다() {
-//        //given
-//        String id = "testId";
-//        long senderId = 1L;
-//        int invalidMessageType1 = 0;
-//        int invalidMessageType2 = 4;
-//        String message = "test";
-//
-//        //when
-//        assertThrows(IllegalArgumentException.class,
-//                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType1, message));
-//
-//        assertThrows(IllegalArgumentException.class,
-//                () -> chatRoomService.addChatMessage(id, senderId, invalidMessageType2, message));
-//
-//        //then
-//        verify(chatRoomQueryRepository, never()).insertChatMessage(anyString(), any());
-//    }
+    @Test
+    public void id_입력_시_채팅룸에_존재하는_메시지_갯수를_반환한다() {
+        //given
+        long chatRoomMessageSize = 6L;
+        String mockChatRoomId = "mockChatRoomId";
+        given(chatRoomRepository.getChatRoomMessageSize(anyString())).willReturn(chatRoomMessageSize);
+
+        //when
+        long result = chatRoomService.getChatRoomMessageSize(mockChatRoomId);
+
+        //then
+        assertThat(result).isEqualTo(chatRoomMessageSize);
+        verify(chatRoomRepository).getChatRoomMessageSize(anyString());
+    }
 }

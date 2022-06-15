@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.security.jwt;
+package com.daangndaangn.common.jwt;
 
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
