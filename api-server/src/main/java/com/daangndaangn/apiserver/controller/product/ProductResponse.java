@@ -1,7 +1,6 @@
 package com.daangndaangn.apiserver.controller.product;
 
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
-import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

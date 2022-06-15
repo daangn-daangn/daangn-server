@@ -14,7 +14,8 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 public enum MessageType {
     MESSAGE(1, "일반 메시지"),
     IMAGE(2, "이미지 URL"),
-    POSITION(3, "좌표");
+    POSITION(3, "좌표"),
+    EXIT(4, "채팅방 퇴장");
 
     private static final Map<Integer, MessageType> messageTypeMap =
             Stream.of(values()).collect(toMap(MessageType::getCode, value -> value));

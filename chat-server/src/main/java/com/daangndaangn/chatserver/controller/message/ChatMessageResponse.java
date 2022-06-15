@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.controller.chatroom;
+package com.daangndaangn.chatserver.controller.message;
 
 import com.daangndaangn.common.chat.document.message.ChatMessage;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;

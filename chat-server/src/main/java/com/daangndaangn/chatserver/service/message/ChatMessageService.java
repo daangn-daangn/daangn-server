@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.service.chatroom;
+package com.daangndaangn.chatserver.service.message;
 
 import com.daangndaangn.common.chat.document.ChatRoom;
 
@@ -12,7 +12,7 @@ public interface ChatMessageService {
     /**
      * for 채팅 메시지 보내기 API
      */
-    long addChatMessage(String id, Long senderId, int messageTypeCode, String message);
+    long addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message);
 
     /**
      * for 채팅방 메시지 목록 조회 API

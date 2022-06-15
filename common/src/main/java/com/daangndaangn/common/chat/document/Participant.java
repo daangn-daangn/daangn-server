@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -21,23 +22,29 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
  */
 @ToString
 @Getter
-@Document(collection = "participant")
+@Document(collection = "participants")
 public class Participant {
     @Id
     private String id;
 
+    @Field("user_id")
     private Long userId;
 
+    @Field("chat_room_id")
     private String chatRoomId;
 
     // 참여자가 해당 채팅방에서 마지막으로 읽은 message 갯수
+    @Field("read_message_size")
     private Long readMessageSize;
 
-    private boolean isOut;
+    @Field("out")
+    private boolean out;
 
+    @Field("created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Field("updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
@@ -45,8 +52,8 @@ public class Participant {
         this.readMessageSize = isEmpty(readMessageSize) ? this.readMessageSize : readMessageSize;
     }
 
-    public void update(boolean isOut) {
-        this.isOut = isOut;
+    public void update(boolean out) {
+        this.out = out;
     }
 
     @Builder
@@ -58,6 +65,6 @@ public class Participant {
         this.userId = userId;
         this.chatRoomId = chatRoomId;
         this.readMessageSize = 0L;
-        this.isOut = false;
+        this.out = false;
     }
 }

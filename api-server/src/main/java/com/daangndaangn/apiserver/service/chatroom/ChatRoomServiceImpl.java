@@ -4,17 +4,20 @@ import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Slf4j
@@ -73,7 +76,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public List<ChatRoom> getChatRooms(Long userId, Pageable pageable) {
         checkArgument(userId != null, "userId는 null일 수 없습니다.");
-        return chatRoomRepository.findAllByFirstUserIdOrSecondUserId(userId, userId, pageable);
+
+        List<String> chatRoomIds = participantService.getParticipants(userId, pageable)
+                .stream()
+                .map(Participant::getChatRoomId).collect(toList());
+
+        log.info("chatRoomIds size = {}", chatRoomIds.size());
+
+        return chatRoomRepository.findAllByChatRoomIds(chatRoomIds,
+                Sort.by(Sort.Direction.DESC, "updated_at"));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.daangndaangn.apiserver.controller.chatroom;
+package com.daangndaangn.chatserver.controller.participant;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,14 +6,11 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 
-public class ChatRoomRequest {
-
+public class ParticipantRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
-    public static class CreateRequest {
+    public static class InviteRequest {
         @NotNull
-        private Long productId;
-        @NotNull
-        private Long otherUserId;
+        private Long userId;
     }
 }
