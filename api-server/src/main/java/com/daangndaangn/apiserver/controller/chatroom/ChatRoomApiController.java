@@ -1,10 +1,13 @@
 package com.daangndaangn.apiserver.controller.chatroom;
 
 import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.CreateResponse;
+import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.DetailResponse;
 import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.SimpleResponse;
 import com.daangndaangn.apiserver.service.chatroom.ChatRoomService;
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
+import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
@@ -32,6 +35,7 @@ public class ChatRoomApiController {
     private final ChatRoomService chatRoomService;
     private final UserService userService;
     private final ParticipantService participantService;
+    private final ProductService productService;
     private final PresignerUtils presignerUtils;
 
     /**
@@ -67,8 +71,8 @@ public class ChatRoomApiController {
 
         List<SimpleResponse> simpleResponses = chatRooms.stream().map(chatRoom -> {
 
-            Long otherPersonId = chatRoom.getOtherPersonId(authentication.getId());
-            User user = userService.getUser(otherPersonId);
+            Long otherUserId = chatRoom.getOtherUserId(authentication.getId());
+            User user = userService.getUser(otherUserId);
 
             String profileImage = StringUtils.isEmpty(user.getProfileUrl()) ?
                 null : presignerUtils.getProfilePresignedGetUrl(user.getProfileUrl());
@@ -91,5 +95,29 @@ public class ChatRoomApiController {
         }).collect(toList());
 
         return OK(simpleResponses);
+    }
+
+    /**
+     * 채팅방 상세 정보 조회
+     *
+     * GET /api/chat-rooms/:chat-room-id
+     */
+    @GetMapping("/{chatRoomId}")
+    public ApiResult<DetailResponse> getChatRoom(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                 @PathVariable("chatRoomId") String chatRoomId) {
+
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+        Long otherUserId = chatRoom.getOtherUserId(authentication.getId());
+        User otherUser = userService.getUser(otherUserId);
+        Product product = productService.getProduct(chatRoom.getProductId());
+        Participant participant = participantService.getParticipant(chatRoomId, otherUserId);
+
+        String profileImage = StringUtils.isEmpty(otherUser.getProfileUrl()) ?
+                null : presignerUtils.getProfilePresignedGetUrl(otherUser.getProfileUrl());
+
+        String productImage = StringUtils.isEmpty(product.getThumbNailImage()) ?
+                null : presignerUtils.getProductPresignedGetUrl(product.getThumbNailImage());
+
+        return OK(DetailResponse.of(chatRoom, participant.isOut(), otherUser, profileImage, product, productImage));
     }
 }

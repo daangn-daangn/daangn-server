@@ -19,7 +19,9 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
 
     public long insertChatMessage(String id, ChatMessage chatMessage) {
         Query query = new Query(Criteria.where("id").is(id));
-        Update update = new Update().push("chat_messages", chatMessage);
+        Update update = new Update().push("chat_messages", chatMessage)
+                                    .set("updated_at", chatMessage.getCreatedAt());
+
         UpdateResult updateResult = mongoTemplate.updateFirst(query, update, ChatRoom.class);
         return updateResult.getModifiedCount();
     }

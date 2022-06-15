@@ -1,4 +1,4 @@
-package com.daangndaangn.chatserver.service.chatroom;
+package com.daangndaangn.chatserver.service.message;
 
 
 import com.daangndaangn.common.chat.document.ChatRoom;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -29,9 +30,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     @Transactional(value = "mongoTransactionManager")
-    public long addChatMessage(String id, Long senderId, int messageTypeCode, String message) {
+    public long addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message) {
         checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
         checkArgument(senderId != null, "senderId는 null일 수 없습니다.");
+        checkArgument(receiverId != null, "receiverId는 null일 수 없습니다.");
         checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
                 "messageTypeCode는 1,2,3 중에 하나여야 합니다.");
         checkArgument(isNotEmpty(message), "message는 null일 수 없습니다.");
@@ -42,7 +44,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .message(message)
                 .build();
 
-        return chatRoomRepository.insertChatMessage(id, chatMessage);
+        long messageUpdateCount = chatRoomRepository.insertChatMessage(id, chatMessage);
+        long participantUpdateCount = participantRepository.synchronizeUpdatedAt(id, List.of(senderId, receiverId), chatMessage.getCreatedAt());
+
+        log.info("messageUpdateCount = {}", messageUpdateCount);
+        log.info("participantUpdateCount = {}", participantUpdateCount);
+
+        return messageUpdateCount + participantUpdateCount;
     }
 
     @Override

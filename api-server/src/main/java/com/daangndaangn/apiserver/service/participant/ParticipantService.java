@@ -1,6 +1,9 @@
 package com.daangndaangn.apiserver.service.participant;
 
 import com.daangndaangn.common.chat.document.Participant;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ParticipantService {
     /**
@@ -16,7 +19,7 @@ public interface ParticipantService {
     Participant getParticipant(String chatRoomId, Long userId);
 
     /**
-     * 채팅방 나가기
+     * 최신 업데이트 기준으로 채팅방을 불러오기 위한 기능
      */
-    void delete(String id);
+    List<Participant> getParticipants(Long userId, Pageable pageable);
 }

@@ -6,7 +6,6 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
-import com.daangndaangn.common.error.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,24 +80,6 @@ class ParticipantServiceTest {
 
         //then
         verify(participantRepository, never()).save(any());
-    }
-
-    @Test
-    public void 채팅방을_나가면_isOut_상태가_false가_된다() {
-        //given
-        given(participantRepository.findById(anyString())).willReturn(Optional.ofNullable(mockParticipant));
-        given(participantRepository.save(any())).willReturn(mockParticipant);
-        boolean beforeDelete = mockParticipant.isOut();
-
-        //when
-        participantService.delete(mockParticipant.getId());
-        boolean afterDelete = mockParticipant.isOut();
-
-        //then
-        verify(participantRepository).findById(anyString());
-        verify(participantRepository).save(any());
-        assertThat(beforeDelete).isEqualTo(false);
-        assertThat(afterDelete).isEqualTo(true);
     }
 
     @Test

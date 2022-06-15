@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.controller.chatroom;
 
+import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
-import com.daangndaangn.common.chat.document.Participant;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -62,6 +62,49 @@ public class ChatRoomResponse {
                     .pageOffset(pageOffset)
                     .pageSize(pageSize)
                     .updatedAt(chatRoom.getUpdatedAt())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class DetailResponse {
+        private String chatRoomId;
+
+        private Long participantId;
+        private String participantNickname;
+        private Double participantManner;
+        private String participantImage;
+        private Boolean out;
+
+        private Long productId;
+        private String productImage;
+        private Long productPrice;
+        private String productTitle;
+        private String productName;
+        private String productState;
+
+        public static DetailResponse of(ChatRoom chatRoom,
+                                        boolean out,
+                                        User user,
+                                        String profileImage,
+                                        Product product,
+                                        String productImage) {
+
+            return DetailResponse.builder()
+                    .chatRoomId(chatRoom.getId())
+                    .participantId(user.getId())
+                    .participantNickname(user.getNickname())
+                    .participantManner(user.getManner())
+                    .participantImage(profileImage)
+                    .out(out)
+                    .productId(product.getId())
+                    .productImage(productImage)
+                    .productPrice(product.getPrice())
+                    .productTitle(product.getTitle())
+                    .productName(product.getName())
+                    .productState(product.getProductState().getState())
                     .build();
         }
     }

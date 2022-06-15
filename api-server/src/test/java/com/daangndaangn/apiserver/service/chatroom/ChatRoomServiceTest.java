@@ -242,14 +242,14 @@ class ChatRoomServiceTest {
     public void userId로_사용자가_들어가있는_채팅방을_조회할_수_있다() {
         //given
         Pageable pageable = PageRequest.of(0, 5);
-        given(chatRoomRepository.findAllByFirstUserIdOrSecondUserId(anyLong(), anyLong(), any()))
+        given(chatRoomRepository.findAllByChatRoomIds(anyList(), any()))
                 .willReturn(List.of(mockChatRoom, mockChatRoom));
 
         //when
         List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser.getId(), pageable);
 
         //then
-        verify(chatRoomRepository).findAllByFirstUserIdOrSecondUserId(anyLong(), anyLong(), any());
+        verify(chatRoomRepository).findAllByChatRoomIds(anyList(), any());
         assertThat(chattingRooms.size()).isEqualTo(2);
     }
 
@@ -257,14 +257,14 @@ class ChatRoomServiceTest {
     public void userId로_사용자가_들어가있는_채팅방이_없을_시_빈_리스트를_반환한다() {
         //given
         Pageable pageable = PageRequest.of(0, 5);
-        given(chatRoomRepository.findAllByFirstUserIdOrSecondUserId(anyLong(), anyLong(), any()))
+        given(chatRoomRepository.findAllByChatRoomIds(anyList(), any()))
                 .willReturn(Collections.emptyList());
 
         //when
         List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser.getId(), pageable);
 
         //then
-        verify(chatRoomRepository).findAllByFirstUserIdOrSecondUserId(anyLong(), anyLong(), any());
+        verify(chatRoomRepository).findAllByChatRoomIds(anyList(), any());
         assertThat(chattingRooms.size()).isEqualTo(0);
     }
 

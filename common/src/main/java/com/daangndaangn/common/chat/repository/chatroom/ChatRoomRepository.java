@@ -2,6 +2,7 @@ package com.daangndaangn.common.chat.repository.chatroom;
 
 import com.daangndaangn.common.chat.document.ChatRoom;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -40,6 +41,15 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, C
     List<ChatRoom> findAllByFirstUserIdOrSecondUserId(@Param("firstUserId") Long firstUserId,
                                                       @Param("secondUserId") Long secondUserId,
                                                       Pageable pageable);
+
+    /**
+     * ChatRoom 조회 시 chat_messages 최상위 1건만 가져오기 위한 전처리
+     */
+    @Query(value = "{'id': { $in : :#{#chatRoomIds} } }",
+            fields = "{'chat_messages': { $slice: -1 }}"
+    )
+    List<ChatRoom> findAllByChatRoomIds(@Param("chatRoomIds") List<String> chatRoomIds, Sort sort);
+
 
     Long countAllByProductId(Long productId);
 

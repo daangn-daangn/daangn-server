@@ -1,14 +1,16 @@
 package com.daangndaangn.apiserver.service.participant;
 
-import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -54,10 +56,9 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    @Transactional(value = "mongoTransactionManager")
-    public void delete(String id) {
-        Participant participant = getParticipant(id);
-        participant.update(true);
-        participantRepository.save(participant);
+    public List<Participant> getParticipants(Long userId, Pageable pageable) {
+        checkArgument(userId != null, "userId must not be null");
+
+        return participantRepository.findAllByUserIdAndOutIsFalseOrderByUpdatedAtDesc(userId, pageable);
     }
 }

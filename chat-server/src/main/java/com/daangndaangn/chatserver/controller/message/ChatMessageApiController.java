@@ -1,9 +1,9 @@
-package com.daangndaangn.chatserver.controller.chatroom;
+package com.daangndaangn.chatserver.controller.message;
 
-import com.daangndaangn.chatserver.controller.chatroom.ChatMessageRequest.CreateRequest;
-import com.daangndaangn.chatserver.controller.chatroom.ChatMessageResponse.GetResponse;
+import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
+import com.daangndaangn.chatserver.controller.message.ChatMessageResponse.GetResponse;
 import com.daangndaangn.chatserver.controller.MessageSender;
-import com.daangndaangn.chatserver.service.chatroom.ChatMessageService;
+import com.daangndaangn.chatserver.service.message.ChatMessageService;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
@@ -37,12 +37,13 @@ public class ChatMessageApiController {
 
         long addCount = chatMessageService.addChatMessage(message.getRoomId(),
                                                           message.getSenderId(),
+                                                          message.getReceiverId(),
                                                           message.getMessageType(),
                                                           message.getMessage());
 
         log.info("addCount: {}", addCount);
 
-        if (addCount == 1) {
+        if (addCount > 0) {
             messageSender.send(message);
         }
     }

@@ -1,5 +1,6 @@
-package com.daangndaangn.chatserver.service.chatroom;
+package com.daangndaangn.chatserver.service.message;
 
+import com.daangndaangn.chatserver.service.message.ChatMessageServiceImpl;
 import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.Location;
@@ -87,10 +88,10 @@ class ChatMessageServiceTest {
 
         //when
         assertThrows(IllegalArgumentException.class,
-                () -> chatMessageService.addChatMessage(id, senderId, invalidMessageType1, message));
+                () -> chatMessageService.addChatMessage(id, senderId, 2L, invalidMessageType1, message));
 
         assertThrows(IllegalArgumentException.class,
-                () -> chatMessageService.addChatMessage(id, senderId, invalidMessageType2, message));
+                () -> chatMessageService.addChatMessage(id, senderId, 3L, invalidMessageType2, message));
 
         //then
         verify(chatRoomRepository, never()).insertChatMessage(anyString(), any());

@@ -1,7 +1,6 @@
 package com.daangndaangn.common.chat.document;
 
 import com.daangndaangn.common.chat.document.message.ChatMessage;
-import com.google.common.base.Preconditions;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -27,12 +26,16 @@ public class ChatRoom {
     @Id
     private String id;
 
+    @Field("product_id")
     private Long productId;
 
+    @Field("product_image")
     private String productImage;
 
+    @Field("first_user_id")
     private Long firstUserId;
 
+    @Field("second_user_id")
     private Long secondUserId;
 
     private String identifier;
@@ -40,13 +43,15 @@ public class ChatRoom {
     @Field("chat_messages")
     List<ChatMessage> chatMessages = new ArrayList<>();
 
+    @Field("created_at")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Field("updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Long getOtherPersonId(Long userId) {
+    public Long getOtherUserId(Long userId) {
         checkArgument(userId != null, "userId must not be null");
 
         if (userId.equals(firstUserId)) {
