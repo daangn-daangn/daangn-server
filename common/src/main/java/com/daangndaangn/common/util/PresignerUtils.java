@@ -20,6 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class PresignerUtils {
 
     private static final String PRODUCT_IMAGE_FOLDER = "product-image";
+    private static final String PROFILE_IMAGE_FOLDER = "profile-image";
     private final AwsConfig awsConfig;
     private final S3Presigner presigner;
 
@@ -30,6 +31,16 @@ public class PresignerUtils {
 
     public String getProductPresignedPutUrl(String filename) {
         PutObjectPresignRequest presignPutRequest = toPutObjectPresignRequest(PRODUCT_IMAGE_FOLDER, filename);
+        return presigner.presignPutObject(presignPutRequest).url().toString();
+    }
+
+    public String getProfilePresignedGetUrl(String filename) {
+        GetObjectPresignRequest presignGetRequest = toGetObjectPresignRequest(PROFILE_IMAGE_FOLDER, filename);
+        return presigner.presignGetObject(presignGetRequest).url().toString();
+    }
+
+    public String getProfilePresignedPutUrl(String filename) {
+        PutObjectPresignRequest presignPutRequest = toPutObjectPresignRequest(PROFILE_IMAGE_FOLDER, filename);
         return presigner.presignPutObject(presignPutRequest).url().toString();
     }
 

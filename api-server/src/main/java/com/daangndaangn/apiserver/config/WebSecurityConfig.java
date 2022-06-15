@@ -1,10 +1,11 @@
 package com.daangndaangn.apiserver.config;
 
-import com.daangndaangn.apiserver.security.CustomAccessDeniedHandler;
-import com.daangndaangn.apiserver.security.CustomUnauthorizedHandler;
-import com.daangndaangn.apiserver.security.jwt.Jwt;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationProvider;
-import com.daangndaangn.apiserver.security.jwt.JwtAuthenticationTokenFilter;
+import com.daangndaangn.apiserver.security.JwtAuthenticationProvider;
+import com.daangndaangn.common.config.JwtConfig;
+import com.daangndaangn.common.jwt.Jwt;
+import com.daangndaangn.common.jwt.JwtAuthenticationTokenFilter;
+import com.daangndaangn.common.security.CustomAccessDeniedHandler;
+import com.daangndaangn.common.security.CustomUnauthorizedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/api/hcheck").permitAll() // 서버 상태 CHECK API는 모두 접근가능
+                    .antMatchers("/api/health").permitAll() // 서버 상태 CHECK API는 모두 접근가능
                     .antMatchers("/api/auth/login").permitAll()   // 로그인 API는 모두 접근가능
                     .antMatchers("/api/users/join").permitAll()  // 회원 가입 API는 모두 접근가능
                     .antMatchers("/api/non-member/**").permitAll()  // 비회원 전용 API는 모두 접근가능

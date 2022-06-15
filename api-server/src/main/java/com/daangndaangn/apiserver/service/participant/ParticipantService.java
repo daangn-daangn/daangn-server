@@ -1,13 +1,22 @@
 package com.daangndaangn.apiserver.service.participant;
 
-import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface ParticipantService {
-    Participant create(Long userId, ChatRoom chatRoom);
+    /**
+     * 채팅방 생성 시 2개의 Participant를 생성
+     */
+    Participant create(Long userId, String chatRoomId);
 
-    List<Participant> getParticipants(Long userId, Pageable pageable);
+    Participant getParticipant(String id);
+
+    /**
+     * findByUserIdWithChatRoomId
+     */
+    Participant getParticipant(String chatRoomId, Long userId);
+
+    /**
+     * 채팅방 나가기
+     */
+    void delete(String id);
 }

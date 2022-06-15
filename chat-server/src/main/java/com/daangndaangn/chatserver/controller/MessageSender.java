@@ -1,7 +1,7 @@
 package com.daangndaangn.chatserver.controller;
 
 import com.daangndaangn.chatserver.constants.KafkaConstants;
-import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
+import com.daangndaangn.chatserver.controller.chatroom.ChatMessageRequest.CreateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

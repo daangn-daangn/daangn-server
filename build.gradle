@@ -39,6 +39,8 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 		implementation 'org.springframework.boot:spring-boot-starter-validation'
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'org.springframework.security:spring-security-test'
 		implementation group: 'org.apache.commons', name: 'commons-lang3'
 		implementation("com.google.guava:guava:31.1-jre")
 		runtimeOnly 'com.h2database:h2'
@@ -48,6 +50,7 @@ subprojects {
 		implementation platform('software.amazon.awssdk:bom:2.17.204')
 		implementation 'software.amazon.awssdk:s3'
 		implementation 'commons-io:commons-io:2.11.0'
+		implementation 'com.auth0:java-jwt:3.19.0'
 	}
 }
 

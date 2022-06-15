@@ -4,7 +4,7 @@ import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
-import com.daangndaangn.common.chat.repository.ChatRoomRepository;
+import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

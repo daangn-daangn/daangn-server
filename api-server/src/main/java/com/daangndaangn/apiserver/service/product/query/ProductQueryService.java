@@ -6,7 +6,7 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
-import com.daangndaangn.common.chat.repository.ChatRoomRepository;
+import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

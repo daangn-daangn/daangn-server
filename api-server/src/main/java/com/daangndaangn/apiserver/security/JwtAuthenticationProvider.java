@@ -1,10 +1,13 @@
-package com.daangndaangn.apiserver.security.jwt;
+package com.daangndaangn.apiserver.security;
 
 import com.daangndaangn.apiserver.controller.authentication.AuthResponse;
 import com.daangndaangn.common.api.entity.user.Role;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.jwt.Jwt;
+import com.daangndaangn.common.jwt.JwtAuthentication;
+import com.daangndaangn.common.jwt.JwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationProvider;
