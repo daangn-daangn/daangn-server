@@ -22,4 +22,6 @@ public interface SaleReviewCustomRepository {
     List<SaleReview> findAllBuyerReview(Long userId, Pageable pageable);
 
     boolean existBuyerReview(Long productId, Long userId);
+
+    boolean existSellerReview(Long productId, Long userId);
 }

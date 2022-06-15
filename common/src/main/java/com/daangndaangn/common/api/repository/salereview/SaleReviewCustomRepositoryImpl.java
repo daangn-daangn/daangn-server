@@ -41,7 +41,8 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
                     .join(qSaleReview.product).fetchJoin()
                     .join(qSaleReview.reviewer).fetchJoin()
                     .join(qSaleReview.reviewee).fetchJoin()
-                .where(qSaleReview.reviewee.id.eq(userId))
+                .where(qSaleReview.reviewee.id.eq(userId),
+                        qSaleReview.saleReviewType.ne(SaleReviewType.HIDE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -87,7 +88,7 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
 
     @Override
     public boolean existBuyerReview(Long productId, Long userId) {
-        List<SaleReview> result = jpaQueryFactory.select(qSaleReview)
+        SaleReview result = jpaQueryFactory.select(qSaleReview)
                 .from(qSaleReview)
                 .join(qSaleReview.product).fetchJoin()
                 .join(qSaleReview.reviewer).fetchJoin()
@@ -96,8 +97,24 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
                         qSaleReview.reviewer.id.eq(userId),
                         qSaleReview.saleReviewType.eq(SaleReviewType.BUYER_REVIEW)
                 )
-                .fetch();
+                .fetchFirst();
 
-        return !result.isEmpty();
+        return result != null;
+    }
+
+    @Override
+    public boolean existSellerReview(Long productId, Long userId) {
+        SaleReview result = jpaQueryFactory.select(qSaleReview)
+                .from(qSaleReview)
+                .join(qSaleReview.product).fetchJoin()
+                .join(qSaleReview.reviewer).fetchJoin()
+                .join(qSaleReview.reviewee).fetchJoin()
+                .where(qSaleReview.product.id.eq(productId),
+                        qSaleReview.reviewer.id.eq(userId),
+                        qSaleReview.saleReviewType.eq(SaleReviewType.SELLER_REVIEW)
+                )
+                .fetchFirst();
+
+        return result != null;
     }
 }

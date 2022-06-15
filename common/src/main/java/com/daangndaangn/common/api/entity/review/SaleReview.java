@@ -50,6 +50,10 @@ public class SaleReview extends AuditingCreateUpdateEntity {
         this.content = isEmpty(content) ? this.content : content;
     }
 
+    public void update(SaleReviewType saleReviewType) {
+        this.saleReviewType = saleReviewType;
+    }
+
     @Builder
     private SaleReview(Long id, Product product, User reviewer, User reviewee, SaleReviewType saleReviewType, String content) {
         checkArgument(product != null, "물품 정보는 필수입니다.");
