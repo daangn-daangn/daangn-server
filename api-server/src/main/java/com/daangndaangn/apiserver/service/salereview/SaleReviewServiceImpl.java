@@ -9,7 +9,6 @@ import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
 @Transactional(readOnly = true)
@@ -39,7 +39,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
         checkArgument(productId != null, "productId 값은 필수입니다.");
         checkArgument(reviewerId != null, "reviewerId 값은 필수입니다.");
         checkArgument(revieweeId != null, "revieweeId 값은 필수입니다.");
-        checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
+        checkArgument(isNotEmpty(content), "content 값은 필수입니다.");
 
         Product product = productService.getProduct(productId);
         User reviewer = userService.getUser(reviewerId);
@@ -125,7 +125,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     @Transactional
     public void update(Long id, String content) {
         checkArgument(id != null, "id 값은 필수입니다.");
-        checkArgument(StringUtils.isNotEmpty(content), "content 값은 필수입니다.");
+        checkArgument(isNotEmpty(content), "content 값은 필수입니다.");
 
         SaleReview updatedReview = getSaleReview(id);
         updatedReview.update(content);

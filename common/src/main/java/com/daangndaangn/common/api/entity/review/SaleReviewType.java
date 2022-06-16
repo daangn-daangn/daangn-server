@@ -25,8 +25,7 @@ public enum SaleReviewType {
     public static SaleReviewType from(int saleReviewTypeCode) {
         SaleReviewType saleReviewType = saleReviewTypeMap.get(saleReviewTypeCode);
         if (isEmpty(saleReviewType)) {
-            //TODO: 사용자 정의 예외로 변경
-            throw new IllegalArgumentException("잘못된 SaleReviewType 타입입니다.");
+            throw new IllegalArgumentException("잘못된 SaleReviewType 타입입니다. 0~2 중 하나를 입력해야 합니다.");
         }
 
         return saleReviewType;

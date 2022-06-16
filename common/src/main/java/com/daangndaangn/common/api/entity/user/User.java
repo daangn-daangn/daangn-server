@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Getter
@@ -31,7 +30,7 @@ public class User extends AuditingCreateUpdateEntity {
     @Column
     private Location location;
 
-    @Column(length = 500)
+    @Column(length = 250)
     private String profileUrl;
 
     @Column(nullable = false)
@@ -42,11 +41,11 @@ public class User extends AuditingCreateUpdateEntity {
                 isEmpty(nickname) || nickname.length() <= 20,
                 "닉네임은 20자 이하여야 합니다.");
         checkArgument(
-                isEmpty(location) || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
+                location == null || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
                 "주소는 20자 이하여야 합니다.");
 
         this.nickname = isEmpty(nickname) ? this.nickname : nickname;
-        this.location = isEmpty(location) ? this.location : location;
+        this.location = (location == null || isEmpty(location.getAddress())) ? this.location : location;
     }
 
     public void update(Long oauthId, String nickname, Location location, String profileUrl) {
@@ -54,15 +53,15 @@ public class User extends AuditingCreateUpdateEntity {
                 isEmpty(nickname) || nickname.length() <= 20,
                 "닉네임은 20자 이하여야 합니다.");
         checkArgument(
-                isEmpty(location) || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
+                location == null || isEmpty(location.getAddress()) || location.getAddress().length() <= 20,
                 "주소는 20자 이하여야 합니다.");
         checkArgument(
-                isEmpty(profileUrl) || profileUrl.length() <= 500,
-                "프로필 URL은 500자 이하여야 합니다.");
+                isEmpty(profileUrl) || profileUrl.length() <= 250,
+                "프로필 URL은 250자 이하여야 합니다.");
 
-        this.oauthId = isEmpty(oauthId) ? this.oauthId : oauthId;
-        this.nickname = isEmpty(nickname) ? this.nickname : nickname;
-        this.location = isEmpty(location) ? this.location : location;
+        this.oauthId = oauthId == null ? this.oauthId : oauthId;
+        this.nickname = nickname == null ? this.nickname : nickname;
+        this.location = (location == null || isEmpty(location.getAddress())) ? this.location : location;
         this.profileUrl = isEmpty(profileUrl) ? this.profileUrl : profileUrl;
     }
 
@@ -76,10 +75,10 @@ public class User extends AuditingCreateUpdateEntity {
 
     @Builder
     private User(Long id, Long oauthId, String profileUrl, Location location) {
-        checkArgument(oauthId != null, "oauthId must not be null");
+        checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
         checkArgument(
-                isEmpty(profileUrl) || profileUrl.length() <= 500,
-                "프로필 URL은 500자 이하여야 합니다.");
+                isEmpty(profileUrl) || profileUrl.length() <= 250,
+                "프로필 URL은 250자 이하여야 합니다.");
 
         this.id = id;
         this.oauthId = oauthId;

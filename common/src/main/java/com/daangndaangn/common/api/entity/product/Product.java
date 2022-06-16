@@ -13,8 +13,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -76,13 +74,13 @@ public class Product extends AuditingCreateUpdateEntity {
                     String title,
                     String description) {
 
-        checkArgument(seller != null, "seller must not be null");
-        checkArgument(category != null, "category must not be null");
-        checkArgument(isNotEmpty(name), "name must not be null");
-        checkArgument(isNotEmpty(title), "title must not be null");
-        checkArgument(isNotEmpty(description), "description must not be null");
+        checkArgument(seller != null, "seller 값은 필수입니다.");
+        checkArgument(category != null, "category 값은 필수입니다.");
+        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
+        checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
+        checkArgument(isNotEmpty(description), "description 값은 필수입니다.");
         checkArgument(
-                isNotEmpty(seller.getLocation()) && isNotEmpty(seller.getLocation().getAddress()),
+                seller.getLocation() != null && isNotEmpty(seller.getLocation().getAddress()),
                 "판매자의 주소 정보는 필수입니다.");
         checkArgument(name.length() <= 50, "물품명은 50자 이하여야 합니다.");
         checkArgument(title.length() <= 100, "판매글 제목은 100자 이하여야 합니다.");
@@ -102,8 +100,8 @@ public class Product extends AuditingCreateUpdateEntity {
     }
 
     public void setThumbnailImage(String thumbNailImage) {
-        checkArgument(isNotEmpty(thumbNailImage), "thumbNailImage must not be null");
-        checkArgument(thumbNailImage.length() <= 250, "thumbNailImage는 250자 이하여야 합니다.");
+        checkArgument(isNotEmpty(thumbNailImage), "thumbNailImage 값은 필수입니다.");
+        checkArgument(thumbNailImage.length() <= 250, "thumbNailImage 값은 250자 이하여야 합니다.");
 
         this.thumbNailImage = thumbNailImage;
     }
@@ -126,8 +124,8 @@ public class Product extends AuditingCreateUpdateEntity {
 
         this.title = isEmpty(title) ? this.title : title;
         this.name = isEmpty(name) ? this.name : name;
-        this.category = isEmpty(category) ? this.category : category;
-        this.price = isEmpty(price) ? this.price : price;
+        this.category = category == null ? this.category : category;
+        this.price = price == null ? this.price : price;
         this.description = isEmpty(description) ? this.description : description;
     }
 
@@ -136,7 +134,7 @@ public class Product extends AuditingCreateUpdateEntity {
     }
 
     public void updateBuyer(User buyer) {
-        checkArgument(buyer != null, "buyer must not be null");
+        checkArgument(buyer != null, "buyer 값은 필수입니다.");
         this.buyer = buyer;
     }
 

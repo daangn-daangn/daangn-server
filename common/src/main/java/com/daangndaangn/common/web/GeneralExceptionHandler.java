@@ -25,6 +25,8 @@ import software.amazon.awssdk.core.exception.SdkClientException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.daangndaangn.common.web.ApiResult.ERROR;
+
 @Slf4j
 @RestControllerAdvice
 public class GeneralExceptionHandler {
@@ -32,13 +34,13 @@ public class GeneralExceptionHandler {
     private ResponseEntity<ApiResult<?>> createResponseByThrowable(Throwable throwable, HttpStatus status) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<>(ApiResult.ERROR(throwable, status), headers, status);
+        return new ResponseEntity<>(ERROR(throwable, status), headers, status);
     }
 
     private ResponseEntity<ApiResult<?>> createResponseByMessage(String errorMessage, HttpStatus status) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<>(ApiResult.ERROR(errorMessage, status), headers, status);
+        return new ResponseEntity<>(ERROR(errorMessage, status), headers, status);
     }
 
     @ExceptionHandler({
@@ -112,7 +114,7 @@ public class GeneralExceptionHandler {
         if (e instanceof NotFoundException) {
             return createResponseByThrowable(e, HttpStatus.NOT_FOUND);
         } else if (e instanceof UnauthorizedException) {
-            return createResponseByThrowable(e, HttpStatus.UNAUTHORIZED);
+            return createResponseByThrowable(e, HttpStatus.FORBIDDEN);
         } else if (e instanceof DuplicateValueException) {
             return createResponseByThrowable(e, HttpStatus.BAD_REQUEST);
         }
@@ -122,7 +124,7 @@ public class GeneralExceptionHandler {
     }
 
     /**
-     * 예측하지 못한 API Server Exception Handling
+     * 예상하지 못한 API Server Exception Handling
      */
     @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<?> handleException(Exception e) {

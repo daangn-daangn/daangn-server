@@ -57,7 +57,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         return principal;
     }
 
-    // Not Used
+    // Not Used. just Override
     @Override
     public Object getCredentials() {
         return null;

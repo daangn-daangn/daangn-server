@@ -55,11 +55,17 @@ public class SaleReview extends AuditingCreateUpdateEntity {
     }
 
     @Builder
-    private SaleReview(Long id, Product product, User reviewer, User reviewee, SaleReviewType saleReviewType, String content) {
-        checkArgument(product != null, "물품 정보는 필수입니다.");
-        checkArgument(reviewer != null, "리뷰 작성자 정보는 필수입니다.");
-        checkArgument(reviewee != null, "리뷰 작성대상자 정보는 필수입니다.");
-        checkArgument(isNotEmpty(content), "리뷰 내용은 필수입니다.");
+    private SaleReview(Long id,
+                       Product product,
+                       User reviewer,
+                       User reviewee,
+                       SaleReviewType saleReviewType,
+                       String content) {
+
+        checkArgument(product != null, "물품 정보값은 필수입니다.");
+        checkArgument(reviewer != null, "리뷰 작성자 정보값은 필수입니다.");
+        checkArgument(reviewee != null, "리뷰 작성대상자 정보값은 필수입니다.");
+        checkArgument(isNotEmpty(content), "리뷰 내용값은 필수입니다.");
         checkArgument(content.length() <= 500, "리뷰 내용은 500자 이하여야 합니다.");
 
         this.id = id;

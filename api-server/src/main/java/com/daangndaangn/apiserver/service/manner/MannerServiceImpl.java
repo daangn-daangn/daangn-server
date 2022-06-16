@@ -21,9 +21,9 @@ public class MannerServiceImpl implements MannerService {
     @Override
     @Transactional
     public Long createManner(Long userId, Long evaluatorId, int score) {
-        checkArgument(userId != null, "userId must not be null");
-        checkArgument(evaluatorId != null, "evaluatorId must not be null");
-        checkArgument(-5 <= score && score <= 5, "score");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+        checkArgument(evaluatorId != null, "evaluatorId 값은 필수입니다.");
+        checkArgument(-5 <= score && score <= 5, "score는 -5점과 5점 사이여야 합니다.");
         checkArgument(!userId.equals(evaluatorId), "userId와 evaluatorId는 달라야 합니다.");
 
         User user = userService.getUser(userId);

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,9 +33,9 @@ public class Manner extends AuditingCreateUpdateEntity {
 
     @Builder
     private Manner(Long id, User user, User evaluator, int score) {
-        checkArgument(isNotEmpty(user), "user must not be null");
-        checkArgument(isNotEmpty(evaluator), "evaluator must not be null");
-        checkArgument(-5 <= score && score <= 5, "score value must be -5 ~ 5");
+        checkArgument(user != null, "user 값은 필수입니다.");
+        checkArgument(evaluator != null, "evaluator 값은 필수입니다.");
+        checkArgument(-5 <= score && score <= 5, "score는 -5점과 5점 사이여야 합니다.");
 
         this.id = id;
         this.user = user;

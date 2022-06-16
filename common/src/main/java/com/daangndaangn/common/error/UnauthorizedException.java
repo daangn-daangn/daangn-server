@@ -7,8 +7,8 @@ import com.daangndaangn.common.util.MessageUtils;
  */
 public class UnauthorizedException extends ServiceRuntimeException {
 
-    public static final String MESSAGE_KEY = "error.auth";
-    public static final String MESSAGE_DETAIL = "error.auth.details";
+    public static final String MESSAGE_KEY = "error.authority";
+    public static final String MESSAGE_DETAIL = "error.authority.details";
 
     public UnauthorizedException(String message) {
         super(MESSAGE_KEY, MESSAGE_DETAIL, new String[]{message});

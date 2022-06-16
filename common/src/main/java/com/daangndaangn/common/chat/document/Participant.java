@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
@@ -49,7 +48,7 @@ public class Participant {
     private LocalDateTime updatedAt;
 
     public void update(Long readMessageSize) {
-        this.readMessageSize = isEmpty(readMessageSize) ? this.readMessageSize : readMessageSize;
+        this.readMessageSize = readMessageSize == null ? this.readMessageSize : readMessageSize;
     }
 
     public void update(boolean out) {
@@ -58,8 +57,8 @@ public class Participant {
 
     @Builder
     private Participant(String id, Long userId, String chatRoomId) {
-        checkArgument(userId != null, "userId must not be null");
-        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId 값은 필수입니다.");
 
         this.id = id;
         this.userId = userId;

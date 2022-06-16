@@ -1,6 +1,5 @@
 package com.daangndaangn.common.chat.repository.participant;
 
-import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
 import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;

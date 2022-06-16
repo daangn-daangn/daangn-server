@@ -26,9 +26,8 @@ public class Location {
     private String address;
 
     public static Location from(String address) {
-        checkArgument(
-                isNotEmpty(address) && address.length() <= 20,
-                "주소는 20자 이하여야 합니다.");
+        checkArgument(isNotEmpty(address), "address 값은 필수입니다.");
+        checkArgument(address.length() <= 20, "주소는 20자 이하여야 합니다.");
 
         return new Location(address);
     }
