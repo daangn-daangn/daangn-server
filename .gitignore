@@ -45,3 +45,8 @@ out/
 /api-server/src/main/resources/application-dev.properties
 /chat-server/src/main/resources/aws.properties
 /chat-server/src/main/resources/application-dev.properties
+
+### Log ###
+/log
+/api-server/log
+/chat-server/log

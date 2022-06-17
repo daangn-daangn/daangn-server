@@ -1,9 +1,6 @@
 package com.daangndaangn.apiserver.controller.user;
 
-import com.daangndaangn.apiserver.controller.user.UserResponse.JoinResponse;
-import com.daangndaangn.apiserver.controller.user.UserResponse.MannerResponse;
-import com.daangndaangn.apiserver.controller.user.UserResponse.NicknameResponse;
-import com.daangndaangn.apiserver.controller.user.UserResponse.UserInfoResponse;
+import com.daangndaangn.apiserver.controller.user.UserResponse.*;
 import com.daangndaangn.apiserver.service.manner.MannerService;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.apiserver.security.oauth.OAuthRequest;
@@ -13,6 +10,7 @@ import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
+import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +22,7 @@ import java.util.List;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @RequestMapping("/api/users")
 @RestController
@@ -33,13 +32,19 @@ public class UserApiController {
     private final OAuthService oAuthService;
     private final UserService userService;
     private final MannerService mannerService;
+    private final PresignerUtils presignerUtils;
 
     /**
      * GET /api/users/:userId
      */
     @GetMapping("/{userId}")
     public ApiResult<UserInfoResponse> getUser(@PathVariable("userId") Long userId) {
-        return OK(UserInfoResponse.from(userService.getUser(userId)));
+
+        User user = userService.getUser(userId);
+        String profileUrl = isEmpty(user.getProfileUrl()) ?
+            null : presignerUtils.getProfilePresignedGetUrl(user.getProfileUrl());
+
+        return OK(UserInfoResponse.from(user, profileUrl));
     }
 
     /**
@@ -59,15 +64,19 @@ public class UserApiController {
      * PUT /api/users
      */
     @PutMapping
-    public ApiResult<Void> update(@AuthenticationPrincipal JwtAuthentication authentication,
-                                  @Valid @RequestBody UserRequest.UpdateRequest request) {
+    public ApiResult<UpdateResponse> update(@AuthenticationPrincipal JwtAuthentication authentication,
+                                            @Valid @RequestBody UserRequest.UpdateRequest request) {
 
-        userService.update(authentication.getOauthId(),
-                            request.getNickname(),
-                            Location.from(request.getLocation()),
-                            request.getProfileUrl());
+        long userId = userService.update(authentication.getOauthId(),
+                request.getNickname(),
+                Location.from(request.getLocation()),
+                request.getProfileUrl());
 
-        return OK(null);
+        User user = userService.getUser(userId);
+        String profileUrl = isEmpty(user.getProfileUrl()) ?
+                null : presignerUtils.getProfilePresignedPutUrl(user.getProfileUrl());
+
+        return OK(UpdateResponse.of(user, profileUrl));
     }
 
     /**

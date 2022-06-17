@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 로그백 설정 부분-->
+<configuration>
+    <!-- property::로그백 설정파일에서 사용될 변수명을 선언합니다. -->
+    <!-- %-5level::로깅레벨출력, 고정폭(5자리), 로깅레벨이 info인 경우 빈칸 하나 추가 -->
+    <!-- %d{yy-MM-dd HH:mm:ss}::로그 기록시간(로깅하고 있는 현재 시간, 분, 초) -->
+    <!-- %logger{0}::로거 이름 출력(패키지를 제외한 클래스 이름만) -->
+    <!-- %method::로깅하고 있는 클래스의 메소드명 출력 -->
+    <!-- %line::로깅하고 있는 클래스 소스의 line수 출력 -->
+    <!-- %msg::로깅내용 출력 -->
+    <!-- %n::개행문자 출력 -->
+    <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss} [%thread] %logger{0} [%method:%line] - %msg%n"/>
+
+    <!-- ch.qos.logback.core.ConsoleAppender => 콘솔에 로그를 찍습니다. 로그를 OutputStream에 작성하여 콘솔에 출력되도록 합니다. -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 출력패턴 설정 -->
+        <encoder>
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- ch.qos.logback.core.rolling.RollingFileAppender => 여러개의 파일을 롤링, 순회하면서 로그를 찍습니다. -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 기록할 파일명과 경로를 설정 -->
+        <file>log/chat-debug.log</file>
+        <!-- Rolling 정책::ch.qos.logback.core.rolling.TimeBasedRollingPolicy => 일자별 적용 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 파일 쓰기가 종료된 log 파일명의 패턴을 지정합니다. -->
+            <!-- .gz,.zip 등을 넣으면 자동 일자별 로그파일 압축 -->
+            <fileNamePattern>log/%d{yyyy-MM}/debug.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 한 파일당 최대 파일 용량을 지정합니다. -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!-- 일자별 로그파일 최대 보관주기(일), 해당 설정일 이상된 파일은 자동으로 제거-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+
+        <!-- 출력패턴 설정 -->
+        <encoder>
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- root 레벨 설정 -->
+    <root level="info">
+        <!-- appender-ref로 "appender name" 지정 -->
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

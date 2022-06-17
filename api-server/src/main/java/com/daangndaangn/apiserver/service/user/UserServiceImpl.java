@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(Long oauthId, String nickname, Location location, String profileUrl) {
+    public long update(Long oauthId, String nickname, Location location, String profileUrl) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
         checkArgument(isNotEmpty(nickname), "nickname 값은 필수입니다.");
         checkArgument(location != null && isNotEmpty(location.getAddress()), "주소값은 필수입니다.");
@@ -57,6 +57,8 @@ public class UserServiceImpl implements UserService {
         }
 
         user.update(oauthId, nickname, location, profileUrl);
+
+        return user.getId();
     }
 
     @Override

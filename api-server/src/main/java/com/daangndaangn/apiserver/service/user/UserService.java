@@ -10,7 +10,7 @@ public interface UserService {
 
     Long create(Long oauthId, String profileUrl);
 
-    void update(Long oauthId, String nickname, Location location, String profileUrl);
+    long update(Long oauthId, String nickname, Location location, String profileUrl);
 
     void update(Long id, String nickname, String location);
 

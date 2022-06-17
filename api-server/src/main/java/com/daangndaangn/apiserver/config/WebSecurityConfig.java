@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.config;
 
 import com.daangndaangn.apiserver.security.JwtAuthenticationProvider;
+import com.daangndaangn.common.api.entity.user.Role;
 import com.daangndaangn.common.config.JwtConfig;
 import com.daangndaangn.common.jwt.Jwt;
 import com.daangndaangn.common.jwt.JwtAuthenticationTokenFilter;
@@ -74,9 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/auth/login").permitAll()   // 로그인 API는 모두 접근가능
                     .antMatchers("/api/users/join").permitAll()  // 회원 가입 API는 모두 접근가능
                     .antMatchers("/api/non-member/**").permitAll()  // 비회원 전용 API는 모두 접근가능
-                    .antMatchers("/api/test/**").permitAll()  // 테스트 전용 API는 모두 접근가능
-                    .antMatchers("/api/**").permitAll()   // 그 외 API는 '회원 권한' 필요 disable
-//                    .antMatchers("/api/**").hasRole(Role.USER.name())   // 그 외 API는 '회원 권한' 필요
+                    .antMatchers("/api/**").hasRole(Role.USER.name())   // 그 외 API는 '회원 권한' 필요
                 .anyRequest().permitAll()
                 .and()
             .formLogin()
