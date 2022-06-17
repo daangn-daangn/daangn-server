@@ -10,6 +10,7 @@ import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Transactional(readOnly = true)
@@ -52,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
         checkArgument(isNotEmpty(description), "description 값은 필수입니다..");
         checkArgument(productImageUrls == null || productImageUrls.size() <= 10, "사진은 최대 10장만 등록할 수 있습니다.");
 
-        if (productImageUrls != null) {
+        if (isNotEmpty(productImageUrls)) {
 
             boolean isNotValid = productImageUrls.stream().anyMatch(uploadUtils::isNotImageFile);
 
@@ -73,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(description)
                 .build();
 
-        if (productImageUrls != null) {
+        if (isNotEmpty(productImageUrls)) {
 
             List<String> randomProductImageUrls = productImageUrls.stream()
                                                     .filter(StringUtils::isNotEmpty)

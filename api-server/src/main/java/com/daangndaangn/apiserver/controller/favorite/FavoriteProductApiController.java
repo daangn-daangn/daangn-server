@@ -24,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api/favorite-products")
 @RestController
 @RequiredArgsConstructor
-public class FavoriteProductController {
+public class FavoriteProductApiController {
 
     private final FavoriteProductService favoriteProductService;
     private final ProductQueryService productQueryService;

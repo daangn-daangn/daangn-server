@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api/categories")
 @RestController
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryApiController {
 
     private final CategoryService categoryService;
 

@@ -73,6 +73,10 @@ public class User extends AuditingCreateUpdateEntity {
         this.manner = Math.max(0.0, this.manner - 0.1);
     }
 
+    public boolean isEmptyLocation() {
+        return location == null || isEmpty(location.getAddress());
+    }
+
     @Builder
     private User(Long id, Long oauthId, String profileUrl, Location location) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");

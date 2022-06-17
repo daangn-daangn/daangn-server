@@ -91,20 +91,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void updateManner(Long userId, int manner) {
-        checkArgument(0 <= manner && manner <= 100, "manner는 0과 100사이의 값이어야 합니다.");
-
-        User user = getUser(userId);
-
-        if (manner >= 50) {
-            user.increaseManner();
-        } else {
-            user.decreaseManner();
-        }
-    }
-
-    @Override
     public boolean isValidNickname(String nickname) {
         if (isEmpty(nickname) || nickname.length() > 20) {
             return false;
@@ -117,7 +103,11 @@ public class UserServiceImpl implements UserService {
     public List<UserQueryDto> getUserMannerEvaluations(Long userId) {
         checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        return userQueryRepository.findAll(userId);
+        if (userRepository.existsById(userId)) {
+            return userQueryRepository.findAll(userId);
+        }
+
+        throw new NotFoundException(User.class, String.format("userId = %s", userId));
     }
 }
 

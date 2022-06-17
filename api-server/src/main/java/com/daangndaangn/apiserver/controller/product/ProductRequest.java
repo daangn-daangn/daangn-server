@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +13,15 @@ public class ProductRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class CreateRequest {
-        @NotNull
+        @NotNull(message = "categoryId 값은 필수입니다.")
         private Long categoryId;
-        @NotEmpty
+        @NotBlank(message = "title 값은 필수입니다.")
         private String title;
-        @NotEmpty
+        @NotBlank(message = "name 값은 필수입니다.")
         private String name;
-        @NotNull
+        @NotNull(message = "price 값은 필수입니다.")
         private Long price;
-        @NotEmpty
+        @NotBlank(message = "description 값은 필수입니다.")
         private String description;
 
         private List<String> productImages = new ArrayList<>();
@@ -31,24 +30,25 @@ public class ProductRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateRequest {
-        @NotNull
+        @NotNull(message = "categoryId 값은 필수입니다.")
         private Long categoryId;
-        @NotEmpty
+        @NotBlank(message = "title 값은 필수입니다.")
         private String title;
-        @NotEmpty
+        @NotBlank(message = "name 값은 필수입니다.")
         private String name;
-        @NotNull
+        @NotNull(message = "price 값은 필수입니다.")
         private Long price;
-        @NotEmpty
+        @NotBlank(message = "description 값은 필수입니다.")
         private String description;
     }
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateStateRequest {
-        @NotNull
+        @Min(value = 1)
+        @Max(value = 3)
+        @NotNull(message = "state 값은 필수입니다.")
         private Integer state;
-
         private Long buyerId;
     }
 

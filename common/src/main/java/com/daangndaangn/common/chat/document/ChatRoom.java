@@ -72,7 +72,6 @@ public class ChatRoom {
                      String identifier) {
 
         checkArgument(productId != null, "productId 값은 필수입니다.");
-        checkArgument(isNotEmpty(productImage), "productImage 값은 필수입니다.");
         checkArgument(firstUserId != null, "firstUserId 값은 필수입니다.");
         checkArgument(secondUserId != null, "secondUserId 값은 필수입니다.");
         checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");

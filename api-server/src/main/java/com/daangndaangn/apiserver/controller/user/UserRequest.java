@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,8 +17,7 @@ public class UserRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class JoinRequest {
-
-        @NotNull
+        @NotBlank(message = "accessToken 값은 필수입니다.")
         private String accessToken;
     }
 
@@ -23,9 +25,9 @@ public class UserRequest {
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateRequest {
 
-        @NotNull
+        @NotBlank(message = "nickname 값은 필수입니다.")
         private String nickname;
-        @NotNull
+        @NotBlank(message = "location 값은 필수입니다.")
         private String location;
         private String profileUrl;
     }
@@ -33,9 +35,12 @@ public class UserRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class MannerRequest {
-        @NotNull
+        @NotNull(message = "userId 값은 필수입니다.")
         private Long userId;
-        @NotNull
-        private int score;
+
+        @Min(value = -5)
+        @Max(value = 5)
+        @NotNull(message = "score 값은 필수입니다.")
+        private Integer score;
     }
 }

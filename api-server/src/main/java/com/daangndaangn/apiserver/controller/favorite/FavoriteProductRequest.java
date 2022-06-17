@@ -11,7 +11,7 @@ public class FavoriteProductRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class CreateRequest {
-        @NotNull
+        @NotNull(message = "productId 값은 필수입니다.")
         private Long productId;
     }
 }

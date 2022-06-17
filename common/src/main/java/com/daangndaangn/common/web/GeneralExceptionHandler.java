@@ -4,14 +4,13 @@ import com.daangndaangn.common.error.DuplicateValueException;
 import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.error.ServiceRuntimeException;
 import com.daangndaangn.common.error.UnauthorizedException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,32 +30,39 @@ import static com.daangndaangn.common.web.ApiResult.ERROR;
 @RestControllerAdvice
 public class GeneralExceptionHandler {
 
-    private ResponseEntity<ApiResult<?>> createResponseByThrowable(Throwable throwable, HttpStatus status) {
+    private ResponseEntity<ApiResult<?>> createResponse(Throwable throwable, HttpStatus status) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(ERROR(throwable, status), headers, status);
     }
 
-    private ResponseEntity<ApiResult<?>> createResponseByMessage(String errorMessage, HttpStatus status) {
+    private ResponseEntity<ApiResult<?>> createResponseByInvalidFields(String errorMessage,
+                                                                       HttpStatus status,
+                                                                       Map<String, String> invalidFields) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<>(ERROR(errorMessage, status), headers, status);
+        return new ResponseEntity<>(ERROR(errorMessage, status, invalidFields), headers, status);
     }
 
+    /**
+     * AuthenticationException 인증 과정중에 일어난 에러도 400으로 처리
+     */
     @ExceptionHandler({
             IllegalStateException.class, IllegalArgumentException.class,
             TypeMismatchException.class, HttpMessageNotReadableException.class,
             MissingServletRequestParameterException.class, MultipartException.class,
+            AuthenticationException.class
     })
     public ResponseEntity<?> handleBadRequestException(Exception e) {
         log.info("Bad request exception occurred: {}", e.getMessage(), e);
-        return createResponseByThrowable(e, HttpStatus.BAD_REQUEST);
+        return createResponse(e, HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * Controller @Valid Exception 예외
+     * ApiController 내 @Valid 전용 예외
      *
-     * errorMessage 예시
+     * invalid_fields 예시
      *
      * {
      *   "name" : "비어 있을 수 없습니다",
@@ -65,24 +71,12 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidException(MethodArgumentNotValidException e) {
-        log.info("Bad request exception occurred: {}", e.getMessage(), e);
-
         Map<String, String> errorMap = new HashMap<>();
         e.getBindingResult().getFieldErrors()
                 .forEach(fieldError -> errorMap.put(fieldError.getField(), fieldError.getDefaultMessage()));
 
-        String errorMessage = toErrorMessage(errorMap);
-        return createResponseByMessage(errorMessage, HttpStatus.BAD_REQUEST);
-    }
-
-    private String toErrorMessage(Map<String, String> errorMap) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String errorMessage = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(errorMap);
-            return errorMessage;
-        } catch (JsonProcessingException ignored) {
-            return "유효성 검사 예외가 발생했습니다.";
-        }
+        String errorMessage = "Bad request exception occurred";
+        return createResponseByInvalidFields(errorMessage, HttpStatus.BAD_REQUEST, errorMap);
     }
 
     @ExceptionHandler({
@@ -90,20 +84,20 @@ public class GeneralExceptionHandler {
     })
     public ResponseEntity<?> handleAwsErrorException(Exception e) {
         log.info("AwsClientError exception occurred: {}", e.getMessage(), e);
-        return createResponseByThrowable(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<?> handleHttpClientErrorException(HttpClientErrorException e) {
         log.info("HttpClientError exception occurred: {}", e.getMessage(), e);
         HttpStatus httpStatus = HttpStatus.valueOf(e.getRawStatusCode());
-        return createResponseByThrowable(e, httpStatus);
+        return createResponse(e, httpStatus);
     }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<?> handleRestClientException(RestClientException e) {
         log.info("RestClient exception occurred: {}", e.getMessage(), e);
-        return createResponseByThrowable(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -112,15 +106,15 @@ public class GeneralExceptionHandler {
     @ExceptionHandler(ServiceRuntimeException.class)
     public ResponseEntity<?> handleServiceRuntimeException(ServiceRuntimeException e) {
         if (e instanceof NotFoundException) {
-            return createResponseByThrowable(e, HttpStatus.NOT_FOUND);
+            return createResponse(e, HttpStatus.NOT_FOUND);
         } else if (e instanceof UnauthorizedException) {
-            return createResponseByThrowable(e, HttpStatus.FORBIDDEN);
+            return createResponse(e, HttpStatus.FORBIDDEN);
         } else if (e instanceof DuplicateValueException) {
-            return createResponseByThrowable(e, HttpStatus.BAD_REQUEST);
+            return createResponse(e, HttpStatus.BAD_REQUEST);
         }
 
         log.warn("Unexpected service exception occurred: {}", e.getMessage(), e);
-        return createResponseByThrowable(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -129,6 +123,6 @@ public class GeneralExceptionHandler {
     @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<?> handleException(Exception e) {
         log.error("Unexpected exception occurred: {}", e.getMessage(), e);
-        return createResponseByThrowable(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
