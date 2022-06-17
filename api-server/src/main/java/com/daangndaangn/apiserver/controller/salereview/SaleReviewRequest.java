@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class SaleReviewRequest {
@@ -12,29 +12,29 @@ public class SaleReviewRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class SellerReviewCreateRequest {
-        @NotNull
+        @NotNull(message = "productId 값은 필수입니다.")
         private Long productId;
-        @NotNull
+        @NotNull(message = "buyerId 값은 필수입니다.")
         private Long buyerId;
-        @NotEmpty
+        @NotBlank(message = "content 값은 필수입니다.")
         private String content;
     }
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class BuyerReviewCreateRequest {
-        @NotNull
+        @NotNull(message = "productId 값은 필수입니다.")
         private Long productId;
-        @NotNull
+        @NotNull(message = "sellerId 값은 필수입니다.")
         private Long sellerId;
-        @NotEmpty
+        @NotBlank(message = "content 값은 필수입니다.")
         private String content;
     }
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateRequest {
-        @NotEmpty
+        @NotBlank(message = "content 값은 필수입니다.")
         private String content;
     }
 }

@@ -8,6 +8,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.error.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
@@ -33,7 +35,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     public Long create(Long productId,
                        Long reviewerId,
                        Long revieweeId,
-                       SaleReviewType saleReviewTypeCode,
+                       SaleReviewType saleReviewType,
                        String content) {
 
         checkArgument(productId != null, "productId 값은 필수입니다.");
@@ -43,17 +45,42 @@ public class SaleReviewServiceImpl implements SaleReviewService {
 
         Product product = productService.getProduct(productId);
         User reviewer = userService.getUser(reviewerId);
+
+        if (reviewer.isEmptyLocation() || isEmpty(reviewer.getNickname())) {
+            throw new IllegalStateException("리뷰를 남기는 사용자는 주소와 닉네임이 필수입니다.");
+        }
+
         User reviewee = userService.getUser(revieweeId);
+
+        if (!isValidCreateRequest(product, reviewer, reviewee, saleReviewType)) {
+            throw new UnauthorizedException("올바른 요청이 아닙니다. 실제 판매자와 구매자만 리뷰를 남길 수 있습니다.");
+        }
 
         SaleReview saleReview = SaleReview.builder()
                                         .product(product)
                                         .reviewer(reviewer)
                                         .reviewee(reviewee)
-                                        .saleReviewType(saleReviewTypeCode)
+                                        .saleReviewType(saleReviewType)
                                         .content(content)
                                         .build();
 
         return saleReviewRepository.save(saleReview).getId();
+    }
+
+    private boolean isValidCreateRequest(Product product,
+                                         User reviewer,
+                                         User reviewee,
+                                         SaleReviewType saleReviewTypeCode) {
+
+        if (saleReviewTypeCode.equals(SaleReviewType.SELLER_REVIEW)) {
+            return product.isSeller(reviewer.getId()) && product.isBuyer(reviewee.getId());
+        }
+
+        if (saleReviewTypeCode.equals(SaleReviewType.BUYER_REVIEW)) {
+            return product.isBuyer(reviewer.getId()) && product.isSeller(reviewee.getId());
+        }
+
+        return false;
     }
 
     @Override
@@ -144,7 +171,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
             return;
         }
 
-        throw new IllegalArgumentException("리뷰를 받은 사람만 받은 리뷰를 숨길 수 있습니다.");
+        throw new UnauthorizedException("리뷰를 받은 사람만 받은 리뷰를 숨길 수 있습니다.");
     }
 
     @Override

@@ -2,14 +2,15 @@ package com.daangndaangn.apiserver.controller.salereview;
 
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest.BuyerReviewCreateRequest;
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewRequest.SellerReviewCreateRequest;
+import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse.CreateResponse;
+import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse.GetResponse;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
 import com.daangndaangn.common.api.entity.review.SaleReviewType;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
+import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 
 @RequestMapping("/api/sale-reviews")
@@ -27,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class SaleReviewApiController {
 
+    private final PresignerUtils presignerUtils;
     private final SaleReviewService saleReviewService;
 
     /**
@@ -35,9 +38,11 @@ public class SaleReviewApiController {
      * SaleReview 단 건 조회
      */
     @GetMapping("/{sale-review-id}")
-    public ApiResult<SaleReviewResponse.GetResponse> getSaleReview(@PathVariable("sale-review-id") Long saleReviewId) {
+    public ApiResult<GetResponse> getSaleReview(@PathVariable("sale-review-id") Long saleReviewId) {
         SaleReview saleReview = saleReviewService.getSaleReview(saleReviewId);
-        return OK(SaleReviewResponse.GetResponse.from(saleReview));
+        String profileUrl = presignerUtils.getProfilePresignedGetUrl(saleReview.getReviewer().getProfileUrl());
+
+        return OK(GetResponse.of(saleReview, profileUrl));
     }
 
     /**
@@ -46,15 +51,19 @@ public class SaleReviewApiController {
      * 사용자의 전체 후기 조회(SaleReview 리스트 조회)
      */
     @GetMapping("/user/{user-id}")
-    public ApiResult<SaleReviewResult> getSaleReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
+    public ApiResult<List<GetResponse>> getSaleReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> userReviews =
+        List<GetResponse> userReviews =
                 saleReviewService.getUserReviews(userId, pageable)
                         .stream()
-                        .map(SaleReviewResponse.GetResponse::from)
+                        .map(saleReview -> {
+                            String profileUrl = isEmpty(saleReview.getReviewer().getProfileUrl()) ?
+                                null : presignerUtils.getProfilePresignedGetUrl(saleReview.getReviewer().getProfileUrl());
+                            return GetResponse.of(saleReview, profileUrl);
+                        })
                         .collect(toList());
 
-        return OK(SaleReviewResult.of(userReviews.size(), userReviews));
+        return OK(userReviews);
     }
 
     /**
@@ -63,15 +72,19 @@ public class SaleReviewApiController {
      * 사용자의 판매자 후기 조회(SaleReview 리스트 조회)
      */
     @GetMapping("/seller/{user-id}")
-    public ApiResult<SaleReviewResult> getSellerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
+    public ApiResult<List<GetResponse>> getSellerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> sellerReviews =
+        List<GetResponse> sellerReviews =
                 saleReviewService.getSellerReviews(userId, pageable)
                         .stream()
-                        .map(SaleReviewResponse.GetResponse::from)
+                        .map(saleReview -> {
+                            String profileUrl = isEmpty(saleReview.getReviewer().getProfileUrl()) ?
+                                null : presignerUtils.getProfilePresignedGetUrl(saleReview.getReviewer().getProfileUrl());
+                            return GetResponse.of(saleReview, profileUrl);
+                        })
                         .collect(toList());
 
-        return OK(SaleReviewResult.of(sellerReviews.size(), sellerReviews));
+        return OK(sellerReviews);
     }
 
     /**
@@ -80,26 +93,19 @@ public class SaleReviewApiController {
      * 사용자의 구매자 후기 조회(SaleReview 리스트 조회)
      */
     @GetMapping("/buyer/{user-id}")
-    public ApiResult<SaleReviewResult> getBuyerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
+    public ApiResult<List<GetResponse>> getBuyerReviews(@PathVariable("user-id") Long userId, Pageable pageable) {
 
-        List<SaleReviewResponse.GetResponse> buyerReviews =
+        List<GetResponse> buyerReviews =
                 saleReviewService.getBuyerReviews(userId, pageable)
                         .stream()
-                        .map(SaleReviewResponse.GetResponse::from)
+                        .map(saleReview -> {
+                            String profileUrl = isEmpty(saleReview.getReviewer().getProfileUrl()) ?
+                                null : presignerUtils.getProfilePresignedGetUrl(saleReview.getReviewer().getProfileUrl());
+                            return GetResponse.of(saleReview, profileUrl);
+                        })
                         .collect(toList());
 
-        return OK(SaleReviewResult.of(buyerReviews.size(), buyerReviews));
-    }
-
-    @Getter
-    @AllArgsConstructor
-    static class SaleReviewResult {
-        private int dataSize;
-        private List<SaleReviewResponse.GetResponse> data;
-
-        static SaleReviewResult of(int dataSize, List<SaleReviewResponse.GetResponse> data) {
-            return new SaleReviewResult(dataSize, data);
-        }
+        return OK(buyerReviews);
     }
 
     /**
@@ -108,8 +114,8 @@ public class SaleReviewApiController {
      * 사용자는 판매자 후기를 남길 수 있다.
      */
     @PostMapping("/seller")
-    public ApiResult<Long> createSellerReview(@AuthenticationPrincipal JwtAuthentication authentication,
-                                              @Valid @RequestBody SellerReviewCreateRequest request) {
+    public ApiResult<CreateResponse> createSellerReview(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                        @Valid @RequestBody SellerReviewCreateRequest request) {
 
         Long saleReviewId = saleReviewService.create(
                 request.getProductId(),
@@ -118,7 +124,7 @@ public class SaleReviewApiController {
                 SaleReviewType.SELLER_REVIEW,
                 request.getContent());
 
-        return OK(saleReviewId);
+        return OK(CreateResponse.from(saleReviewId));
     }
 
     /**
@@ -127,7 +133,7 @@ public class SaleReviewApiController {
      * 사용자는 구매자 후기를 남길 수 있다.
      */
     @PostMapping("/buyer")
-    public ApiResult<Long> createBuyerReview(@AuthenticationPrincipal JwtAuthentication authentication,
+    public ApiResult<CreateResponse> createBuyerReview(@AuthenticationPrincipal JwtAuthentication authentication,
                                              @Valid @RequestBody BuyerReviewCreateRequest request) {
 
         Long saleReviewId = saleReviewService.create(
@@ -137,7 +143,7 @@ public class SaleReviewApiController {
                 SaleReviewType.BUYER_REVIEW,
                 request.getContent());
 
-        return OK(saleReviewId);
+        return OK(CreateResponse.from(saleReviewId));
     }
 
     /**

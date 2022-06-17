@@ -142,4 +142,20 @@ public class Product extends AuditingCreateUpdateEntity {
         checkState(refreshCnt + 1 <= 5, "새로 고침은 5회이상 할 수 없습니다.");
         refreshCnt++;
     }
+
+    public boolean isSeller(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+
+        return seller != null && userId.equals(seller.getId());
+    }
+
+    public boolean isBuyer(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+
+        return buyer != null && userId.equals(buyer.getId());
+    }
 }

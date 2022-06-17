@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SaleReviewService {
 
-    Long create(Long productId, Long reviewerId, Long revieweeId, SaleReviewType saleReviewTypeCode, String content);
+    Long create(Long productId, Long reviewerId, Long revieweeId, SaleReviewType saleReviewType, String content);
 
     SaleReview getSaleReview(Long id);
 

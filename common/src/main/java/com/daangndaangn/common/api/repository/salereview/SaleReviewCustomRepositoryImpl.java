@@ -43,8 +43,9 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
                     .join(qSaleReview.reviewee).fetchJoin()
                 .where(qSaleReview.reviewee.id.eq(userId),
                         qSaleReview.saleReviewType.ne(SaleReviewType.HIDE))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .orderBy(qSaleReview.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                 .fetch();
     }
 
@@ -62,8 +63,9 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
                 .where(qSaleReview.reviewee.id.eq(userId),
                        qSaleReview.saleReviewType.eq(SaleReviewType.SELLER_REVIEW)
                 )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .orderBy(qSaleReview.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                 .fetch();
     }
 
@@ -81,8 +83,9 @@ public class SaleReviewCustomRepositoryImpl implements SaleReviewCustomRepositor
                 .where(qSaleReview.reviewee.id.eq(userId),
                         qSaleReview.saleReviewType.eq(SaleReviewType.BUYER_REVIEW)
                 )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .orderBy(qSaleReview.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                 .fetch();
     }
 

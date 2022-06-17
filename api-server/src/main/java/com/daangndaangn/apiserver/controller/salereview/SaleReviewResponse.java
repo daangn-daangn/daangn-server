@@ -3,30 +3,47 @@ package com.daangndaangn.apiserver.controller.salereview;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 public class SaleReviewResponse {
 
-    /**
-     * TODO: API 명세에 따라 필드값 수정 필요
-     */
     @Getter
     @Builder
     @JsonNaming(SnakeCaseStrategy.class)
     public static class GetResponse {
         private Long id;
-        private String seller;
-        private String buyer;
+        private Long reviewerId;
+        private String reviewer;
+        private String profileUrl;
+        private String location;
         private String content;
+        private LocalDateTime createdAt;
 
-        public static GetResponse from(SaleReview saleReview) {
+        public static GetResponse of(SaleReview saleReview, String profileUrl) {
             return GetResponse.builder()
                     .id(saleReview.getId())
-                    .seller(saleReview.getReviewer().getNickname())
-                    .buyer(saleReview.getReviewee().getNickname())
+                    .reviewerId(saleReview.getReviewer().getId())
+                    .reviewer(saleReview.getReviewer().getNickname())
+                    .profileUrl(profileUrl)
+                    .location(saleReview.getReviewer().getLocation().getAddress())
                     .content(saleReview.getContent())
+                    .createdAt(saleReview.getCreatedAt())
                     .build();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class CreateResponse {
+        private Long saleReviewId;
+
+        public static CreateResponse from(Long saleReviewId) {
+            return new CreateResponse(saleReviewId);
         }
     }
 }
