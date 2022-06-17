@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface UserService {
 
-    Long create(Long oauthId, String profileUrl);
+    Long create(Long oauthId, String profileImageFullPath);
 
-    long update(Long oauthId, String nickname, Location location, String profileUrl);
+    long update(Long oauthId, String nickname, Location location, String profileImageFullPath);
 
     void update(Long id, String nickname, String location);
 
