@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
+import java.util.Map;
+
 @ToString
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,10 +19,6 @@ public class ApiResult<T> {
 
     private final ApiError error;
 
-    public static ApiResult OK() {
-        return new ApiResult<>(true, true, null);
-    }
-
     public static <T> ApiResult<T> OK(T response) {
         return new ApiResult<>(true, response, null);
     }
@@ -31,5 +29,9 @@ public class ApiResult<T> {
 
     public static ApiResult<?> ERROR(String errorMessage, HttpStatus status) {
         return new ApiResult<>(false, null, ApiError.of(errorMessage, status));
+    }
+
+    public static ApiResult<?> ERROR(String errorMessage, HttpStatus status, Map<String, String> invalidFields) {
+        return new ApiResult<>(false, null, ApiError.of(errorMessage, status, invalidFields));
     }
 }

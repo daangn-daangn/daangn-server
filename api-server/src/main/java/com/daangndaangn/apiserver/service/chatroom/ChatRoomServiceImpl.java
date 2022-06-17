@@ -33,10 +33,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional(value = "mongoTransactionManager")
     public ChatRoom create(Long productId, List<Long> userIds) {
-        checkArgument(productId != null, "productId는 null일 수 없습니다.");
-        checkArgument(userIds != null, "userIds는 null일 수 없습니다.");
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(userIds != null, "userIds 값은 필수입니다.");
         checkArgument(userIds.size() == 2, "userIds size는 2여야 합니다.");
-        checkArgument(userIds.get(0) != null && userIds.get(1) != null, "userIds 내 값은 null일 수 없습니다.");
+        checkArgument(userIds.get(0) != null && userIds.get(1) != null, "userIds 안에 값은 필수입니다.");
         checkArgument(!userIds.get(0).equals(userIds.get(1)), "두 userId는 같을 수 없습니다.");
 
         Long userId1 = userIds.get(0);
@@ -75,13 +75,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoom> getChatRooms(Long userId, Pageable pageable) {
-        checkArgument(userId != null, "userId는 null일 수 없습니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         List<String> chatRoomIds = participantService.getParticipants(userId, pageable)
                 .stream()
                 .map(Participant::getChatRoomId).collect(toList());
-
-        log.info("chatRoomIds size = {}", chatRoomIds.size());
 
         return chatRoomRepository.findAllByChatRoomIds(chatRoomIds,
                 Sort.by(Sort.Direction.DESC, "updated_at"));
@@ -89,7 +87,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoom getChatRoom(String id) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
 
         return chatRoomRepository.findChatRoomById(id)
                 .orElseThrow(() -> new NotFoundException(ChatRoom.class, String.format("id = %s", id)));
@@ -97,8 +95,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public String toIdentifier(Long userId1, Long userId2) {
-        checkArgument(userId1 != null, "userId1은 null일 수 없습니다.");
-        checkArgument(userId2 != null, "userId2는 null일 수 없습니다.");
+        checkArgument(userId1 != null, "userId1 값은 필수입니다.");
+        checkArgument(userId2 != null, "userId2 값은 필수입니다.");
 
         long firstUserId = Math.min(userId1, userId2);
         long secondUserId = Math.max(userId1, userId2);
@@ -108,7 +106,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public long getChatRoomMessageSize(String id) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
+        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
 
         return chatRoomRepository.getChatRoomMessageSize(id);
     }

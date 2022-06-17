@@ -1,6 +1,5 @@
 package com.daangndaangn.common.chat.document.message;
 
-import com.querydsl.core.annotations.QueryEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 
 /**
  * 채팅 메시지
@@ -17,7 +19,6 @@ import java.time.ZonedDateTime;
 @ToString
 @Getter
 @NoArgsConstructor
-@QueryEntity
 public class ChatMessage {
 
     private Long senderId;
@@ -29,6 +30,10 @@ public class ChatMessage {
     private ChatMessage(Long senderId,
                         MessageType messageType,
                         String message) {
+
+        checkArgument(senderId != null, "senderId 값은 필수입니다.");
+        checkArgument(messageType != null, "messageType 값은 필수입니다.");
+        checkArgument(isNotEmpty(message), "message 값은 필수입니다.");
 
         this.senderId = senderId;
         this.messageType = messageType;

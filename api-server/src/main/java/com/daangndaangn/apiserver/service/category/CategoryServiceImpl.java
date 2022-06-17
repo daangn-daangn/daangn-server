@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public Long create(String name) {
-        checkArgument(isNotEmpty(name), "category name must not be null");
+        checkArgument(isNotEmpty(name), "category name 값은 필수입니다.");
 
         Category category = Category.from(name);
         return categoryRepository.save(category).getId();
@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategory(Long id) {
-        checkArgument(id != null, "category id must not be null");
+        checkArgument(id != null, "category id 값은 필수입니다.");
 
         return categoryRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(Category.class, String.format("categoryId = %s", id)));

@@ -76,8 +76,8 @@ public class PresignerUtils {
     }
 
     private String toKey(String folder, String filename) {
-        checkArgument(isNotEmpty(folder), "folder name must not be empty");
-        checkArgument(isNotEmpty(filename), "filename must not be empty");
+        checkArgument(isNotEmpty(folder), "folder 값은 필수입니다.");
+        checkArgument(isNotEmpty(filename), "filename 값은 필수입니다.");
 
         return folder + "/" + filename;
     }

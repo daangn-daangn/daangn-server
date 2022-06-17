@@ -9,17 +9,16 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @ToString
 @Getter
-@Entity
 @Document(collection = "chat_rooms")
 public class ChatRoom {
 
@@ -52,7 +51,7 @@ public class ChatRoom {
     private LocalDateTime updatedAt;
 
     public Long getOtherUserId(Long userId) {
-        checkArgument(userId != null, "userId must not be null");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         if (userId.equals(firstUserId)) {
             return secondUserId;
@@ -71,6 +70,11 @@ public class ChatRoom {
                      Long firstUserId,
                      Long secondUserId,
                      String identifier) {
+
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(firstUserId != null, "firstUserId 값은 필수입니다.");
+        checkArgument(secondUserId != null, "secondUserId 값은 필수입니다.");
+        checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
 
         this.id = id;
         this.productId = productId;

@@ -42,6 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(Long oauthId, String nickname, Location location, String profileUrl) {
+        checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
+        checkArgument(isNotEmpty(nickname), "nickname 값은 필수입니다.");
+        checkArgument(location != null && isNotEmpty(location.getAddress()), "주소값은 필수입니다.");
+        checkArgument(isNotEmpty(nickname), "nickname 값은 필수입니다.");
+        checkArgument(isNotEmpty(profileUrl), "profileUrl 값은 필수입니다.");
 
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
@@ -57,8 +62,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(Long id, String nickname, String location) {
-        checkArgument(isNotEmpty(nickname), "nickname must not be null");
-        checkArgument(isNotEmpty(location), "location must not be null");
+        checkArgument(isNotEmpty(nickname), "nickname 값은 필수입니다.");
+        checkArgument(isNotEmpty(location), "주소값은 필수입니다.");
 
         User user = getUser(id);
         user.update(nickname, Location.from(location));
@@ -66,12 +71,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long userId) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("userId = %s", userId)));
     }
 
     @Override
     public User getUserByOauthId(Long oauthId) {
+        checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
         return userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
     }
@@ -81,20 +88,6 @@ public class UserServiceImpl implements UserService {
     public void delete(Long userId) {
         User deletedUser = getUser(userId);
         userRepository.delete(deletedUser);
-    }
-
-    @Override
-    @Transactional
-    public void updateManner(Long userId, int manner) {
-        checkArgument(0 <= manner && manner <= 100, "manner는 0과 100사이의 값이어야 합니다.");
-
-        User user = this.getUser(userId);
-
-        if (manner >= 50) {
-            user.increaseManner();
-        } else {
-            user.decreaseManner();
-        }
     }
 
     @Override
@@ -108,9 +101,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserQueryDto> getUserMannerEvaluations(Long userId) {
-        checkArgument(userId != null, "userId must not be null");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        return userQueryRepository.findAll(userId);
+        if (userRepository.existsById(userId)) {
+            return userQueryRepository.findAll(userId);
+        }
+
+        throw new NotFoundException(User.class, String.format("userId = %s", userId));
     }
 }
 

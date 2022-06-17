@@ -1,10 +1,11 @@
 package com.daangndaangn.common.util;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
 public class UploadUtils {
@@ -12,7 +13,7 @@ public class UploadUtils {
     private static final String[] CONTENT_TYPES = {"png", "jpeg", "jpg"};
 
     public boolean isImageFile(String filename) {
-        if (StringUtils.isEmpty(filename)) {
+        if (isEmpty(filename)) {
             return false;
         }
 

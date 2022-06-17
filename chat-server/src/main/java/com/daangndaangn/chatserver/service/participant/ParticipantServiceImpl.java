@@ -19,8 +19,8 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     public Participant getParticipant(String chatRoomId, Long userId) {
-        checkArgument(isNotEmpty(chatRoomId), "chatRoomId must not be null");
-        checkArgument(userId != null, "userId must not be null");
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         return participantRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
                 .orElseThrow(() -> new NotFoundException(Participant.class,

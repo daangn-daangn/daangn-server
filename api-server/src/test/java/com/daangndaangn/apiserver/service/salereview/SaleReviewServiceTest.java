@@ -36,6 +36,8 @@ public class SaleReviewServiceTest {
 
     private final Long USER1_OAUTH_ID = 111L;
     private final Long USER2_OAUTH_ID = 222L;
+    private final Long USER3_OAUTH_ID = 333L;
+    private final Long USER4_OAUTH_ID = 444L;
     private final Pageable TEST_PAGINATION = PageRequest.of(0, 10);
     private Long productId1, productId2, productId3;
 
@@ -61,17 +63,18 @@ public class SaleReviewServiceTest {
     public void init() {
         userService.create(USER1_OAUTH_ID, "");
         userService.create(USER2_OAUTH_ID, "");
-        userService.create(333L, "");
-        userService.create(444L, "");
+        userService.create(USER3_OAUTH_ID, "");
+        userService.create(USER4_OAUTH_ID, "");
 
         User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
         User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
-        User user3 = userService.getUserByOauthId(333L);
-        User user4 = userService.getUserByOauthId(444L);
+        User user3 = userService.getUserByOauthId(USER3_OAUTH_ID);
+        User user4 = userService.getUserByOauthId(USER4_OAUTH_ID);
 
         userService.update(user1.getId(), "테스트 닉네임","테스트 주소");
         userService.update(user2.getId(), "테스트 닉네임","테스트 주소");
         userService.update(user3.getId(), "테스트 닉네임","테스트 주소");
+        userService.update(user4.getId(), "테스트 닉네임","테스트 주소");
 
         Long mockCategoryId = categoryService.create("test_category1");
         productId1 = productService.create(user1.getId(),
@@ -98,9 +101,17 @@ public class SaleReviewServiceTest {
                 "description",
                 null).getId();
 
+        productService.updateToSoldOut(productId1, user4.getId());
+        productService.updateToSoldOut(productId2, user1.getId());
+        productService.updateToSoldOut(productId3, user1.getId());
+
         saleReviewService.create(productId2, user2.getId(), user1.getId(), SaleReviewType.SELLER_REVIEW, "첫 번째로 받은 판매자 리뷰입니다.");
         saleReviewService.create(productId1, user4.getId(), user1.getId(), SaleReviewType.BUYER_REVIEW, "첫 번째로 받은 구매자 리뷰입니다.");
         saleReviewService.create(productId3, user3.getId(), user1.getId(), SaleReviewType.SELLER_REVIEW, "두 번째로 받은 판매자 리뷰입니다.");
+
+        //product2에 대해, user1 => user2 구매자 리뷰 없음
+        //product1에 대해, user1 => user4 판매자 리뷰 없음
+        //product3에 대해, user1 => user3 구매자 리뷰 없음
     }
 
     @Test
@@ -170,6 +181,7 @@ public class SaleReviewServiceTest {
         //given
         User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
         User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+
         boolean before = saleReviewService.existBuyerReview(productId2, user1.getId());
 
         //when
@@ -186,11 +198,12 @@ public class SaleReviewServiceTest {
     public void 내가_판매자_리뷰를_남겼는지_여부를_알_수_있다() {
         //given
         User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+        User user4 = userService.getUserByOauthId(USER4_OAUTH_ID);
+
         boolean before = saleReviewService.existSellerReview(productId1, user1.getId());
 
         //when
-        saleReviewService.create(productId1, user1.getId(), user2.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
+        saleReviewService.create(productId1, user1.getId(), user4.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
         boolean after = saleReviewService.existSellerReview(productId1, user1.getId());
 
         //then
@@ -203,19 +216,19 @@ public class SaleReviewServiceTest {
     public void 내가_받았던_리뷰를_숨길_수_있다() {
         //given
         User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+        User user3 = userService.getUserByOauthId(USER3_OAUTH_ID);
 
-        Long saleReviewId = saleReviewService.create(productId1, user1.getId(), user2.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
+        Long saleReviewId = saleReviewService.create(productId3, user1.getId(), user3.getId(), SaleReviewType.BUYER_REVIEW, "구매자 리뷰");
 
         int beforeState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
 
         //when
-        saleReviewService.hide(saleReviewId, user2.getId());
+        saleReviewService.hide(saleReviewId, user3.getId());
 
         //then
         int afterState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
 
-        assertThat(beforeState).isEqualTo(SaleReviewType.SELLER_REVIEW.getCode());
+        assertThat(beforeState).isEqualTo(SaleReviewType.BUYER_REVIEW.getCode());
         assertThat(afterState).isEqualTo(SaleReviewType.HIDE.getCode());
     }
 

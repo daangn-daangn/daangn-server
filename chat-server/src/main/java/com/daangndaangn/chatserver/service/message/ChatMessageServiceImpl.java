@@ -31,12 +31,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional(value = "mongoTransactionManager")
     public long addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
-        checkArgument(senderId != null, "senderId는 null일 수 없습니다.");
-        checkArgument(receiverId != null, "receiverId는 null일 수 없습니다.");
+        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
+        checkArgument(senderId != null, "senderId 값은 필수입니다.");
+        checkArgument(receiverId != null, "receiverId 값은 필수입니다.");
         checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
-                "messageTypeCode는 1,2,3 중에 하나여야 합니다.");
-        checkArgument(isNotEmpty(message), "message는 null일 수 없습니다.");
+                "messageTypeCode 값은 1,2,3 중에 하나여야 합니다.");
+        checkArgument(isNotEmpty(message), "message 값은 필수입니다.");
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .senderId(senderId)
@@ -45,18 +45,17 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .build();
 
         long messageUpdateCount = chatRoomRepository.insertChatMessage(id, chatMessage);
-        long participantUpdateCount = participantRepository.synchronizeUpdatedAt(id, List.of(senderId, receiverId), chatMessage.getCreatedAt());
-
-        log.info("messageUpdateCount = {}", messageUpdateCount);
-        log.info("participantUpdateCount = {}", participantUpdateCount);
+        long participantUpdateCount = participantRepository.synchronizeUpdatedAt(id,
+                                                                                List.of(senderId, receiverId),
+                                                                                chatMessage.getCreatedAt());
 
         return messageUpdateCount + participantUpdateCount;
     }
 
     @Override
     public ChatRoom getChatRoomWithMessages(String id, int page) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
-        checkArgument(page >= 0, "page는 0보다 작을 수 없습니다.");
+        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
+        checkArgument(page >= 0, "page는 0보다 커야합니다.");
 
         final int chatMessageSize = 10;
 
@@ -71,8 +70,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional(value = "mongoTransactionManager")
     public void updateReadMessageSize(String id, Long userId) {
-        checkArgument(isNotEmpty(id), "id는 null일 수 없습니다.");
-        checkArgument(userId != null, "userId는 null일 수 없습니다.");
+        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         Participant participant = participantRepository.findByChatRoomIdAndUserId(id, userId)
                 .orElseThrow(() -> new NotFoundException(Participant.class,

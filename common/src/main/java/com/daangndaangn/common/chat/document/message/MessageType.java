@@ -26,8 +26,7 @@ public enum MessageType {
     public static MessageType from(int messageTypeCode) {
         MessageType messageType = messageTypeMap.get(messageTypeCode);
         if (isEmpty(messageType)) {
-            //TODO: 사용자 정의 예외로 변경
-            throw new IllegalArgumentException("잘못된 messageType 타입입니다.");
+            throw new IllegalArgumentException("잘못된 messageType 타입입니다. 1~4 중 하나를 입력해야 합니다.");
         }
 
         return messageType;

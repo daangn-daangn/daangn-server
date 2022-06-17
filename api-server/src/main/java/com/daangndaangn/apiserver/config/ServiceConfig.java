@@ -1,8 +1,8 @@
 package com.daangndaangn.apiserver.config;
 
-import com.daangndaangn.apiserver.util.MessageUtils;
 import com.daangndaangn.common.config.JwtConfig;
 import com.daangndaangn.common.jwt.Jwt;
+import com.daangndaangn.common.util.MessageUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

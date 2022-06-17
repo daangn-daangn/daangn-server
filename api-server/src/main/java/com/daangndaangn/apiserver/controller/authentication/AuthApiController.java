@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * 로그인/로그아웃 API 처리 controller
  */
 @RequestMapping("/api/auth")
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthApiController {
 
     private final OAuthService oAuthService;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ApiResult<AuthResponse.LoginResponse> login(@RequestBody AuthRequest.LoginRequest loginRequest) {
+    public ApiResult<AuthResponse.LoginResponse> login(@Valid @RequestBody AuthRequest.LoginRequest loginRequest) {
 
         String accessToken = loginRequest.getAccessToken();
 
@@ -43,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResult<Void> logout(@RequestBody AuthRequest.LogoutRequest logoutRequest) {
+    public ApiResult<Void> logout(@Valid @RequestBody AuthRequest.LogoutRequest logoutRequest) {
 
         String accessToken = logoutRequest.getAccessToken();
 

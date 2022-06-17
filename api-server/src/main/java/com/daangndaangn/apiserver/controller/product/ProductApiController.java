@@ -57,7 +57,13 @@ public class ProductApiController {
 
         User user = userService.getUser(authentication.getId());
 
-        List<SimpleResponse> products = productQueryService.getProducts(productSearchOption, user.getLocation(), pageable);
+        List<SimpleResponse> products;
+
+        if (user.isEmptyLocation()) {
+            products = productQueryService.getProducts(productSearchOption, pageable);
+        } else {
+            products = productQueryService.getProducts(productSearchOption, user.getLocation(), pageable);
+        }
 
         products
             .stream()

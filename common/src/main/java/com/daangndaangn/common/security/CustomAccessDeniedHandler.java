@@ -22,7 +22,7 @@ import static com.daangndaangn.common.web.ApiResult.ERROR;
 @RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
-    static ApiResult<?> E403 = ERROR("Authentication error (cause: forbidden)", HttpStatus.FORBIDDEN);
+    static ApiResult<?> E403 = ERROR("Authority error error (cause: forbidden)", HttpStatus.FORBIDDEN);
 
     private final ObjectMapper objectMapper;
 

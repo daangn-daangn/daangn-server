@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -38,14 +37,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls) {
-        checkArgument(sellerId != null, "sellerId must not be null");
-        checkArgument(categoryId != null, "categoryId must not be null");
-        checkArgument(isNotEmpty(title), "title must not be null");
-        checkArgument(isNotEmpty(name), "name must not be null");
-        checkArgument(price != null, "price must not be null");
-        checkArgument(isNotEmpty(description), "description must not be null");
-        checkArgument(isEmpty(productImageUrls) || productImageUrls.size() <= 10, "사진은 최대 10장만 등록할 수 있습니다.");
+    public Product create(Long sellerId,
+                          Long categoryId,
+                          String title,
+                          String name,
+                          Long price,
+                          String description,
+                          List<String> productImageUrls) {
+
+        checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
+        checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
+        checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
+        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
+        checkArgument(price != null, "price 값은 필수입니다.");
+        checkArgument(isNotEmpty(description), "description 값은 필수입니다..");
+        checkArgument(productImageUrls == null || productImageUrls.size() <= 10, "사진은 최대 10장만 등록할 수 있습니다.");
 
         if (isNotEmpty(productImageUrls)) {
 
@@ -87,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(Long id) {
-        checkArgument(id != null, "product id must not be null");
+        checkArgument(id != null, "product id 값은 필수입니다.");
 
         return productRepository.findByProductId(id)
             .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", id)));
@@ -95,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductWithProductImages(Long id) {
-        checkArgument(id != null, "product id must not be null");
+        checkArgument(id != null, "product id 값은 필수입니다.");
 
         return productRepository.findByProductIdWithProductImages(id)
                 .orElseThrow(() -> new NotFoundException(Product.class, String.format("productId = %s", id)));
@@ -104,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateToSoldOut(Long id, Long buyerId) {
-        checkArgument(buyerId != null, "buyerId id must not be null");
+        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
         Product updatedProduct = getProduct(id);
         User buyer = userService.getUser(buyerId);
@@ -115,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void update(Long id, Long buyerId) {
-        checkArgument(buyerId != null, "buyerId id must not be null");
+        checkArgument(buyerId != null, "buyerId 값은 필수입니다.");
 
         Product product = getProduct(id);
         User buyer = userService.getUser(buyerId);
@@ -133,11 +139,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void update(Long id, String title, String name, Long categoryId, Long price, String description) {
-        checkArgument(isNotEmpty(title), "title must not be null");
-        checkArgument(isNotEmpty(name), "name must not be null");
-        checkArgument(categoryId != null, "categoryId must not be null");
-        checkArgument(price != null, "price must not be null");
-        checkArgument(isNotEmpty(description), "description must not be null");
+        checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
+        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
+        checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
+        checkArgument(price != null, "price 값은 필수입니다.");
+        checkArgument(isNotEmpty(description), "description 값은 필수입니다.");
 
         Product updatedProduct = getProduct(id);
         Category category = categoryService.getCategory(categoryId);
@@ -154,8 +160,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean isSeller(Long id, Long userId) {
-        checkArgument(id != null, "id must not be null");
-        checkArgument(userId != null, "userId must not be null");
+        checkArgument(id != null, "id 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
 
         Product product = productRepository.findByProductIdWithOnlySeller(id)
                 .orElseThrow(() -> new NotFoundException(Product.class, String.format("id = %s", id)));

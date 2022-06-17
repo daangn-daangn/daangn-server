@@ -24,7 +24,7 @@ public class Category extends AuditingCreateUpdateEntity {
     private String name;
 
     private Category(String name) {
-        checkArgument(isNotEmpty(name), "category name must not be null");
+        checkArgument(isNotEmpty(name), "category name 값은 필수입니다.");
         checkArgument(name.length() <= 20, "카테고리명은 20자 이하여야 합니다.");
 
         this.name = name;

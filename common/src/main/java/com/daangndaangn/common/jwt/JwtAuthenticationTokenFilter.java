@@ -3,6 +3,7 @@ package com.daangndaangn.common.jwt;
 import com.daangndaangn.common.api.entity.user.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +23,7 @@ import java.util.regex.Pattern;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * HTTP Request-Header 에서 JWT 값을 추출하고, JWT 값이 올바르다면 인증정보 {@link JwtAuthenticationToken}를 생성한다.
@@ -46,7 +46,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // SecurityContextHolder 에서 인증정보를 찾을 수 없다면
-        if (isEmpty(SecurityContextHolder.getContext().getAuthentication())) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             // HTTP 요청 Header에서 JWT 값 추출
             String authorizationToken = getAuthorizationToken(request);
 
@@ -108,7 +108,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private List<GrantedAuthority> getAuthorities(Jwt.Claims claims) {
         String[] roles = claims.getRoles();
-        return isEmpty(roles) ? Collections.emptyList() : Arrays.stream(roles)
+        return roles == null ? Collections.emptyList() : Arrays.stream(roles)
                 .map(SimpleGrantedAuthority::new)
                 .collect(toList());
     }
