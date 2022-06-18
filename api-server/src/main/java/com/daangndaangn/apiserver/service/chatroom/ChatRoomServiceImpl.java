@@ -2,7 +2,9 @@ package com.daangndaangn.apiserver.service.chatroom;
 
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.product.Product;
+import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
@@ -29,6 +31,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ParticipantService participantService;
     private final ProductService productService;
+    private final UserService userService;
 
     @Override
     @Transactional(value = "mongoTransactionManager")
@@ -41,6 +44,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         Long userId1 = userIds.get(0);
         Long userId2 = userIds.get(1);
+
+        if (!userService.existById(userId1)) {
+            throw new NotFoundException(User.class, String.format("id = %d", userId1));
+        }
+
+        if (!userService.existById(userId2)) {
+            throw new NotFoundException(User.class, String.format("id = %d", userId2));
+        }
 
         String identifier = toIdentifier(userId1, userId2);
 

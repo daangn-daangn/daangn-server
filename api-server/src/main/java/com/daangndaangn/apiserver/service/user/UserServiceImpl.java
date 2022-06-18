@@ -35,6 +35,10 @@ public class UserServiceImpl implements UserService {
     public Long create(Long oauthId, String profileImageFullPath) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
 
+        if (userRepository.existsByOAuth(oauthId)) {
+            return getUserByOauthId(oauthId).getId();
+        }
+
         User user = User.builder()
                 .oauthId(oauthId)
                 .profileUrl(profileImageFullPath)
@@ -52,8 +56,7 @@ public class UserServiceImpl implements UserService {
         checkArgument(location != null && isNotEmpty(location.getAddress()), "주소값은 필수입니다.");
         checkArgument(isNotEmpty(profileImageFullPath), "profileImageFullPath 값은 필수입니다.");
 
-        User user = userRepository.findByOauthId(oauthId)
-                .orElseThrow(() -> new NotFoundException(User.class, String.format("oauthId = %s", oauthId)));
+        User user = getUserByOauthId(oauthId);
 
         String profileImageUrl = toProfileImageUrl(profileImageFullPath);
 
@@ -62,7 +65,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 닉네임을 변경하는데, 이미 존재하는 닉네임인 경우
-        if (!nickname.equals(user.getNickname()) && userRepository.existsUserByNickname(nickname)) {
+        if (!nickname.equals(user.getNickname()) && userRepository.exists(nickname)) {
             throw new DuplicateValueException(String.format("nickname: %s", nickname));
         }
 
@@ -113,14 +116,20 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        return !userRepository.existsUserByNickname(nickname);
+        return !userRepository.exists(nickname);
+    }
+
+    @Override
+    public boolean existById(Long id) {
+        checkArgument(id != null, "id 값은 필수입니다.");
+        return userRepository.exists(id);
     }
 
     @Override
     public List<UserQueryDto> getUserMannerEvaluations(Long userId) {
         checkArgument(userId != null, "userId 값은 필수입니다.");
 
-        if (userRepository.existsById(userId)) {
+        if (userRepository.exists(userId)) {
             return userQueryRepository.findAll(userId);
         }
 

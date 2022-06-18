@@ -22,5 +22,7 @@ public interface UserService {
 
     boolean isValidNickname(String nickname);
 
+    boolean existById(Long id);
+
     List<UserQueryDto> getUserMannerEvaluations(Long userId);
 }

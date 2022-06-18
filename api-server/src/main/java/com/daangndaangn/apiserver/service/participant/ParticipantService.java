@@ -14,6 +14,11 @@ public interface ParticipantService {
     Participant getParticipant(String id);
 
     /**
+     * 채팅방 참여자인지 확인
+     */
+    boolean isParticipant(String chatRoomId, Long userId);
+
+    /**
      * findByUserIdWithChatRoomId
      */
     Participant getParticipant(String chatRoomId, Long userId);

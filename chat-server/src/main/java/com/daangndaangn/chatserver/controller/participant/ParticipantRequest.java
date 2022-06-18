@@ -10,7 +10,7 @@ public class ParticipantRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class InviteRequest {
-        @NotNull
+        @NotNull(message = "userId 값은 필수입니다.")
         private Long userId;
     }
 }

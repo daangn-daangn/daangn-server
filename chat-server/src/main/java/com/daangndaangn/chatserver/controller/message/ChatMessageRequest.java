@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +22,7 @@ public class ChatMessageRequest {
         private Long senderId;
 
         private Long receiverId;
+
         @NotNull
         private Integer messageType;
         @NotEmpty
@@ -40,14 +42,14 @@ public class ChatMessageRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateRequest {
-        @NotEmpty
+        @NotBlank(message = "roomId 값은 필수입니다.")
         private String roomId;
     }
 
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class ExitRequest {
-        @NotEmpty
+        @NotBlank(message = "roomId 값은 필수입니다.")
         private String roomId;
     }
 }

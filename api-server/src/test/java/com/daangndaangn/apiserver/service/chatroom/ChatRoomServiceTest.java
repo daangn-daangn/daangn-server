@@ -2,13 +2,13 @@ package com.daangndaangn.apiserver.service.chatroom;
 
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
-import com.daangndaangn.common.chat.repository.chatroom.ChatRoomCustomRepositoryImpl;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +44,12 @@ class ChatRoomServiceTest {
     private ParticipantService participantService;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    private User mockUser;
+    private User mockUser1, mockUser2;
     private Product mockProduct;
     private ChatRoom mockChatRoom;
     private Participant mockParticipant;
@@ -54,15 +57,21 @@ class ChatRoomServiceTest {
     @BeforeEach
     public void init() {
         Category mockCategory = Category.from("testCategory");
-        mockUser = User.builder()
+        mockUser1 = User.builder()
                 .id(1L)
                 .oauthId(12345L)
                 .location(Location.from("테스트 Address 입니다."))
                 .build();
 
+        mockUser2 = User.builder()
+                .id(2L)
+                .oauthId(56789L)
+                .location(Location.from("테스트 Address 입니다."))
+                .build();
+
         mockProduct = Product.builder()
                 .id(1L)
-                .seller(mockUser)
+                .seller(mockUser1)
                 .category(mockCategory)
                 .title("테스트 title 입니다.")
                 .name("name")
@@ -80,7 +89,7 @@ class ChatRoomServiceTest {
                 .build();
 
         mockParticipant = Participant.builder()
-                .userId(mockUser.getId())
+                .userId(mockUser1.getId())
                 .chatRoomId(mockChatRoom.getId())
                 .build();
     }
@@ -88,6 +97,8 @@ class ChatRoomServiceTest {
     @Test
     public void 물품ID와_사용자_ID_list를_받으면_채팅방을_생성할_수_있다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(false);
 
@@ -101,6 +112,7 @@ class ChatRoomServiceTest {
         ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository, never()).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService).getProduct(anyLong());
@@ -115,6 +127,8 @@ class ChatRoomServiceTest {
     @Test
     public void 이미_채팅방이_존재하는_경우_기존의_채팅방을_리턴한다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(true);
 
@@ -125,6 +139,7 @@ class ChatRoomServiceTest {
         ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService, never()).getProduct(anyLong());
@@ -134,6 +149,23 @@ class ChatRoomServiceTest {
         assertThat(chatRoom.getId()).isEqualTo(mockChatRoom.getId());
         assertThat(chatRoom.getProductId()).isEqualTo(mockProduct.getId());
         assertThat(chatRoom.getProductImage()).isNull();
+    }
+
+    @Test
+    public void 채팅방_생성_시_존재하지_않는_UserId인_경우_예외를_반환한다() {
+        //given
+        given(userService.existById(anyLong())).willReturn(false);
+
+        //when
+        assertThrows(NotFoundException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)));
+
+        //then
+        verify(userService).existById(anyLong());
+        verify(chatRoomRepository, never()).existsByProductIdAndIdentifier(anyLong(), anyString());
+        verify(chatRoomRepository, never()).findByProductIdAndIdentifier(anyLong(), anyString());
+        verify(productService, never()).getProduct(anyLong());
+        verify(chatRoomRepository, never()).save(any());
+        verify(participantService, never()).create(any(), any());
     }
 
     @Test
@@ -152,6 +184,8 @@ class ChatRoomServiceTest {
     @Test
     public void 이미_존재하는_채팅방_조회_시_에러가_발생하는_경우_예외를_반환한다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(true);
 
@@ -162,6 +196,7 @@ class ChatRoomServiceTest {
         assertThrows(NotFoundException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService, never()).getProduct(anyLong());
@@ -172,6 +207,8 @@ class ChatRoomServiceTest {
     @Test
     public void product_id가_없으면_채팅방을_생성하지_않고_예외를_반환한다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(false);
 
@@ -181,6 +218,7 @@ class ChatRoomServiceTest {
         assertThrows(NotFoundException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository, never()).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService).getProduct(anyLong());
@@ -191,6 +229,8 @@ class ChatRoomServiceTest {
     @Test
     public void participant를_생성하다가_에러가_발생하는_경우_예외를_반환한다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(false);
 
@@ -204,6 +244,7 @@ class ChatRoomServiceTest {
         assertThrows(IllegalArgumentException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository, never()).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService).getProduct(anyLong());
@@ -214,6 +255,8 @@ class ChatRoomServiceTest {
     @Test
     public void chatRoom을_생성하지_못하는_경우_예외를_반환한다() {
         //given
+        given(userService.existById(anyLong())).willReturn(true);
+
         given(chatRoomRepository.existsByProductIdAndIdentifier(anyLong(), anyString()))
                 .willReturn(false);
 
@@ -225,6 +268,7 @@ class ChatRoomServiceTest {
         assertThrows(IllegalArgumentException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)));
 
         //then
+        verify(userService, times(2)).existById(anyLong());
         verify(chatRoomRepository).existsByProductIdAndIdentifier(anyLong(), anyString());
         verify(chatRoomRepository, never()).findByProductIdAndIdentifier(anyLong(), anyString());
         verify(productService).getProduct(anyLong());
@@ -246,7 +290,7 @@ class ChatRoomServiceTest {
                 .willReturn(List.of(mockChatRoom, mockChatRoom));
 
         //when
-        List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser.getId(), pageable);
+        List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser1.getId(), pageable);
 
         //then
         verify(chatRoomRepository).findAllByChatRoomIds(anyList(), any());
@@ -261,7 +305,7 @@ class ChatRoomServiceTest {
                 .willReturn(Collections.emptyList());
 
         //when
-        List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser.getId(), pageable);
+        List<ChatRoom> chattingRooms = chatRoomService.getChatRooms(mockUser1.getId(), pageable);
 
         //then
         verify(chatRoomRepository).findAllByChatRoomIds(anyList(), any());
