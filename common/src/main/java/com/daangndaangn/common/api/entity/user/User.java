@@ -78,7 +78,7 @@ public class User extends AuditingCreateUpdateEntity {
     }
 
     @Builder
-    private User(Long id, Long oauthId, String profileUrl, Location location) {
+    private User(Long id, Long oauthId, String profileUrl) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
         checkArgument(
                 isEmpty(profileUrl) || profileUrl.length() <= 250,
@@ -87,7 +87,6 @@ public class User extends AuditingCreateUpdateEntity {
         this.id = id;
         this.oauthId = oauthId;
         this.profileUrl = profileUrl;
-        this.location = location;
         this.manner = 36.5;
     }
 }

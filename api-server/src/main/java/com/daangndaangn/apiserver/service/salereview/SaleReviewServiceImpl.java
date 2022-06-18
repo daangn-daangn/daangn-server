@@ -67,10 +67,11 @@ public class SaleReviewServiceImpl implements SaleReviewService {
         return saleReviewRepository.save(saleReview).getId();
     }
 
-    private boolean isValidCreateRequest(Product product,
-                                         User reviewer,
-                                         User reviewee,
-                                         SaleReviewType saleReviewTypeCode) {
+    @Override
+    public boolean isValidCreateRequest(Product product,
+                                        User reviewer,
+                                        User reviewee,
+                                        SaleReviewType saleReviewTypeCode) {
 
         if (saleReviewTypeCode.equals(SaleReviewType.SELLER_REVIEW)) {
             return product.isSeller(reviewer.getId()) && product.isBuyer(reviewee.getId());

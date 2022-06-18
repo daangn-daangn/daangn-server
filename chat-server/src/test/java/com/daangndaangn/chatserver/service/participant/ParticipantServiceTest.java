@@ -38,8 +38,9 @@ class ParticipantServiceTest {
         mockUser = User.builder()
                 .id(1L)
                 .oauthId(12345L)
-                .location(Location.from("테스트 Address 입니다."))
                 .build();
+
+        mockUser.update("testNickname", Location.from("test Address"));
 
         mockParticipant = Participant.builder()
                 .id("mockParticipantId")

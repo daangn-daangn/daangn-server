@@ -1,10 +1,8 @@
 package com.daangndaangn.apiserver.service.participant;
 
 
-import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.Participant;
-import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +38,6 @@ class ParticipantServiceTest {
         mockUser = User.builder()
                 .id(1L)
                 .oauthId(12345L)
-                .location(Location.from("테스트 Address 입니다."))
                 .build();
 
         mockParticipant = Participant.builder()

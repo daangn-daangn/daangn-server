@@ -24,7 +24,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Long create(String name) {
         checkArgument(isNotEmpty(name), "category name 값은 필수입니다.");
 
-        Category category = Category.from(name);
+        Category category = Category.builder()
+                                    .name(name)
+                                    .build();
+
         return categoryRepository.save(category).getId();
     }
 

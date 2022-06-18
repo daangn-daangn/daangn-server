@@ -56,18 +56,20 @@ class ChatRoomServiceTest {
 
     @BeforeEach
     public void init() {
-        Category mockCategory = Category.from("testCategory");
+        Category mockCategory = Category.builder().id(1L).name("mockCategory").build();
         mockUser1 = User.builder()
                 .id(1L)
                 .oauthId(12345L)
-                .location(Location.from("테스트 Address 입니다."))
                 .build();
+
+        mockUser1.update("testNickname", Location.from("test address"));
 
         mockUser2 = User.builder()
                 .id(2L)
                 .oauthId(56789L)
-                .location(Location.from("테스트 Address 입니다."))
                 .build();
+
+        mockUser2.update("testNickname", Location.from("test address"));
 
         mockProduct = Product.builder()
                 .id(1L)

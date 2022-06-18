@@ -1,90 +1,179 @@
 package com.daangndaangn.apiserver.service.favorite;
 
-import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.product.ProductService;
-import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.api.entity.category.Category;
+import com.daangndaangn.common.api.entity.favorite.FavoriteProduct;
+import com.daangndaangn.common.api.entity.product.Product;
+import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.common.api.repository.user.UserRepository;
-import com.daangndaangn.common.api.repository.category.CategoryRepository;
 import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
-import com.daangndaangn.common.api.repository.product.ProductRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import com.daangndaangn.apiserver.service.user.UserService;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
+class FavoriteProductServiceTest {
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Transactional
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-public class FavoriteProductServiceTest {
+    @InjectMocks
+    private FavoriteProductServiceImpl favoriteProductService;
 
-    private final Long MOCK_USER_OAUTH_ID = 111L;
-    private Long mockUserId, mockCategoryId, mockProductId;
+    @Mock
+    private FavoriteProductRepository favoriteProductRepository;
 
-    @Autowired
-    private FavoriteProductService favoriteProductService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
+    @Mock
     private UserService userService;
 
-    @Autowired
-    private ProductRepository productRepository;    // deleteAll 호출 용도
+    @Mock
+    private ProductService productService;
 
-    @Autowired
-    private CategoryRepository categoryRepository;  // deleteAll 호출 용도
+    private User mockUser;
+    private Product mockProduct;
+    private FavoriteProduct mockFavoriteProduct;
 
-    @Autowired
-    private UserRepository userRepository;  // deleteAll 호출 용도
-
-    @Autowired
-    private FavoriteProductRepository favoriteProductRepository;    // deleteAll 호출 용도
-
-    @BeforeAll
+    @BeforeEach
     public void init() {
-        mockCategoryId = categoryService.create("test_category1");
+        mockUser = User.builder().id(1L).oauthId(1234L).profileUrl(null).build();
+        User mockBuyer = User.builder().id(2L).oauthId(5678L).profileUrl(null).build();
+        mockUser.update("테스트 유저", Location.from("노원구 상계동"));
 
-        mockUserId = userService.create(MOCK_USER_OAUTH_ID, null);
-        User user = userService.getUser(mockUserId);
-        userService.update(user.getId(), "테스트 유저", "노원구 상계동");
+        mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser)
+                .category(Category.builder().id(1L).name("mockCategory").build())
+                .name("mockProduct")
+                .price(10000)
+                .title("mockProduct 팝니다.")
+                .description("mockProduct 팝니다. 새 상품 입니다.")
+                .build();
 
-        String title = "mockProduct 팝니다.";
-        String name = "mockProduct";
-        Long price = 10000L;
-        String description = "mockProduct 팝니다. 새 상품입니다.";
-        mockProductId = productService.create(mockUserId, mockCategoryId, title, name, price, description, null).getId();
+        mockProduct.updateBuyer(mockBuyer);
+
+        mockFavoriteProduct = FavoriteProduct.builder().id(1L).product(mockProduct).user(mockUser).build();
+    }
+
+    // create Test
+    @Test
+    public void 물품을_찜할_수_있다_처음_찜하는_상품은_getUser와_getProduct와_save를_사용한다() {
+        //given
+        given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.empty());
+        given(userService.getUser(any())).willReturn(mockUser);
+        given(productService.getProduct(any())).willReturn(mockProduct);
+        given(favoriteProductRepository.save(any())).willReturn(mockFavoriteProduct);
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
+
+        //when
+        Long mockFavoriteProductId = 1L;
+        favoriteProductService.create(1L, 1L);
+        FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
+
+        //then
+        assertThat(favoriteProduct).isEqualTo(mockFavoriteProduct);
+        assertThat(favoriteProduct.isValid()).isEqualTo(true);
+        assertThat(favoriteProduct.getUser()).isEqualTo(mockFavoriteProduct.getUser());
+        assertThat(favoriteProduct.getProduct()).isEqualTo(mockFavoriteProduct.getProduct());
+        assertThat(favoriteProduct.isValid()).isEqualTo(mockFavoriteProduct.isValid());
+
+        verify(favoriteProductRepository).findByProductAndUser(any(),any());
+        verify(userService).getUser(any());
+        verify(productService).getProduct(any());
+        verify(favoriteProductRepository).save(any());
+    }
+
+    // create Test
+    @Test
+    public void 물품을_찜할_수_있다_이미_찜했던_상품이지만_취소했던_경우_isValid_필드를_활성화한다() {
+        //given
+        given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.of(mockFavoriteProduct));
+        lenient().when(userService.getUser(any())).thenReturn(mockUser);
+        lenient().when(productService.getProduct(any())).thenReturn(mockProduct);
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
+
+        //when
+        Long mockFavoriteProductId = 1L;
+        favoriteProductService.create(1L, 1L);
+        FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
+
+        //then
+        assertThat(favoriteProduct).isEqualTo(mockFavoriteProduct);
+        assertThat(favoriteProduct.isValid()).isEqualTo(true);
+        assertThat(favoriteProduct.getUser()).isEqualTo(mockFavoriteProduct.getUser());
+        assertThat(favoriteProduct.getProduct()).isEqualTo(mockFavoriteProduct.getProduct());
+        assertThat(favoriteProduct.isValid()).isEqualTo(mockFavoriteProduct.isValid());
+
+        verify(favoriteProductRepository).findByProductAndUser(any(),any());
+        verify(favoriteProductRepository, never()).save(any());
+        verify(userService, never()).getUser(any());
+        verify(productService, never()).getProduct(any());
+    }
+
+    // findAll Test
+    @Test
+    public void 사용자가_찜한_모든_물품목록을_반환한다() {
+        //given
+        List<FavoriteProduct> mockFavoriteProducts
+                = Stream.of(new FavoriteProduct[]{mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,
+                        mockFavoriteProduct,mockFavoriteProduct, mockFavoriteProduct,
+                        mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct})
+                .collect(toList());
+
+        Long userId = 1L;
+        Pageable mockPageRequest = PageRequest.of(0, mockFavoriteProducts.size());
+        given(favoriteProductRepository.findAll(anyLong(), any(PageRequest.class))).willReturn(mockFavoriteProducts);
+
+        //when
+        List<FavoriteProduct> result = favoriteProductService.getFavoriteProducts(userId, mockPageRequest);
+
+        //then
+        assertThat(result.size()).isEqualTo(mockFavoriteProducts.size());
+        verify(favoriteProductRepository).findAll(anyLong(), any(PageRequest.class));
+    }
+
+    // delete Test
+    @Test
+    public void 물품_찜하기를_해제하면_isValid_필드값이_false가_된다() {
+        //given
+        given(favoriteProductRepository.findById(1L)).willReturn(Optional.of(mockFavoriteProduct));
+        assertThat(mockFavoriteProduct.isValid()).isEqualTo(true);
+
+        //when
+        favoriteProductService.delete(1L);
+
+        //then
+        assertThat(mockFavoriteProduct.isValid()).isEqualTo(false);
+        verify(favoriteProductRepository).findById(1L);
     }
 
     @Test
     public void 찜하기를_누른_사용자를_식별할_수_있다() {
         //given
-        Long invalidUserId = 99L;
-        Long favoriteProductId = favoriteProductService.create(mockProductId, mockUserId);
+        given(favoriteProductRepository.findByIdWithUser(anyLong()))
+            .willReturn(Optional.ofNullable(mockFavoriteProduct));
+
+        long otherUserId = 5L;
 
         //when
-        assertThat(favoriteProductService.isOwner(favoriteProductId, mockUserId)).isEqualTo(true);
-        assertThat(favoriteProductService.isOwner(favoriteProductId, invalidUserId)).isEqualTo(false);
+        boolean result1 = favoriteProductService.isOwner(mockFavoriteProduct.getId(), otherUserId);
+        boolean result2 = favoriteProductService.isOwner(mockFavoriteProduct.getId(), mockUser.getId());
+
+        //then
+        assertThat(result1).isEqualTo(false);
+        assertThat(result2).isEqualTo(true);
     }
 
-    @AfterAll
-    public void destroy() {
-        favoriteProductRepository.deleteAll();
-        productRepository.deleteAll();
-        userRepository.deleteAll();
-        categoryRepository.deleteAll();
-    }
+
 }
