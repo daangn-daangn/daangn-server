@@ -16,4 +16,6 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     Optional<Participant> findByChatRoomIdAndUserId(String chatRoomId, Long userId);
 
     List<Participant> findAllByUserIdAndOutIsFalseOrderByUpdatedAtDesc(Long userId, Pageable pageable);
+
+    boolean existsByChatRoomIdAndUserId(String chatRoomId, Long userId);
 }

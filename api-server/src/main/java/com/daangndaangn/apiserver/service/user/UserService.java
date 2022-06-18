@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface UserService {
 
-    Long create(Long oauthId, String profileUrl);
+    Long create(Long oauthId, String profileImageFullPath);
 
-    void update(Long oauthId, String nickname, Location location, String profileUrl);
+    long update(Long oauthId, String nickname, Location location, String profileImageFullPath);
 
     void update(Long id, String nickname, String location);
 
@@ -21,6 +21,8 @@ public interface UserService {
     void delete(Long userId);
 
     boolean isValidNickname(String nickname);
+
+    boolean existById(Long id);
 
     List<UserQueryDto> getUserMannerEvaluations(Long userId);
 }

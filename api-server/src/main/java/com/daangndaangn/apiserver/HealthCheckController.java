@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 서버가 제대로 떠있는지 확인하는 용도의 샘플 Api Controller.
  * /api/hcheck : 회원/비회원 모두 호출가능
  * /api/hcheck/with-user : 회원만 호출가능
- *
- * 향후 삭제 예정
  */
 @RequestMapping("/api/health")
 @RestController

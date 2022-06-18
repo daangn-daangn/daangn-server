@@ -31,9 +31,6 @@ class ParticipantServiceTest {
     @Mock
     private ParticipantRepository participantRepository;
 
-    @Mock
-    private ChatRoomRepository chatRoomRepository;
-
     private User mockUser;
     private String mockChatRoomId = "testMockChatRoomId";
     private Participant mockParticipant;
@@ -96,5 +93,33 @@ class ParticipantServiceTest {
         assertThat(participant.getUserId()).isEqualTo(mockUser.getId());
 
         verify(participantRepository).findByChatRoomIdAndUserId(anyString(), anyLong());
+    }
+
+    @Test
+    public void 채팅방_참여자이면_true를_반환한다() {
+        //given
+        given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong())).willReturn(true);
+
+        String mockChatRoomId = "mockChatRoomId";
+
+        //when
+        boolean result = participantService.isParticipant(mockChatRoomId, mockParticipant.getUserId());
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    public void 채팅방_참여자가_아니면_false를_반환한다() {
+        //given
+        given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong())).willReturn(false);
+
+        String invalidChatRoomId = "invalidChatRoomId";
+
+        //when
+        boolean result = participantService.isParticipant(invalidChatRoomId, mockParticipant.getUserId());
+
+        //then
+        assertThat(result).isEqualTo(false);
     }
 }

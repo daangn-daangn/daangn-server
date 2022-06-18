@@ -29,6 +29,7 @@ public class UserRequest {
         private String nickname;
         @NotBlank(message = "location 값은 필수입니다.")
         private String location;
+        @NotBlank(message = "profile_url 값은 필수입니다.")
         private String profileUrl;
     }
 

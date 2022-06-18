@@ -33,6 +33,19 @@ public class UserResponse {
     }
 
     @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class UpdateResponse {
+
+        private Long id;
+        private String profileUrl;
+
+        public static UpdateResponse of(User user, String profileUrl) {
+            return new UpdateResponse(user.getId(), profileUrl);
+        }
+    }
+
+    @Getter
     @Builder
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UserInfoResponse {
@@ -43,13 +56,13 @@ public class UserResponse {
         private String profileUrl;
         private double manner;
 
-        public static UserInfoResponse from(User user) {
+        public static UserInfoResponse from(User user, String profileUrl) {
             return UserInfoResponse.builder()
                     .id(user.getId())
                     .oauthId(user.getOauthId())
                     .nickname(user.getNickname())
                     .location(isNotEmpty(user.getLocation()) ? user.getLocation().getAddress() : null)
-                    .profileUrl(user.getProfileUrl())
+                    .profileUrl(profileUrl)
                     .manner(user.getManner())
                     .build();
         }

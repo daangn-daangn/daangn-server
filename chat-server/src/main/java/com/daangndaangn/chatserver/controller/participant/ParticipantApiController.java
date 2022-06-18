@@ -4,12 +4,15 @@ import com.daangndaangn.chatserver.controller.MessageSender;
 import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
 import com.daangndaangn.chatserver.controller.participant.ParticipantRequest.InviteRequest;
 import com.daangndaangn.chatserver.service.participant.ParticipantService;
+import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 
@@ -30,13 +33,13 @@ public class ParticipantApiController {
     @PutMapping("/invitation/{chatRoomId}")
     public ApiResult<Void> inviteChatRoom(@AuthenticationPrincipal JwtAuthentication authentication,
                                           @PathVariable("chatRoomId") String chatRoomId,
-                                          @RequestBody InviteRequest request) {
+                                          @Valid @RequestBody InviteRequest request) {
 
-        if (authentication.getId().equals(request.getUserId())) {
+        if (request.getUserId().equals(authentication.getId())) {
             throw new IllegalArgumentException("자기 자신은 초대할 수 없습니다.");
         }
 
-        participantService.inviteUser(chatRoomId, request.getUserId());
+        participantService.inviteUser(chatRoomId, authentication.getId(), request.getUserId());
 
         return OK(null);
     }
@@ -50,10 +53,13 @@ public class ParticipantApiController {
     public ApiResult<Void> exitChatRoom(@AuthenticationPrincipal JwtAuthentication authentication,
                                         @PathVariable("chatRoomId") String chatRoomId) {
 
-        participantService.deleteUser(chatRoomId, authentication.getId());
+        if (participantService.isParticipant(chatRoomId, authentication.getId())) {
+            participantService.deleteUser(chatRoomId, authentication.getId());
 
-        messageSender.send(CreateRequest.of(chatRoomId, authentication.getId()));
+            messageSender.send(CreateRequest.of(chatRoomId, authentication.getId()));
+            return OK(null);
+        }
 
-        return OK(null);
+        throw new UnauthorizedException("채팅방 참여자만 채팅방 나가기를 할 수 있습니다.");
     }
 }

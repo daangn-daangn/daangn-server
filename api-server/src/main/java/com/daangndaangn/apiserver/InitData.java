@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver;
 
 import com.daangndaangn.apiserver.service.category.CategoryService;
+import com.daangndaangn.apiserver.service.chatroom.ChatRoomService;
 import com.daangndaangn.apiserver.service.favorite.FavoriteProductService;
 import com.daangndaangn.apiserver.service.manner.MannerService;
 import com.daangndaangn.apiserver.service.product.ProductService;
@@ -33,6 +34,7 @@ public class InitData {
         initDataService.initCategories();
         initDataService.initProducts();
         initDataService.initFavoriteProducts();
+        initDataService.initChatRooms();
         log.info("end initTestSetting");
     }
 
@@ -50,6 +52,7 @@ public class InitData {
         private final CategoryService categoryService;
         private final ProductService productService;
         private final FavoriteProductService favoriteProductService;
+        private final ChatRoomService chatRoomService;
 
         public void initUsers() {
             userService.create(12L, null);
@@ -188,6 +191,11 @@ public class InitData {
             favoriteProductService.create(2L,3L);
             favoriteProductService.create(2L,4L);
             favoriteProductService.create(2L,5L);
+        }
+
+        public void initChatRooms() {
+            chatRoomService.create(1L, List.of(1L, 5L));
+            chatRoomService.create(2L, List.of(1L, 4L));
         }
     }
 

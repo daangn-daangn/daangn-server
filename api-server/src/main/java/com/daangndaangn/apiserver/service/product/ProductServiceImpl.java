@@ -28,11 +28,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-
     private final UserService userService;
-
     private final CategoryService categoryService;
-
     private final UploadUtils uploadUtils;
 
     @Override

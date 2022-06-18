@@ -11,6 +11,7 @@ import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.document.Participant;
+import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
@@ -43,7 +45,7 @@ public class ChatRoomApiController {
      */
     @PostMapping
     public ApiResult<CreateResponse> createChattingRoom(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                        @RequestBody ChatRoomRequest.CreateRequest request) {
+                                                        @Valid @RequestBody ChatRoomRequest.CreateRequest request) {
 
         long myId = authentication.getId();
         long otherUserId = request.getOtherUserId();
@@ -105,6 +107,10 @@ public class ChatRoomApiController {
     @GetMapping("/{chatRoomId}")
     public ApiResult<DetailResponse> getChatRoom(@AuthenticationPrincipal JwtAuthentication authentication,
                                                  @PathVariable("chatRoomId") String chatRoomId) {
+
+        if (!participantService.isParticipant(chatRoomId, authentication.getId())) {
+            throw new UnauthorizedException("채팅방 참여자만 채팅방 상세 정보를 조회할 수 있습니다.");
+        }
 
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
         Long otherUserId = chatRoom.getOtherUserId(authentication.getId());

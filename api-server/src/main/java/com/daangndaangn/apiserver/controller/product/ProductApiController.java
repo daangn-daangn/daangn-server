@@ -38,9 +38,9 @@ public class ProductApiController {
     private final ProductService productService;
     private final ProductQueryService productQueryService;
     private final ProductDetailQueryService productDetailQueryService;
-    private final PresignerUtils presignerUtils;
     private final UserService userService;
     private final SaleReviewService saleReviewService;
+    private final PresignerUtils presignerUtils;
 
     /**
      * 물품 리스트 조회(회원 전용)

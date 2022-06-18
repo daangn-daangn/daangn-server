@@ -4,7 +4,9 @@ import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateR
 import com.daangndaangn.chatserver.controller.message.ChatMessageResponse.GetResponse;
 import com.daangndaangn.chatserver.controller.MessageSender;
 import com.daangndaangn.chatserver.service.message.ChatMessageService;
+import com.daangndaangn.chatserver.service.participant.ParticipantService;
 import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import static java.util.stream.Collectors.toList;
 public class ChatMessageApiController {
 
     private final ChatMessageService chatMessageService;
+    private final ParticipantService participantService;
     private final MessageSender messageSender;
 
     /**
@@ -81,8 +84,9 @@ public class ChatMessageApiController {
     public ApiResult<Void> updateReadMessageSize(@AuthenticationPrincipal JwtAuthentication authentication,
                                                  @RequestBody ChatMessageRequest.UpdateRequest request) {
 
-        log.info("authentication.getId(): {}", authentication.getId());
-        log.info("request.getRoomId(): {}", request.getRoomId());
+        if (!participantService.isParticipant(request.getRoomId(), authentication.getId())) {
+            throw new UnauthorizedException("자신이 참여중인 채팅방이 아닙니다.");
+        }
 
         chatMessageService.updateReadMessageSize(request.getRoomId(), authentication.getId());
 

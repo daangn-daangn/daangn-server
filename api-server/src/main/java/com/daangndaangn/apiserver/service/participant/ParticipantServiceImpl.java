@@ -44,6 +44,14 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
+    public boolean isParticipant(String chatRoomId, Long userId) {
+        checkArgument(isNotEmpty(chatRoomId), "chatRoomId 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+
+        return participantRepository.existsByChatRoomIdAndUserId(chatRoomId, userId);
+    }
+
+    @Override
     public Participant getParticipant(String chatRoomId, Long userId) {
         checkArgument(isNotEmpty(chatRoomId), "chatRoomId 값은 필수입니다.");
         checkArgument(userId != null, "userId 값은 필수입니다.");
