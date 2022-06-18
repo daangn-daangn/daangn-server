@@ -1,242 +1,452 @@
 package com.daangndaangn.apiserver.service.salereview;
 
-import com.daangndaangn.apiserver.service.category.CategoryService;
 import com.daangndaangn.apiserver.service.product.ProductService;
+import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.api.entity.category.Category;
+import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.common.api.entity.review.SaleReviewType;
+import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
-import com.daangndaangn.common.api.repository.category.CategoryRepository;
-import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
-import com.daangndaangn.common.api.repository.user.UserRepository;
-import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import com.daangndaangn.common.error.UnauthorizedException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Transactional
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SaleReviewServiceTest {
 
-    private final Long USER1_OAUTH_ID = 111L;
-    private final Long USER2_OAUTH_ID = 222L;
-    private final Long USER3_OAUTH_ID = 333L;
-    private final Long USER4_OAUTH_ID = 444L;
-    private final Pageable TEST_PAGINATION = PageRequest.of(0, 10);
-    private Long productId1, productId2, productId3;
+    @InjectMocks
+    private SaleReviewServiceImpl saleReviewService;
 
-    @Autowired
-    private SaleReviewService saleReviewService;
-    @Autowired
+    @Mock
     private UserService userService;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
+
+    @Mock
     private ProductService productService;
 
-    @Autowired
-    private SaleReviewRepository saleReviewRepository;  // deleteAll 호출 용도
-    @Autowired
-    private UserRepository userRepository;  // deleteAll 호출 용도
-    @Autowired
-    private CategoryRepository categoryRepository;  // deleteAll 호출 용도
-    @Autowired
-    private ProductRepository productRepository;  // deleteAll 호출 용도
+    @Mock
+    private SaleReviewRepository saleReviewRepository;
 
-    @BeforeAll
+    private final Pageable TEST_PAGINATION = PageRequest.of(0, 10);
+    private Category mockCategory;
+    private User mockUser1, mockUser2, mockUser3;
+
+    @BeforeEach
     public void init() {
-        userService.create(USER1_OAUTH_ID, "");
-        userService.create(USER2_OAUTH_ID, "");
-        userService.create(USER3_OAUTH_ID, "");
-        userService.create(USER4_OAUTH_ID, "");
+        mockCategory = Category.builder().id(1L).name("mockCategory").build();
 
-        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
-        User user3 = userService.getUserByOauthId(USER3_OAUTH_ID);
-        User user4 = userService.getUserByOauthId(USER4_OAUTH_ID);
+        mockUser1 = User.builder()
+                .id(1L)
+                .oauthId(12L)
+                .profileUrl("www.naver.com")
+                .build();
 
-        userService.update(user1.getId(), "테스트 닉네임","테스트 주소");
-        userService.update(user2.getId(), "테스트 닉네임","테스트 주소");
-        userService.update(user3.getId(), "테스트 닉네임","테스트 주소");
-        userService.update(user4.getId(), "테스트 닉네임","테스트 주소");
+        mockUser2 = User.builder()
+                .id(2L)
+                .oauthId(34L)
+                .profileUrl("www.naver.com")
+                .build();
 
-        Long mockCategoryId = categoryService.create("test_category1");
-        productId1 = productService.create(user1.getId(),
-                                                mockCategoryId,
-                                                "title",
-                                                "name",
-                                                123L,
-                                                "description",
-                                                null).getId();
+        mockUser2.update("testNickname", Location.from("test Address"));
 
-        productId2 = productService.create(user2.getId(),
-                mockCategoryId,
-                "title",
-                "name",
-                123L,
-                "description",
-                null).getId();
+        mockUser3 = User.builder()
+                .id(3L)
+                .oauthId(56L)
+                .profileUrl("www.naver.com")
+                .build();
+    }
 
-        productId3 = productService.create(user3.getId(),
-                mockCategoryId,
-                "title",
-                "name",
-                123L,
-                "description",
-                null).getId();
+    /**
+     * create test
+     */
+    @Test
+    public void 리뷰를_남기는_사용자가_주소값과_닉네임이_없으면_예외를_반환한다() {
+        //given
+        User mockUser = User.builder()
+                .id(3L)
+                .oauthId(56L)
+                .profileUrl("www.naver.com")
+                .build();
 
-        productService.updateToSoldOut(productId1, user4.getId());
-        productService.updateToSoldOut(productId2, user1.getId());
-        productService.updateToSoldOut(productId3, user1.getId());
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
 
-        saleReviewService.create(productId2, user2.getId(), user1.getId(), SaleReviewType.SELLER_REVIEW, "첫 번째로 받은 판매자 리뷰입니다.");
-        saleReviewService.create(productId1, user4.getId(), user1.getId(), SaleReviewType.BUYER_REVIEW, "첫 번째로 받은 구매자 리뷰입니다.");
-        saleReviewService.create(productId3, user3.getId(), user1.getId(), SaleReviewType.SELLER_REVIEW, "두 번째로 받은 판매자 리뷰입니다.");
+        given(productService.getProduct(anyLong())).willReturn(mockProduct);
+        given(userService.getUser(anyLong())).willReturn(mockUser);
 
-        //product2에 대해, user1 => user2 구매자 리뷰 없음
-        //product1에 대해, user1 => user4 판매자 리뷰 없음
-        //product3에 대해, user1 => user3 구매자 리뷰 없음
+        //when
+        assertThrows(IllegalStateException.class,
+            () -> saleReviewService.create(mockProduct.getId(),
+                    mockUser1.getId(),
+                    mockUser2.getId(),
+                    SaleReviewType.SELLER_REVIEW,
+                    "test saleReview"));
+
+        //then
+        verify(productService).getProduct(anyLong());
+        verify(userService).getUser(anyLong());
+        verify(saleReviewRepository, never()).save(any());
+    }
+
+    /**
+     * isValidCreateRequest test
+     */
+    @Test
+    public void isValidCreateRequest는_seller와_buyer가_모두_유효해야_true를_반환한다() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        mockProduct.updateBuyer(mockUser3);
+
+        //when
+        boolean result = saleReviewService.isValidCreateRequest(mockProduct, mockUser2, mockUser3, SaleReviewType.SELLER_REVIEW);
+
+        //then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    public void SELLER_REVIEW는_seller만_남길_수_있다() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        mockProduct.updateBuyer(mockUser3);
+
+        //when
+        boolean buyerResult = saleReviewService.isValidCreateRequest(mockProduct, mockUser3, mockUser2, SaleReviewType.SELLER_REVIEW);
+        boolean invalidUserResult = saleReviewService.isValidCreateRequest(mockProduct, mockUser1, mockUser2, SaleReviewType.SELLER_REVIEW);
+
+        //then
+        assertThat(buyerResult).isEqualTo(false);
+        assertThat(invalidUserResult).isEqualTo(false);
+    }
+
+    @Test
+    public void BUYER_REVIEW는_buyer만_남길_수_있다() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        mockProduct.updateBuyer(mockUser3);
+
+        //when
+        boolean sellerResult = saleReviewService.isValidCreateRequest(mockProduct, mockUser2, mockUser3, SaleReviewType.BUYER_REVIEW);
+        boolean invalidUserResult = saleReviewService.isValidCreateRequest(mockProduct, mockUser1, mockUser3, SaleReviewType.BUYER_REVIEW);
+
+        //then
+        assertThat(sellerResult).isEqualTo(false);
+        assertThat(invalidUserResult).isEqualTo(false);
+    }
+
+    @Test
+    public void SELLER_REVIEW나_BUYER_REVIEW가_아닌_타입은_false를_반환한다() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        mockProduct.updateBuyer(mockUser3);
+
+        //when
+        boolean result = saleReviewService.isValidCreateRequest(mockProduct, mockUser2, mockUser3, SaleReviewType.HIDE);
+
+        //then
+        assertThat(result).isEqualTo(false);
     }
 
     @Test
     public void 없는_리뷰를_조회하면_예외를_반환한다() {
         //given
         Long InvalidReviewId = 999L;
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.empty());
 
         //then
         assertThrows(NotFoundException.class, () -> saleReviewService.getSaleReview(InvalidReviewId));
+
+        //then
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
     }
 
     @Test
     public void 없는_리뷰를_조회하면_빈_리스트를_반환한다() {
         //given
-        Long InvalidReviewId = 999L;
+        given(saleReviewRepository.findAllUserReview(anyLong(), any())).willReturn(Collections.emptyList());
+        given(saleReviewRepository.findAllSellerReview(anyLong(), any())).willReturn(Collections.emptyList());
+        given(saleReviewRepository.findAllBuyerReview(anyLong(), any())).willReturn(Collections.emptyList());
 
         //when
-        List<SaleReview> userReviews = saleReviewService.getUserReviews(InvalidReviewId, TEST_PAGINATION);
-        List<SaleReview> sellerReviews = saleReviewService.getSellerReviews(InvalidReviewId, TEST_PAGINATION);
-        List<SaleReview> buyerReviews = saleReviewService.getBuyerReviews(InvalidReviewId, TEST_PAGINATION);
+        List<SaleReview> userReviews = saleReviewService.getUserReviews(mockUser1.getId(), TEST_PAGINATION);
+        List<SaleReview> sellerReviews = saleReviewService.getSellerReviews(mockUser1.getId(), TEST_PAGINATION);
+        List<SaleReview> buyerReviews = saleReviewService.getBuyerReviews(mockUser1.getId(), TEST_PAGINATION);
 
         //then
         assertThat(userReviews.size()).isEqualTo(0);
         assertThat(sellerReviews.size()).isEqualTo(0);
         assertThat(buyerReviews.size()).isEqualTo(0);
+        verify(saleReviewRepository).findAllUserReview(anyLong(), any());
+        verify(saleReviewRepository).findAllSellerReview(anyLong(), any());
+        verify(saleReviewRepository).findAllBuyerReview(anyLong(), any());
     }
 
     @Test
     public void 내가_받은_전체_리뷰를_조회할_수_있다() {
         //given
-        User user = userService.getUserByOauthId(USER1_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findAllUserReview(anyLong(), any())).willReturn(List.of(saleReview));
 
         //when
-        List<SaleReview> userReviews = saleReviewService.getUserReviews(user.getId(), TEST_PAGINATION);
+        List<SaleReview> result = saleReviewService.getUserReviews(mockUser1.getId(), TEST_PAGINATION);
 
         //then
-        assertThat(userReviews.size()).isEqualTo(3);
+        assertThat(result.size()).isEqualTo(1);
+        verify(saleReviewRepository).findAllUserReview(anyLong(), any());
     }
 
     @Test
     public void 내가_받은_판매자_리뷰를_조회할_수_있다() {
         //given
-        User seller = userService.getUserByOauthId(USER1_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findAllSellerReview(anyLong(), any())).willReturn(List.of(saleReview));
 
         //when
-        List<SaleReview> sellerReviews = saleReviewService.getSellerReviews(seller.getId(), TEST_PAGINATION);
+        List<SaleReview> result = saleReviewService.getSellerReviews(mockUser1.getId(), TEST_PAGINATION);
 
         //then
-        assertThat(sellerReviews.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
+        verify(saleReviewRepository).findAllSellerReview(anyLong(), any());
     }
 
     @Test
     public void 내가_받은_구매자_리뷰를_조회할_수_있다() {
         //given
-        User buyer = userService.getUserByOauthId(USER1_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .saleReviewType(SaleReviewType.BUYER_REVIEW)
+                .reviewer(mockUser1)
+                .reviewee(mockUser2)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findAllBuyerReview(anyLong(), any())).willReturn(List.of(saleReview));
 
         //when
-        List<SaleReview> buyerReviews = saleReviewService.getBuyerReviews(buyer.getId(), TEST_PAGINATION);
+        List<SaleReview> result = saleReviewService.getBuyerReviews(mockUser2.getId(), TEST_PAGINATION);
 
         //then
-        assertThat(buyerReviews.size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(1);
+        verify(saleReviewRepository).findAllBuyerReview(anyLong(), any());
     }
 
-    // existBuyerReview
     @Test
     public void 내가_구매자_리뷰를_남겼는지_여부를_알_수_있다() {
         //given
-        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user2 = userService.getUserByOauthId(USER2_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
 
-        boolean before = saleReviewService.existBuyerReview(productId2, user1.getId());
+        given(saleReviewRepository.existBuyerReview(anyLong(), anyLong())).willReturn(true);
 
         //when
-        saleReviewService.create(productId2, user1.getId(), user2.getId(), SaleReviewType.BUYER_REVIEW, "구매자 리뷰");
-        boolean after = saleReviewService.existBuyerReview(productId2, user1.getId());
+        boolean result = saleReviewService.existBuyerReview(mockProduct.getId(), mockUser1.getId());
 
         //then
-        assertThat(before).isEqualTo(false);
-        assertThat(after).isEqualTo(true);
+        assertThat(result).isEqualTo(true);
+        verify(saleReviewRepository).existBuyerReview(anyLong(), anyLong());
     }
 
-    // existSellerReview
     @Test
     public void 내가_판매자_리뷰를_남겼는지_여부를_알_수_있다() {
         //given
-        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user4 = userService.getUserByOauthId(USER4_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
 
-        boolean before = saleReviewService.existSellerReview(productId1, user1.getId());
+        given(saleReviewRepository.existSellerReview(anyLong(), anyLong())).willReturn(true);
 
         //when
-        saleReviewService.create(productId1, user1.getId(), user4.getId(), SaleReviewType.SELLER_REVIEW, "판매자 리뷰");
-        boolean after = saleReviewService.existSellerReview(productId1, user1.getId());
+        boolean result = saleReviewService.existSellerReview(mockProduct.getId(), mockUser1.getId());
 
         //then
-        assertThat(before).isEqualTo(false);
-        assertThat(after).isEqualTo(true);
+        assertThat(result).isEqualTo(true);
+        verify(saleReviewRepository).existSellerReview(anyLong(), anyLong());
     }
 
-    // hide
     @Test
     public void 내가_받았던_리뷰를_숨길_수_있다() {
         //given
-        User user1 = userService.getUserByOauthId(USER1_OAUTH_ID);
-        User user3 = userService.getUserByOauthId(USER3_OAUTH_ID);
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
 
-        Long saleReviewId = saleReviewService.create(productId3, user1.getId(), user3.getId(), SaleReviewType.BUYER_REVIEW, "구매자 리뷰");
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
 
-        int beforeState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+        int before = saleReview.getSaleReviewType().getCode();
 
         //when
-        saleReviewService.hide(saleReviewId, user3.getId());
+        saleReviewService.hide(saleReview.getId(), mockUser1.getId());
+        int after = saleReview.getSaleReviewType().getCode();
 
         //then
-        int afterState = saleReviewService.getSaleReview(saleReviewId).getSaleReviewType().getCode();
-
-        assertThat(beforeState).isEqualTo(SaleReviewType.BUYER_REVIEW.getCode());
-        assertThat(afterState).isEqualTo(SaleReviewType.HIDE.getCode());
+        assertThat(before).isEqualTo(SaleReviewType.SELLER_REVIEW.getCode());
+        assertThat(after).isEqualTo(SaleReviewType.HIDE.getCode());
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
     }
 
-    @AfterAll
-    public void destroy() {
-        saleReviewRepository.deleteAll();
-        userRepository.deleteAll();
-        productRepository.deleteAll();
-        categoryRepository.deleteAll();
+    @Test
+    public void 리뷰를_받았던_사람외에는_리뷰를_숨길_수_없다() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .name("name")
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+
+        //when
+        assertThrows(UnauthorizedException.class,
+            () -> saleReviewService.hide(saleReview.getId(), mockUser2.getId()));
+
+        //then
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
     }
 }

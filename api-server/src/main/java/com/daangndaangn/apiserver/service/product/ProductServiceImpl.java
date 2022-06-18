@@ -20,6 +20,7 @@ import java.util.UUID;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Transactional(readOnly = true)
@@ -60,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         User seller = userService.getUser(sellerId);
+
+        if (seller.isEmptyLocation() || isEmpty(seller.getNickname())) {
+            throw new IllegalStateException("판매자의 주소와 닉네임 정보는 필수입니다.");
+        }
+
         Category category = categoryService.getCategory(categoryId);
 
         Product product = Product.builder()

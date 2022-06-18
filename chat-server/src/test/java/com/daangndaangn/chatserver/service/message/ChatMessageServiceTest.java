@@ -1,6 +1,5 @@
 package com.daangndaangn.chatserver.service.message;
 
-import com.daangndaangn.chatserver.service.message.ChatMessageServiceImpl;
 import com.daangndaangn.common.api.entity.category.Category;
 import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.user.Location;
@@ -45,12 +44,13 @@ class ChatMessageServiceTest {
 
     @BeforeEach
     public void init() {
-        Category mockCategory = Category.from("testCategory");
+        Category mockCategory = Category.builder().id(1L).name("testCategory").build();
         mockUser = User.builder()
                 .id(1L)
                 .oauthId(12345L)
-                .location(Location.from("테스트 Address 입니다."))
                 .build();
+
+        mockUser.update("testNickname", Location.from("test Address"));
 
         mockProduct = Product.builder()
                 .id(1L)

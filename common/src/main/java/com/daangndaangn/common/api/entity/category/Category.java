@@ -2,6 +2,7 @@ package com.daangndaangn.common.api.entity.category;
 
 import com.daangndaangn.common.api.entity.AuditingCreateUpdateEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,14 +24,12 @@ public class Category extends AuditingCreateUpdateEntity {
     @Column(nullable = false, length = 20)
     private String name;
 
-    private Category(String name) {
+    @Builder
+    private Category(Long id, String name) {
         checkArgument(isNotEmpty(name), "category name 값은 필수입니다.");
         checkArgument(name.length() <= 20, "카테고리명은 20자 이하여야 합니다.");
 
+        this.id = id;
         this.name = name;
-    }
-
-    public static Category from(String name) {
-        return new Category(name);
     }
 }
