@@ -9,6 +9,15 @@ spring:
         use_sql_comments: true
         implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  kafka:
+    topic:
+      chat-message: v1.chat-message.request
+    consumer:
+      bootstrap-servers: kafka:9095
+      group-id: chat
+      auto-offset-reset: latest # earliest
+    producer:
+      bootstrap-servers: kafka:9095
 
 server:
   port: 9080
@@ -46,6 +55,11 @@ spring:
     mongodb:
       database: daangn_test
       uri: mongodb://localhost:27017/daangn_test
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9095
+    producer:
+      bootstrap-servers: localhost:9095
 
 ---
 spring:
