@@ -1,6 +1,5 @@
 package com.daangndaangn.chatserver.controller;
 
-import com.daangndaangn.chatserver.constants.KafkaConstants;
 import com.daangndaangn.chatserver.controller.message.ChatMessageRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,7 @@ public class MessageReceiver {
     private final SimpMessagingTemplate template;
 
     @KafkaListener(
-            topics = KafkaConstants.KAFKA_TOPIC,
-            groupId = KafkaConstants.GROUP_ID
+        topics = "${spring.kafka.topic.chat-message}"
     )
     public void listen(ChatMessageRequest.CreateRequest message) {
         log.info("sending via kafka listener..");
