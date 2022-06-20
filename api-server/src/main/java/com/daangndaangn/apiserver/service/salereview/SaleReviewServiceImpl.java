@@ -11,15 +11,17 @@ import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.error.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -30,13 +32,14 @@ public class SaleReviewServiceImpl implements SaleReviewService {
     private final ProductService productService;
     private final UserService userService;
 
+    @Async
     @Override
     @Transactional
-    public Long create(Long productId,
-                       Long reviewerId,
-                       Long revieweeId,
-                       SaleReviewType saleReviewType,
-                       String content) {
+    public CompletableFuture<Long> create(Long productId,
+                                          Long reviewerId,
+                                          Long revieweeId,
+                                          SaleReviewType saleReviewType,
+                                          String content) {
 
         checkArgument(productId != null, "productId 값은 필수입니다.");
         checkArgument(reviewerId != null, "reviewerId 값은 필수입니다.");
@@ -64,7 +67,7 @@ public class SaleReviewServiceImpl implements SaleReviewService {
                                         .content(content)
                                         .build();
 
-        return saleReviewRepository.save(saleReview).getId();
+        return completedFuture(saleReviewRepository.save(saleReview).getId());
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 유저를_생성할_수_있다() {
+    public void 유저를_생성할_수_있다() throws ExecutionException, InterruptedException {
         //given
         given(userRepository.existsByOAuth(anyLong())).willReturn(false);
         given(userRepository.save(any())).willReturn(mockUser);
@@ -52,7 +53,7 @@ public class UserServiceTest {
         String profileImageUrl = "testProfileImageUrl";
 
         //when
-        Long userId = userService.create(mockUser.getOauthId(), profileImageUrl);
+        Long userId = userService.create(mockUser.getOauthId(), profileImageUrl).get();
 
         //then
         assertThat(userId).isEqualTo(mockUser.getId());
@@ -63,13 +64,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 이미_존재하는_사용자인_경우_기존_유저를_반환한다() {
+    public void 이미_존재하는_사용자인_경우_기존_유저를_반환한다() throws ExecutionException, InterruptedException {
         //given
         given(userRepository.existsByOAuth(anyLong())).willReturn(true);
         given(userRepository.findByOauthId(anyLong())).willReturn(Optional.ofNullable(mockUser));
 
         //when
-        Long userId = userService.create(mockUser.getOauthId(), "testProfileImageUrl");
+        Long userId = userService.create(mockUser.getOauthId(), "testProfileImageUrl").get();
 
         //then
         assertThat(userId).isEqualTo(mockUser.getId());

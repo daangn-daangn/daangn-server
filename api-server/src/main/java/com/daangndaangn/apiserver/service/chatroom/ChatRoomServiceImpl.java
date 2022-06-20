@@ -10,19 +10,20 @@ import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true, value = "mongoTransactionManager")
 @RequiredArgsConstructor
@@ -33,9 +34,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ProductService productService;
     private final UserService userService;
 
+    @Async
     @Override
     @Transactional(value = "mongoTransactionManager")
-    public ChatRoom create(Long productId, List<Long> userIds) {
+    public CompletableFuture<ChatRoom> create(Long productId, List<Long> userIds) {
         checkArgument(productId != null, "productId 값은 필수입니다.");
         checkArgument(userIds != null, "userIds 값은 필수입니다.");
         checkArgument(userIds.size() == 2, "userIds size는 2여야 합니다.");
@@ -56,9 +58,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         String identifier = toIdentifier(userId1, userId2);
 
         if (chatRoomRepository.existsByProductIdAndIdentifier(productId, identifier)) {
-            return chatRoomRepository.findByProductIdAndIdentifier(productId, identifier)
+            return completedFuture(
+                chatRoomRepository.findByProductIdAndIdentifier(productId, identifier)
                     .orElseThrow(() -> new NotFoundException(ChatRoom.class,
-                            String.format("productId = %s, identifier = %s", productId, identifier)));
+                        String.format("productId = %s, identifier = %s", productId, identifier)))
+            );
         }
 
         Product product = productService.getProduct(productId);
@@ -81,7 +85,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         participantService.create(userId1, savedChattingRoom.getId());
         participantService.create(userId2, savedChattingRoom.getId());
 
-        return savedChattingRoom;
+        return completedFuture(savedChattingRoom);
     }
 
     @Override

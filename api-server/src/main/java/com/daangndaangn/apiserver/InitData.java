@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Profile("local")
@@ -28,13 +30,16 @@ public class InitData {
     @PostConstruct
     public void init() {
         log.info("start initTestSetting");
-        initDataService.initUsers();
-        initDataService.updateUsers();
-        initDataService.initManners();
-        initDataService.initCategories();
-        initDataService.initProducts();
-        initDataService.initFavoriteProducts();
-        initDataService.initChatRooms();
+        try {
+            initDataService.initCategories();
+            initDataService.initUsers();
+//        initDataService.initManners();
+//        initDataService.initProducts();
+//        initDataService.initFavoriteProducts();
+//        initDataService.initChatRooms();
+        } catch (Exception ignored) {
+        }
+
         log.info("end initTestSetting");
     }
 
@@ -54,20 +59,36 @@ public class InitData {
         private final FavoriteProductService favoriteProductService;
         private final ChatRoomService chatRoomService;
 
-        public void initUsers() {
-            userService.create(12L, null);
-            userService.create(34L, null);
-            userService.create(56L, null);
-            userService.create(78L, null);
-            userService.create(910L, null);
-        }
+        public void initUsers() throws ExecutionException, InterruptedException {
+            userService.create(12L, null)
+                .thenApply(userId -> {
+                    userService.update(userId, "테스트 닉네임1", "노원구 상계동");
+                    return null;
+                }).thenAccept(result -> log.info("initUsers"));
 
-        public void updateUsers() {
-            userService.update(1L, "테스트닉네임1", "노원구 상계동");
-            userService.update(2L, "테스트닉네임2", "노원구 상계동");
-            userService.update(3L, "테스트닉네임3", "노원구 상계동");
-            userService.update(4L, "테스트닉네임4", "노원구 상계동");
-            userService.update(5L, "테스트닉네임5", "노원구 상계동");
+            userService.create(34L, null)
+                .thenApply(userId -> {
+                    userService.update(userId, "테스트닉네임2", "노원구 상계동");
+                    return null;
+                }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(56L, null)
+                .thenApply(userId -> {
+                    userService.update(userId, "테스트닉네임3", "노원구 상계동");
+                    return null;
+                }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(78L, null)
+                .thenApply(userId -> {
+                    userService.update(userId, "테스트닉네임4", "노원구 상계동");
+                    return null;
+                }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(910L, null)
+                .thenApply(userId -> {
+                    userService.update(userId, "테스트닉네임5", "노원구 상계동");
+                    return null;
+                }).thenAccept(result -> log.info("initUsers"));
         }
 
         public void initManners() {

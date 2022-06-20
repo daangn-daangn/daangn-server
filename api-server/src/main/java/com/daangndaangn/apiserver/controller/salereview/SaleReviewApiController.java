@@ -6,23 +6,27 @@ import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse.Creat
 import com.daangndaangn.apiserver.controller.salereview.SaleReviewResponse.GetResponse;
 import com.daangndaangn.common.api.entity.review.SaleReview;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
-import com.daangndaangn.common.api.entity.review.SaleReviewType;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import static com.daangndaangn.common.api.entity.review.SaleReviewType.BUYER_REVIEW;
+import static com.daangndaangn.common.api.entity.review.SaleReviewType.SELLER_REVIEW;
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-
+import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/api/sale-reviews")
 @RestController
@@ -112,38 +116,52 @@ public class SaleReviewApiController {
      * POST /api/sale-reviews/seller
      *
      * 사용자는 판매자 후기를 남길 수 있다.
+     *
+     * success: CreateResponse
      */
     @PostMapping("/seller")
-    public ApiResult<CreateResponse> createSellerReview(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                        @Valid @RequestBody SellerReviewCreateRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> createSellerReview(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @Valid @RequestBody SellerReviewCreateRequest request) {
 
-        Long saleReviewId = saleReviewService.create(
-                request.getProductId(),
-                authentication.getId(),  //reviewer
-                request.getBuyerId(),   //reviewee
-                SaleReviewType.SELLER_REVIEW,
-                request.getContent());
+        Long productId = request.getProductId();
+        Long reviewerId = authentication.getId();
+        Long revieweeId = request.getBuyerId();
+        String content = request.getContent();
 
-        return OK(CreateResponse.from(saleReviewId));
+        return saleReviewService.create(productId,reviewerId,revieweeId,SELLER_REVIEW,content).handle((id, throwable) -> {
+            if (id != null) {
+                return new ResponseEntity<>(OK(CreateResponse.from(id)), OK);
+            }
+
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**
      * POST /api/sale-reviews/buyer
      *
      * 사용자는 구매자 후기를 남길 수 있다.
+     *
+     * success: CreateResponse
      */
     @PostMapping("/buyer")
-    public ApiResult<CreateResponse> createBuyerReview(@AuthenticationPrincipal JwtAuthentication authentication,
-                                             @Valid @RequestBody BuyerReviewCreateRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> createBuyerReview(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @Valid @RequestBody BuyerReviewCreateRequest request) {
 
-        Long saleReviewId = saleReviewService.create(
-                request.getProductId(),
-                authentication.getId(),   //reviewer
-                request.getSellerId(),  //reviewee
-                SaleReviewType.BUYER_REVIEW,
-                request.getContent());
+        Long productId = request.getProductId();
+        Long reviewerId = authentication.getId();
+        Long revieweeId = request.getSellerId();
+        String content = request.getContent();
 
-        return OK(CreateResponse.from(saleReviewId));
+        return saleReviewService.create(productId,reviewerId,revieweeId,BUYER_REVIEW,content).handle((id, throwable) -> {
+            if (id != null) {
+                return new ResponseEntity<>(OK(CreateResponse.from(id)), OK);
+            }
+
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**

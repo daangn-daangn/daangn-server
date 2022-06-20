@@ -10,13 +10,16 @@ import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -30,13 +33,14 @@ public class UserServiceImpl implements UserService {
     private final UserQueryRepository userQueryRepository;
     private final UploadUtils uploadUtils;
 
+    @Async
     @Override
     @Transactional
-    public Long create(Long oauthId, String profileImageFullPath) {
+    public CompletableFuture<Long> create(Long oauthId, String profileImageFullPath) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
 
         if (userRepository.existsByOAuth(oauthId)) {
-            return getUserByOauthId(oauthId).getId();
+            return completedFuture(getUserByOauthId(oauthId).getId());
         }
 
         User user = User.builder()
@@ -45,7 +49,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User savedUser = userRepository.save(user);
-        return savedUser.getId();
+        return completedFuture(savedUser.getId());
     }
 
     @Override

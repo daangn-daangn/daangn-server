@@ -4,10 +4,11 @@ import com.daangndaangn.common.api.entity.product.Product;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface ProductService {
 
-    Product create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls);
+    CompletableFuture<Product> create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls);
 
     Product getProduct(Long id);
 

@@ -3,8 +3,7 @@ package com.daangndaangn.chatserver.controller.message;
 import com.daangndaangn.common.chat.document.message.MessageType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -13,6 +12,8 @@ import javax.validation.constraints.NotNull;
 public class ChatMessageRequest {
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     @JsonNaming(SnakeCaseStrategy.class)
     public static class CreateRequest {

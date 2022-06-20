@@ -8,7 +8,6 @@ import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ import javax.validation.Valid;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 
-@Slf4j
 @RequestMapping("/chat/chat-rooms")
 @RestController
 @RequiredArgsConstructor

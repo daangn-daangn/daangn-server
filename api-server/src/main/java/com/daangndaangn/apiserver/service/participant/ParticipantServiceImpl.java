@@ -36,14 +36,6 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public Participant getParticipant(String id) {
-        checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
-
-        return participantRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(Participant.class, String.format("id = %s", id)));
-    }
-
-    @Override
     public boolean isParticipant(String chatRoomId, Long userId) {
         checkArgument(isNotEmpty(chatRoomId), "chatRoomId 값은 필수입니다.");
         checkArgument(userId != null, "userId 값은 필수입니다.");

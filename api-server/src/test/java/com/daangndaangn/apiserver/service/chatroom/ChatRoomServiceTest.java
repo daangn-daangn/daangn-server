@@ -23,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -97,7 +99,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 물품ID와_사용자_ID_list를_받으면_채팅방을_생성할_수_있다() {
+    public void 물품ID와_사용자_ID_list를_받으면_채팅방을_생성할_수_있다() throws ExecutionException, InterruptedException {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -111,7 +113,7 @@ class ChatRoomServiceTest {
         given(participantService.create(any(), any())).willReturn(mockParticipant);
 
         //when
-        ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L));
+        ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)).get();
 
         //then
         verify(userService, times(2)).existById(anyLong());
@@ -127,7 +129,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 이미_채팅방이_존재하는_경우_기존의_채팅방을_리턴한다() {
+    public void 이미_채팅방이_존재하는_경우_기존의_채팅방을_리턴한다() throws ExecutionException, InterruptedException {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -138,7 +140,7 @@ class ChatRoomServiceTest {
                 .willReturn(Optional.ofNullable(mockChatRoom));
 
         //when
-        ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L));
+        ChatRoom chatRoom = chatRoomService.create(mockProduct.getId(), List.of(1L, 2L)).get();
 
         //then
         verify(userService, times(2)).existById(anyLong());

@@ -2,6 +2,8 @@ package com.daangndaangn.chatserver.service.message;
 
 import com.daangndaangn.common.chat.document.ChatRoom;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * ChatRoom 도메인 관련해서 아래 세 기능만 분리
  *  1. 채팅 메시지 보내기 기능
@@ -12,7 +14,7 @@ public interface ChatMessageService {
     /**
      * for 채팅 메시지 보내기 API
      */
-    long addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message);
+    CompletableFuture<Long> addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message);
 
     /**
      * for 채팅방 메시지 목록 조회 API
