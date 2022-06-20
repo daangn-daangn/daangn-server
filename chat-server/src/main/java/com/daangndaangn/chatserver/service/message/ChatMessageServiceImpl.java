@@ -9,17 +9,18 @@ import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true, value = "mongoTransactionManager")
 @RequiredArgsConstructor
@@ -28,9 +29,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ParticipantRepository participantRepository;
 
+    @Async
     @Override
     @Transactional(value = "mongoTransactionManager")
-    public long addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message) {
+    public CompletableFuture<Long> addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message) {
         checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
         checkArgument(senderId != null, "senderId 값은 필수입니다.");
         checkArgument(receiverId != null, "receiverId 값은 필수입니다.");
@@ -49,7 +51,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                                                                                 List.of(senderId, receiverId),
                                                                                 chatMessage.getCreatedAt());
 
-        return messageUpdateCount + participantUpdateCount;
+        return completedFuture(messageUpdateCount + participantUpdateCount);
     }
 
     @Override

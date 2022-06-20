@@ -15,20 +15,22 @@ import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @RequestMapping("/api/chat-rooms")
 @RestController
 @RequiredArgsConstructor
@@ -42,22 +44,23 @@ public class ChatRoomApiController {
 
     /**
      * 채팅방 생성 POST /api/chat-rooms
+     *
+     * success: CreateResponse
      */
     @PostMapping
-    public ApiResult<CreateResponse> createChattingRoom(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                        @Valid @RequestBody ChatRoomRequest.CreateRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> createChattingRoom(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @Valid @RequestBody ChatRoomRequest.CreateRequest request) {
 
         long myId = authentication.getId();
         long otherUserId = request.getOtherUserId();
-        ChatRoom chattingRoom = chatRoomService.create(request.getProductId(), List.of(myId, otherUserId));
+        return chatRoomService.create(request.getProductId(), List.of(myId, otherUserId)).handle((chatRoom, throwable) -> {
+            if (chatRoom != null) {
+                return new ResponseEntity<>(OK(CreateResponse.from(chatRoom.getId())), HttpStatus.OK);
+            }
 
-        log.info("chattingRoom.getId(): {}", chattingRoom.getId());
-        log.info("chattingRoom.getProductId(): {}", chattingRoom.getProductId());
-        log.info("chattingRoom.getProductImage(): {}", chattingRoom.getProductImage());
-        log.info("chattingRoom.getCreatedAt(): {}", chattingRoom.getCreatedAt());
-        log.info("chattingRoom.getUpdatedAt(): {}", chattingRoom.getUpdatedAt());
-
-        return OK(CreateResponse.from(chattingRoom.getId()));
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**

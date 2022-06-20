@@ -9,12 +9,15 @@ import com.daangndaangn.apiserver.service.user.UserService;
 import com.daangndaangn.common.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
 @Transactional(readOnly = true)
@@ -26,9 +29,10 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     private final UserService userService;
     private final ProductService productService;
 
+    @Async
     @Override
     @Transactional
-    public Long create(Long productId, Long userId) {
+    public CompletableFuture<Long> create(Long productId, Long userId) {
         checkArgument(productId != null, "productId 값은 필수입니다.");
         checkArgument(userId != null, "userId 값은 필수입니다.");
 
@@ -44,11 +48,11 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         });
 
         if (favoriteProduct.getId() == null) {
-            return favoriteProductRepository.save(favoriteProduct).getId();
+            return completedFuture(favoriteProductRepository.save(favoriteProduct).getId());
         }
 
         favoriteProduct.update(true);
-        return favoriteProduct.getId();
+        return completedFuture(favoriteProduct.getId());
     }
 
     @Override

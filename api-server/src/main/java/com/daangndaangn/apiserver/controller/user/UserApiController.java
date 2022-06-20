@@ -12,17 +12,21 @@ import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.springframework.http.HttpStatus.*;
 
 @RequestMapping("/api/users")
 @RestController
@@ -49,15 +53,22 @@ public class UserApiController {
 
     /**
      * POST /api/users/join
+     *
+     * success: JoinResponse
      */
     @PostMapping("/join")
-    public ApiResult<JoinResponse> join(@Valid @RequestBody UserRequest.JoinRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> join(@Valid @RequestBody UserRequest.JoinRequest request) {
         String accessToken = request.getAccessToken();
         OAuthResponse.LoginResponse userInfo = oAuthService.getUserInfo(OAuthRequest.LoginRequest.from(accessToken));
 
-        Long userId = userService.create(userInfo.getId(), userInfo.getProfileImage());
-        User user = userService.getUser(userId);
-        return OK(JoinResponse.from(user));
+        return userService.create(userInfo.getId(), userInfo.getProfileImage()).handle((userId, throwable) -> {
+            if (userId != null) {
+                User user = userService.getUser(userId);
+                return new ResponseEntity<>(OK(JoinResponse.from(user)), OK);
+            }
+
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**
@@ -81,18 +92,29 @@ public class UserApiController {
 
     /**
      * POST /api/users/manner
+     *
+     * success: Void
      */
     @PostMapping("/manner")
-    public ApiResult<Void> updateManner(@AuthenticationPrincipal JwtAuthentication authentication,
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> updateManner(
+                                        @AuthenticationPrincipal JwtAuthentication authentication,
                                         @Valid @RequestBody UserRequest.MannerRequest request) {
 
         if (authentication.getId().equals(request.getUserId())) {
             throw new UnauthorizedException("자기 자신은 매너평가를 할 수 없습니다.");
         }
 
-        mannerService.createManner(request.getUserId(), authentication.getId(), request.getScore());
+        Long userId = request.getUserId();
+        Long evaluatorId = authentication.getId();
+        int score = request.getScore();
 
-        return OK(null);
+        return mannerService.createManner(userId, evaluatorId, score).handle((mannerId, throwable) -> {
+            if (mannerId != null) {
+                return new ResponseEntity<>(OK(null), OK);
+            }
+
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**

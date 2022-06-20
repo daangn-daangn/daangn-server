@@ -5,10 +5,11 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.user.query.UserQueryDto;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
 
-    Long create(Long oauthId, String profileImageFullPath);
+    CompletableFuture<Long> create(Long oauthId, String profileImageFullPath);
 
     long update(Long oauthId, String nickname, Location location, String profileImageFullPath);
 

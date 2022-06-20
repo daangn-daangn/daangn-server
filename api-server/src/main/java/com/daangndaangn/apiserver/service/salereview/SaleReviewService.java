@@ -7,10 +7,11 @@ import com.daangndaangn.common.api.entity.user.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface SaleReviewService {
 
-    Long create(Long productId, Long reviewerId, Long revieweeId, SaleReviewType saleReviewType, String content);
+    CompletableFuture<Long> create(Long productId, Long reviewerId, Long revieweeId, SaleReviewType saleReviewType, String content);
 
     boolean isValidCreateRequest(Product product, User reviewer, User reviewee, SaleReviewType saleReviewTypeCode);
 

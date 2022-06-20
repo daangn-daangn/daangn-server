@@ -11,8 +11,6 @@ public interface ParticipantService {
      */
     Participant create(Long userId, String chatRoomId);
 
-    Participant getParticipant(String id);
-
     /**
      * 채팅방 참여자인지 확인
      */

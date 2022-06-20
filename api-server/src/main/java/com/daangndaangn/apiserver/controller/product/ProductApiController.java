@@ -6,7 +6,6 @@ import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryServic
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
 import com.daangndaangn.apiserver.service.user.UserService;
-import com.daangndaangn.common.api.entity.product.Product;
 import com.daangndaangn.common.api.entity.product.ProductImage;
 import com.daangndaangn.common.api.entity.product.ProductState;
 import com.daangndaangn.common.api.entity.user.User;
@@ -16,19 +15,23 @@ import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/api/products")
 @RestController
@@ -95,25 +98,33 @@ public class ProductApiController {
      * 물품 등록
      *
      * POST /api/products
+     *
+     * success: CreateResponse
      */
     @PostMapping
-    public ApiResult<CreateResponse> createProduct(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                   @Valid @RequestBody ProductRequest.CreateRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> createProduct(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @Valid @RequestBody ProductRequest.CreateRequest request) {
 
-        Product product = productService.create(authentication.getId(),
+        return productService.create(authentication.getId(),
                 request.getCategoryId(),
                 request.getTitle(),
                 request.getName(),
                 request.getPrice(),
                 request.getDescription(),
-                request.getProductImages());
+                request.getProductImages()).handle((product, throwable) -> {
 
-        List<String> productImageUrls = product.getProductImages().stream()
-                                            .map(ProductImage::getImageUrl)
-                                            .map(presignerUtils::getProductPresignedPutUrl)
-                                            .collect(toList());
+            if (product != null) {
+                List<String> productImageUrls = product.getProductImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .map(presignerUtils::getProductPresignedPutUrl)
+                        .collect(toList());
 
-        return OK(CreateResponse.from(product.getId(), productImageUrls));
+                return new ResponseEntity<>(OK(CreateResponse.from(product.getId(), productImageUrls)), OK);
+            }
+
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**

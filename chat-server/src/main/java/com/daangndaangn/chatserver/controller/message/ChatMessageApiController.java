@@ -9,17 +9,19 @@ import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @RequestMapping("/chat/messages")
 @RestController
 @RequiredArgsConstructor
@@ -33,22 +35,25 @@ public class ChatMessageApiController {
      * 채팅메시지 보내기 API
      *
      * POST /chat/messages
+     *
+     * success: void
      */
     @PostMapping
-    public void sendMessage(@RequestBody CreateRequest message) {
-        log.info("call POST /chat/messages");
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> sendMessage(@RequestBody CreateRequest message) {
 
-        long addCount = chatMessageService.addChatMessage(message.getRoomId(),
+        return chatMessageService.addChatMessage(message.getRoomId(),
                                                           message.getSenderId(),
                                                           message.getReceiverId(),
                                                           message.getMessageType(),
-                                                          message.getMessage());
+                                                          message.getMessage()).handle((addCount, throwable) -> {
 
-        log.info("addCount: {}", addCount);
+            if (addCount != null && addCount == 3) {
+                messageSender.send(message);
+                return new ResponseEntity<>(OK(null), HttpStatus.OK);
+            }
 
-        if (addCount > 0) {
-            messageSender.send(message);
-        }
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**
@@ -67,15 +72,11 @@ public class ChatMessageApiController {
     public ApiResult<List<GetResponse>> getChatMessages(@RequestParam("room_id") String roomId,
                                                         @RequestParam("page") int page) {
 
-        log.info("call GET /chat/messages?room_id=");
         ChatRoom chatRoom = chatMessageService.getChatRoomWithMessages(roomId, page);
 
         List<GetResponse> getResponses = chatRoom.getChatMessages().stream()
                 .map(GetResponse::from)
                 .collect(toList());
-
-        log.info("chatRoom.getChatMessages().size() = {}",chatRoom.getChatMessages().size());
-        log.info("chatRoom.getChatMessages() = {}",chatRoom.getChatMessages());
 
         return OK(getResponses);
     }

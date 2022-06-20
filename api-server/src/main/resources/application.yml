@@ -32,6 +32,13 @@ logging:
             core:
               MongoTemplate: DEBUG
 
+async:
+  thread:
+    thread-name-prefix: async-thread-
+    core-pool-size: 10  # 동시에 실행시킬 쓰레드의 갯수
+    max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
+    queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
+
 ---
 spring:
   config:

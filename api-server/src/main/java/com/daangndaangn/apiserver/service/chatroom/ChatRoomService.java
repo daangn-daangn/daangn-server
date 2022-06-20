@@ -4,6 +4,7 @@ import com.daangndaangn.common.chat.document.ChatRoom;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * ChatRoom 도메인 관련해서 아래 세 기능만 chat-server로 분리
@@ -14,7 +15,7 @@ import java.util.List;
  * 나머지 기능은 전부 api-server에서 처리
  */
 public interface ChatRoomService {
-    ChatRoom create(Long productId, List<Long> userIds);
+    CompletableFuture<ChatRoom> create(Long productId, List<Long> userIds);
 
     List<ChatRoom> getChatRooms(Long userId, Pageable pageable);
 

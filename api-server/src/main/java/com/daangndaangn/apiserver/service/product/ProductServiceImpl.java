@@ -11,13 +11,16 @@ import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -33,15 +36,16 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final UploadUtils uploadUtils;
 
+    @Async
     @Override
     @Transactional
-    public Product create(Long sellerId,
-                          Long categoryId,
-                          String title,
-                          String name,
-                          Long price,
-                          String description,
-                          List<String> productImageUrls) {
+    public CompletableFuture<Product> create(Long sellerId,
+                                             Long categoryId,
+                                             String title,
+                                             String name,
+                                             Long price,
+                                             String description,
+                                             List<String> productImageUrls) {
 
         checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
         checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
@@ -91,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        return productRepository.save(product);
+        return completedFuture(productRepository.save(product));
     }
 
     @Override

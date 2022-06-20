@@ -8,18 +8,21 @@ import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.web.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
-
+import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/api/favorite-products")
 @RestController
@@ -50,14 +53,21 @@ public class FavoriteProductApiController {
      * 찜하기 등록
      *
      * POST /api/favorite-products
+     *
+     * success: CreateResponse
      */
     @PostMapping
-    public ApiResult<CreateResponse> createFavoriteProduct(@AuthenticationPrincipal JwtAuthentication authentication,
-                                                           @Valid @RequestBody CreateRequest request) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> createFavoriteProduct(
+                                                            @AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @Valid @RequestBody CreateRequest request) {
 
-        Long id = favoriteProductService.create(request.getProductId(), authentication.getId());
+        return favoriteProductService.create(request.getProductId(), authentication.getId()).handle((id, throwable) -> {
+            if (id != null) {
+                return new ResponseEntity<>(OK(CreateResponse.from(id)), OK);
+            }
 
-        return OK(CreateResponse.from(id));
+            return ErrorResponseEntity.from(throwable, true);
+        });
     }
 
     /**
