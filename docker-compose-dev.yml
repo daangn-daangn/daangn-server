@@ -43,8 +43,3 @@ services:
       - kafka
     env_file:
       - .env
-
-networks:
-  default:
-    external:
-      name: daangn_net
