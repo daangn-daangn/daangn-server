@@ -31,7 +31,7 @@ public class InitData {
     public void init() {
         log.info("start initTestSetting");
         try {
-            initDataService.initCategories();
+//            initDataService.initCategories();
             initDataService.initUsers();
 //        initDataService.initManners();
 //        initDataService.initProducts();
