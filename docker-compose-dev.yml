@@ -23,6 +23,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    restart: always
   api_server:
     container_name: api
     build:
@@ -37,6 +38,17 @@ services:
     build:
       context: .
       dockerfile: ./chat-server/Dockerfile.dev
+    ports:
+      - "8880:8880"
+    depends_on:
+      - kafka
+    env_file:
+      - .env
+  noti_server:
+    container_name: notification
+    build:
+      context: .
+      dockerfile: ./noti-server/Dockerfile.dev
     ports:
       - "9080:9080"
     depends_on:

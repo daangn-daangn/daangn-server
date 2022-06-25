@@ -41,7 +41,7 @@ public class FavoriteProductApiController {
     public ApiResult<List<SimpleResponse>> getFavoriteProducts(@AuthenticationPrincipal JwtAuthentication authentication,
                                                                Pageable pageable) {
 
-        List<Long> productIds = favoriteProductService.getFavoriteProducts(authentication.getId(), pageable)
+        List<Long> productIds = favoriteProductService.getFavoriteProductsByUser(authentication.getId(), pageable)
                 .stream()
                 .map(favoriteProduct -> favoriteProduct.getProduct().getId())
                 .collect(toList());

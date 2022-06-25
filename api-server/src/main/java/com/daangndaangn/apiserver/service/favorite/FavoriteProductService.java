@@ -12,7 +12,9 @@ public interface FavoriteProductService {
 
     FavoriteProduct getFavoriteProduct(Long id);
 
-    List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable);
+    List<FavoriteProduct> getFavoriteProductsByUser(Long userId, Pageable pageable);
+
+    List<FavoriteProduct> getFavoriteProductsByProduct(Long productId);
 
     void delete(Long id);
 

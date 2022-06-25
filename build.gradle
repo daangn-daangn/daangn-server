@@ -40,6 +40,7 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 		implementation 'org.springframework.boot:spring-boot-starter-validation'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'org.springframework.kafka:spring-kafka'
 		implementation 'org.springframework.security:spring-security-test'
 		implementation group: 'org.apache.commons', name: 'commons-lang3'
 		implementation("com.google.guava:guava:31.1-jre")
@@ -61,6 +62,12 @@ project(':api-server') {
 }
 
 project(':chat-server') {
+	dependencies {
+		api project(':common')
+	}
+}
+
+project(':noti-server') {
 	dependencies {
 		api project(':common')
 	}

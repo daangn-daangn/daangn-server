@@ -1,0 +1,70 @@
+spring:
+  profiles:
+    active: local
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  kafka:
+    topic:
+      sold-out: v1.sold-out.request
+      price-down: v1.price-down.request
+      sold-out-to-buyer: v1.sold-out-to-buyer.request
+      buyer-review-created: v1.buyer-review-created.request
+    consumer:
+      bootstrap-servers: kafka:9095
+      group-id: notification
+      auto-offset-reset: latest # earliest
+
+server:
+  port: 9080
+
+jwt:
+  header: api_key
+  issuer: daangn-server
+  client-secret: daangn-server
+  expiry-seconds: 7200 # 2시간
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:tcp://localhost/~/daangn;MODE=MYSQL;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  data:
+    mongodb:
+      database: daangn_test
+      uri: mongodb://localhost:27017/daangn_test
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9095
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production

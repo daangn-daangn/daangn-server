@@ -8,7 +8,11 @@ import com.daangndaangn.common.api.entity.product.ProductState;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.event.PriceDownEvent;
+import com.daangndaangn.common.event.SoldOutEvent;
+import com.daangndaangn.common.event.SoldOutToBuyerEvent;
 import com.daangndaangn.common.util.UploadUtils;
+import com.google.common.eventbus.EventBus;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -35,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final UploadUtils uploadUtils;
+    private final EventBus eventBus;
 
     @Async
     @Override
@@ -123,6 +128,9 @@ public class ProductServiceImpl implements ProductService {
         User buyer = userService.getUser(buyerId);
         updatedProduct.updateState(ProductState.SOLD_OUT);
         updatedProduct.updateBuyer(buyer);
+
+        eventBus.post(SoldOutEvent.from(updatedProduct));
+        eventBus.post(SoldOutToBuyerEvent.of(updatedProduct, buyer));
     }
 
     @Override
@@ -152,10 +160,17 @@ public class ProductServiceImpl implements ProductService {
         checkArgument(price != null, "price 값은 필수입니다.");
         checkArgument(isNotEmpty(description), "description 값은 필수입니다.");
 
-        Product updatedProduct = getProduct(id);
+        Product product = getProduct(id);
         Category category = categoryService.getCategory(categoryId);
 
-        updatedProduct.updateInfo(title, name, category, price, description);
+        long beforePrice = product.getPrice();
+
+        product.updateInfo(title, name, category, price, description);
+
+        //상품의 가격이 내려간 경우
+        if (product.getPrice() < beforePrice) {
+            eventBus.post(PriceDownEvent.from(product));
+        }
     }
 
     @Override

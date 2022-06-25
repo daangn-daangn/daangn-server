@@ -64,12 +64,15 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     @Override
-    public List<FavoriteProduct> getFavoriteProducts(Long userId, Pageable pageable) {
+    public List<FavoriteProduct> getFavoriteProductsByUser(Long userId, Pageable pageable) {
         checkArgument(userId != null, "userId 값은 필수입니다.");
-        return favoriteProductRepository.findAll(userId, pageable)
-                .stream()
-                .filter(f -> f.isValid())
-                .collect(toList());
+        return favoriteProductRepository.findAll(userId, pageable);
+    }
+
+    @Override
+    public List<FavoriteProduct> getFavoriteProductsByProduct(Long productId) {
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        return favoriteProductRepository.findAll(productId);
     }
 
     @Override
