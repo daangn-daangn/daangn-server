@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS product_images CASCADE;
 DROP TABLE IF EXISTS favorite_products CASCADE;
 DROP TABLE IF EXISTS sale_reviews CASCADE;
 DROP TABLE IF EXISTS manner_evaluations CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
 
 
 CREATE TABLE users
@@ -124,5 +125,18 @@ CREATE TABLE manner_evaluations
     CONSTRAINT fk_manner_evaluations_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_manner_evaluations_to_evaluator FOREIGN KEY (evaluator_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT '매너평가 테이블';
+
+CREATE TABLE notifications
+(
+    id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
+    user_id             bigint          NOT NULL COMMENT '알림받는 사용자 id',
+    notification_type   int             NOT NULL COMMENT '알림유형 (삭제, 예약중, 판매중, 거래완료, 숨기기)',
+    identifier          varchar(50)     NOT NULL COMMENT '식별자',
+    is_read             boolean         NOT NULL COMMENT '알림 메시지 조회여부',
+    created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
+    PRIMARY KEY (id),
+    KEY notifications_idx_user_id (user_id),
+    CONSTRAINT fk_notifications_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+) COMMENT '알림 테이블';
 
 SET foreign_key_checks = 1;

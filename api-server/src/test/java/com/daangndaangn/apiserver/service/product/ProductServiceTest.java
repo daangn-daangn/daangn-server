@@ -9,6 +9,7 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.product.ProductRepository;
 import com.daangndaangn.common.util.UploadUtils;
+import com.google.common.eventbus.EventBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,9 @@ public class ProductServiceTest {
 
     @Mock
     private UploadUtils uploadUtils;
+
+    @Mock
+    private EventBus eventBus;
 
     private Category mockCategory;
     private User mockUser, mockSeller;
@@ -208,6 +212,7 @@ public class ProductServiceTest {
 
         given(productRepository.findByProductId(anyLong())).willReturn(Optional.ofNullable(mockProduct));
         given(userService.getUser(anyLong())).willReturn(mockBuyer);
+        doNothing().when(eventBus).post(any());
 
         //when
         productService.updateToSoldOut(mockProduct.getId(), mockBuyer.getId());
@@ -218,6 +223,7 @@ public class ProductServiceTest {
         assertThat(mockProduct.getBuyer().getId()).isEqualTo(mockBuyer.getId());
         verify(productRepository).findByProductId(anyLong());
         verify(userService).getUser(anyLong());
+        verify(eventBus, times(2)).post(any());
     }
 
     @Test
@@ -246,8 +252,13 @@ public class ProductServiceTest {
 
         String newName = "newName";
         String newTitle = "newTitle";
-        Long newPrice = 12345L;
+        long newPrice = 12345L;
         String newDescription = "newDescription";
+
+        long beforePrice = mockProduct.getPrice();
+        if (newPrice < beforePrice) {
+            doNothing().when(eventBus).post(any());
+        }
 
         //when
         productService.update(mockProduct.getId(), newTitle, newName, mockCategory.getId(), newPrice, newDescription);

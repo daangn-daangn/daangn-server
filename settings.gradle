@@ -2,4 +2,5 @@ rootProject.name = 'daangn-server'
 
 include 'api-server'
 include 'chat-server'
+include 'noti-server'
 include 'common'

@@ -9,6 +9,14 @@ spring:
         use_sql_comments: true
         implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  kafka:
+    topic:
+      sold-out: v1.sold-out.request
+      price-down: v1.price-down.request
+      sold-out-to-buyer: v1.sold-out-to-buyer.request
+      buyer-review-created: v1.buyer-review-created.request
+    producer:
+      bootstrap-servers: kafka:9095
 
 jwt:
   header: api_key
@@ -39,6 +47,13 @@ async:
     max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
     queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
 
+eventbus:
+  thread:
+    thread-name-prefix: eventBus-thread-
+    core-pool-size: 10  # 동시에 실행시킬 쓰레드의 갯수
+    max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
+    queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
+
 ---
 spring:
   config:
@@ -60,6 +75,9 @@ spring:
   sql:
     init:
       mode: always
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9095
 
 ---
 spring:

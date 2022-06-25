@@ -20,7 +20,7 @@ spring:
       bootstrap-servers: kafka:9095
 
 server:
-  port: 9080
+  port: 8880
 
 jwt:
   header: api_key

@@ -48,9 +48,21 @@ public class FavoriteProductCustomRepositoryImpl implements FavoriteProductCusto
                 .from(qFavoriteProduct)
                     .join(qFavoriteProduct.product).fetchJoin()
                     .join(qFavoriteProduct.user).fetchJoin()
-                .where(qFavoriteProduct.user.id.eq(userId))
+                .where(qFavoriteProduct.user.id.eq(userId),
+                        qFavoriteProduct.isValid.eq(true))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    @Override
+    public List<FavoriteProduct> findAll(Long productId) {
+        return jpaQueryFactory.select(qFavoriteProduct)
+                .from(qFavoriteProduct)
+                .join(qFavoriteProduct.product).fetchJoin()
+                .join(qFavoriteProduct.user).fetchJoin()
+                .where(qFavoriteProduct.product.id.eq(productId),
+                        qFavoriteProduct.isValid.eq(true))
                 .fetch();
     }
 }

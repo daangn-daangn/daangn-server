@@ -77,7 +77,7 @@ class FavoriteProductServiceTest {
         given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
 
         //when
-        Long mockFavoriteProductId = 1L;
+        Long mockFavoriteProductId = mockFavoriteProduct.getId();
         favoriteProductService.create(1L, 1L);
         FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
 
@@ -104,7 +104,7 @@ class FavoriteProductServiceTest {
         given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.of(mockFavoriteProduct));
 
         //when
-        Long mockFavoriteProductId = 1L;
+        Long mockFavoriteProductId = mockFavoriteProduct.getId();
         favoriteProductService.create(1L, 1L);
         FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProductId);
 
@@ -121,7 +121,7 @@ class FavoriteProductServiceTest {
         verify(productService, never()).getProduct(any());
     }
 
-    // findAll Test
+    // getFavoriteProductsByUser Test
     @Test
     public void 사용자가_찜한_모든_물품목록을_반환한다() {
         //given
@@ -131,16 +131,37 @@ class FavoriteProductServiceTest {
                         mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct})
                 .collect(toList());
 
-        Long userId = 1L;
+        Long userId = mockUser.getId();
         Pageable mockPageRequest = PageRequest.of(0, mockFavoriteProducts.size());
         given(favoriteProductRepository.findAll(anyLong(), any(PageRequest.class))).willReturn(mockFavoriteProducts);
 
         //when
-        List<FavoriteProduct> result = favoriteProductService.getFavoriteProducts(userId, mockPageRequest);
+        List<FavoriteProduct> result = favoriteProductService.getFavoriteProductsByUser(userId, mockPageRequest);
 
         //then
         assertThat(result.size()).isEqualTo(mockFavoriteProducts.size());
         verify(favoriteProductRepository).findAll(anyLong(), any(PageRequest.class));
+    }
+
+    // getFavoriteProductsByProduct Test
+    @Test
+    public void 특정_물품을_찜한_모든_사용자목록을_반환한다() {
+        //given
+        List<FavoriteProduct> mockFavoriteProducts
+                = Stream.of(new FavoriteProduct[]{mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,
+                        mockFavoriteProduct,mockFavoriteProduct, mockFavoriteProduct,
+                        mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct})
+                .collect(toList());
+
+        Long productId = mockProduct.getId();
+        given(favoriteProductRepository.findAll(anyLong())).willReturn(mockFavoriteProducts);
+
+        //when
+        List<FavoriteProduct> result = favoriteProductService.getFavoriteProductsByProduct(productId);
+
+        //then
+        assertThat(result.size()).isEqualTo(mockFavoriteProducts.size());
+        verify(favoriteProductRepository).findAll(anyLong());
     }
 
     // delete Test

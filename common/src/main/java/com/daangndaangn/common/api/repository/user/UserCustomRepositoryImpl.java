@@ -4,6 +4,8 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static com.daangndaangn.common.api.entity.user.QUser.user;
 
 
@@ -40,5 +42,13 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
                 .fetchFirst();
 
         return result != null;
+    }
+
+    @Override
+    public List<User> findAll(List<Long> userIds) {
+        return jpaQueryFactory
+                .selectFrom(user)
+                .where(user.id.in(userIds))
+                .fetch();
     }
 }

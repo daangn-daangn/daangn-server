@@ -1,0 +1,24 @@
+FROM openjdk:11 as builder
+
+COPY ./ ./
+
+RUN chmod +x ./gradlew
+
+RUN ./gradlew clean :noti-server:build -x test
+
+
+FROM openjdk:11
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+WORKDIR /app
+
+COPY --from=builder noti-server/build/libs/*.jar ./noti-server.jar
+COPY noti-server/docker-entrypoint.sh ./docker-entrypoint.sh
+
+RUN chmod +x ./docker-entrypoint.sh
+ENTRYPOINT ./docker-entrypoint.sh
+
