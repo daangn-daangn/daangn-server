@@ -21,6 +21,7 @@ public class PresignerUtils {
 
     private static final String PRODUCT_IMAGE_FOLDER = "product-image";
     private static final String PROFILE_IMAGE_FOLDER = "profile-image";
+    private static final String CHAT_IMAGE_FOLDER = "chat-image";
     private final AwsConfig awsConfig;
     private final S3Presigner presigner;
 
@@ -41,6 +42,16 @@ public class PresignerUtils {
 
     public String getProfilePresignedPutUrl(String filename) {
         PutObjectPresignRequest presignPutRequest = toPutObjectPresignRequest(PROFILE_IMAGE_FOLDER, filename);
+        return presigner.presignPutObject(presignPutRequest).url().toString();
+    }
+
+    public String getChatRoomPresignedGetUrl(String filename) {
+        GetObjectPresignRequest presignGetRequest = toGetObjectPresignRequest(CHAT_IMAGE_FOLDER, filename);
+        return presigner.presignGetObject(presignGetRequest).url().toString();
+    }
+
+    public String getChatRoomPresignedPutUrl(String filename) {
+        PutObjectPresignRequest presignPutRequest = toPutObjectPresignRequest(CHAT_IMAGE_FOLDER, filename);
         return presigner.presignPutObject(presignPutRequest).url().toString();
     }
 

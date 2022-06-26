@@ -1,13 +1,17 @@
 package com.daangndaangn.chatserver.controller.message;
 
 import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
+import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.ImageUploadRequest;
 import com.daangndaangn.chatserver.controller.message.ChatMessageResponse.GetResponse;
 import com.daangndaangn.chatserver.controller.MessageSender;
+import com.daangndaangn.chatserver.controller.message.ChatMessageResponse.ImageUploadResponse;
 import com.daangndaangn.chatserver.service.message.ChatMessageService;
 import com.daangndaangn.chatserver.service.participant.ParticipantService;
 import com.daangndaangn.common.chat.document.ChatRoom;
+import com.daangndaangn.common.chat.document.message.MessageType;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
+import com.daangndaangn.common.util.PresignerUtils;
 import com.daangndaangn.common.web.ApiResult;
 import com.daangndaangn.common.web.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +35,8 @@ public class ChatMessageApiController {
     private final ChatMessageService chatMessageService;
     private final ParticipantService participantService;
     private final MessageSender messageSender;
+    private final ChatMessageUtils chatMessageUtils;
+    private final PresignerUtils presignerUtils;
 
     /**
      * 채팅메시지 보내기 API
@@ -39,7 +46,7 @@ public class ChatMessageApiController {
      * success: void
      */
     @PostMapping
-    public CompletableFuture<ResponseEntity<ApiResult<?>>> sendMessage(@RequestBody CreateRequest message) {
+    public CompletableFuture<ResponseEntity<ApiResult<?>>> sendMessage(@Valid @RequestBody CreateRequest message) {
 
         return chatMessageService.addChatMessage(message.getRoomId(),
                                                           message.getSenderId(),
@@ -48,12 +55,38 @@ public class ChatMessageApiController {
                                                           message.getMessage()).handle((addCount, throwable) -> {
 
             if (addCount != null && addCount == 3) {
-                messageSender.send(message);
+                CreateRequest convertedMessage = convertMessage(message);
+                messageSender.send(convertedMessage);
                 return new ResponseEntity<>(OK(null), HttpStatus.OK);
             }
 
             return ErrorResponseEntity.from(throwable, true);
         });
+    }
+
+    /**
+     * 메시지 타입이 이미지가 아닌경우 => 그대로 리턴
+     * 메시지 타입이 이미지인 경우 => requestUrl을 presignedUrl로 변환해서 메시지를 보내준다.
+     */
+    private CreateRequest convertMessage(CreateRequest message) {
+        if (!MessageType.IMAGE.getCode().equals(message.getMessageType())) {
+            return message;
+        }
+
+        String presignedUrl = presignerUtils.getChatRoomPresignedGetUrl(message.getMessage());
+        return CreateRequest.of(message, presignedUrl);
+    }
+
+    /**
+     * 채팅이미지 생성 API
+     *
+     * POST /chat/messages/images
+     */
+    @PostMapping("/images")
+    public ApiResult<List<ImageUploadResponse>> createChatImages(@Valid @RequestBody
+                                                                 ImageUploadRequest imageUploadRequest) {
+
+        return OK(chatMessageUtils.toImageUploadResponses(imageUploadRequest.getImgFiles()));
     }
 
     /**
@@ -75,7 +108,13 @@ public class ChatMessageApiController {
         ChatRoom chatRoom = chatMessageService.getChatRoomWithMessages(roomId, page);
 
         List<GetResponse> getResponses = chatRoom.getChatMessages().stream()
-                .map(GetResponse::from)
+                .map(chatMessage -> {
+                    if (chatMessage.getMessageType().equals(MessageType.IMAGE)) {
+                        String presignedUrl = presignerUtils.getChatRoomPresignedGetUrl(chatMessage.getMessage());
+                        return GetResponse.of(chatMessage, presignedUrl);
+                    }
+                    return GetResponse.from(chatMessage);
+                })
                 .collect(toList());
 
         return OK(getResponses);
