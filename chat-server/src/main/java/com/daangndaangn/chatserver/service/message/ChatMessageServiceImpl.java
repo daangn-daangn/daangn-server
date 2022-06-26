@@ -8,6 +8,7 @@ import com.daangndaangn.common.chat.document.message.MessageType;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
 import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.util.UploadUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ParticipantRepository participantRepository;
+    private final UploadUtils uploadUtils;
 
     @Async
     @Override
@@ -39,6 +41,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
                 "messageTypeCode 값은 1,2,3 중에 하나여야 합니다.");
         checkArgument(isNotEmpty(message), "message 값은 필수입니다.");
+
+        checkValidation(MessageType.from(messageTypeCode), message);
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .senderId(senderId)
@@ -52,6 +56,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                                                                                 chatMessage.getCreatedAt());
 
         return completedFuture(messageUpdateCount + participantUpdateCount);
+    }
+
+    private void checkValidation(MessageType messageType, String message) {
+        if (messageType.equals(MessageType.POSITION)) {
+            String[] components = message.split(",");
+            if (components.length != 2) {
+                throw new IllegalArgumentException("올바른 좌표 메시지 형식이 아닙니다.");
+            }
+        }
+
+        if (messageType.equals(MessageType.IMAGE) && uploadUtils.isNotImageFile(message)) {
+            throw new IllegalArgumentException("올바른 이미지 메시지 형식이 아닙니다.");
+        }
     }
 
     @Override

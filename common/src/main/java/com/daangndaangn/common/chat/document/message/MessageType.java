@@ -13,8 +13,8 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @AllArgsConstructor
 public enum MessageType {
     MESSAGE(1, "일반 메시지"),
-    IMAGE(2, "이미지 URL"),
-    POSITION(3, "좌표"),
+    POSITION(2, "좌표"),
+    IMAGE(3, "이미지 URL"),
     EXIT(4, "채팅방 퇴장");
 
     private static final Map<Integer, MessageType> messageTypeMap =
