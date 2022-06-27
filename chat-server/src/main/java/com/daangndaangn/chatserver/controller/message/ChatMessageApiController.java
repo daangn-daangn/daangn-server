@@ -49,10 +49,11 @@ public class ChatMessageApiController {
     public CompletableFuture<ResponseEntity<ApiResult<?>>> sendMessage(@Valid @RequestBody CreateRequest message) {
 
         return chatMessageService.addChatMessage(message.getRoomId(),
-                                                          message.getSenderId(),
-                                                          message.getReceiverId(),
-                                                          message.getMessageType(),
-                                                          message.getMessage()).handle((addCount, throwable) -> {
+                                                 message.getSenderId(),
+                                                 message.getReceiverId(),
+                                                 message.getMessageType(),
+                                                 message.getMessage(),
+                                                 message.getImgFiles()).handle((addCount, throwable) -> {
 
             if (addCount != null && addCount == 3) {
                 CreateRequest convertedMessage = convertMessage(message);
@@ -73,8 +74,10 @@ public class ChatMessageApiController {
             return message;
         }
 
-        String presignedUrl = presignerUtils.getChatRoomPresignedGetUrl(message.getMessage());
-        return CreateRequest.of(message, presignedUrl);
+        List<String> presignedUrls = message.getImgFiles().stream()
+                .map(presignerUtils::getChatRoomPresignedGetUrl).collect(toList());
+
+        return CreateRequest.of(message, presignedUrls);
     }
 
     /**
@@ -90,7 +93,7 @@ public class ChatMessageApiController {
     }
 
     /**
-     * 채팅방 목록 조회 API
+     * 채팅방 내 메시지 목록 조회 API
      *
      * GET /chat/messages
      *
@@ -110,7 +113,7 @@ public class ChatMessageApiController {
         List<GetResponse> getResponses = chatRoom.getChatMessages().stream()
                 .map(chatMessage -> {
                     if (chatMessage.getMessageType().equals(MessageType.IMAGE)) {
-                        String presignedUrl = presignerUtils.getChatRoomPresignedGetUrl(chatMessage.getMessage());
+                        List<String> presignedUrl = getPresignedUrl(chatMessage.getImgUrls());
                         return GetResponse.of(chatMessage, presignedUrl);
                     }
                     return GetResponse.from(chatMessage);
@@ -118,6 +121,12 @@ public class ChatMessageApiController {
                 .collect(toList());
 
         return OK(getResponses);
+    }
+
+    private List<String> getPresignedUrl(List<String> imgUrls) {
+        return imgUrls.stream()
+                .map(presignerUtils::getChatRoomPresignedGetUrl)
+                .collect(toList());
     }
 
     @PutMapping("/read-size")

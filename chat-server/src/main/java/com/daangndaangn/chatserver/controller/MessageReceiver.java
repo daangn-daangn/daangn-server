@@ -1,6 +1,6 @@
 package com.daangndaangn.chatserver.controller;
 
-import com.daangndaangn.chatserver.controller.message.ChatMessageRequest;
+import com.daangndaangn.chatserver.controller.message.ChatMessageRequest.CreateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,7 +18,7 @@ public class MessageReceiver {
     @KafkaListener(
         topics = "${spring.kafka.topic.chat-message}"
     )
-    public void listen(ChatMessageRequest.CreateRequest message) {
+    public void listen(CreateRequest message) {
         log.info("sending via kafka listener..");
         template.convertAndSend("/topic/chat/" + message.getRoomId(), message);
     }
