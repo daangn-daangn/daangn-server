@@ -20,7 +20,9 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Service
 @Transactional(readOnly = true, value = "mongoTransactionManager")
@@ -34,21 +36,24 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Async
     @Override
     @Transactional(value = "mongoTransactionManager")
-    public CompletableFuture<Long> addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message) {
+    public CompletableFuture<Long> addChatMessage(String id,
+                                                  Long senderId,
+                                                  Long receiverId,
+                                                  int messageTypeCode,
+                                                  String message,
+                                                  List<String> imgUrls) {
+
         checkArgument(isNotEmpty(id), "id 값은 필수입니다.");
         checkArgument(senderId != null, "senderId 값은 필수입니다.");
         checkArgument(receiverId != null, "receiverId 값은 필수입니다.");
         checkArgument(1 <= messageTypeCode && messageTypeCode <= 3,
                 "messageTypeCode 값은 1,2,3 중에 하나여야 합니다.");
-        checkArgument(isNotEmpty(message), "message 값은 필수입니다.");
 
-        checkValidation(MessageType.from(messageTypeCode), message);
+        MessageType messageType = MessageType.from(messageTypeCode);
+        checkValidation(messageType, message, imgUrls);
 
-        ChatMessage chatMessage = ChatMessage.builder()
-                .senderId(senderId)
-                .messageType(MessageType.from(messageTypeCode))
-                .message(message)
-                .build();
+        ChatMessage chatMessage = messageType.equals(MessageType.IMAGE) ?
+                ChatMessage.ofImage(senderId, imgUrls) : ChatMessage.ofMessage(senderId, messageType, message);
 
         long messageUpdateCount = chatRoomRepository.insertChatMessage(id, chatMessage);
         long participantUpdateCount = participantRepository.synchronizeUpdatedAt(id,
@@ -58,16 +63,30 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return completedFuture(messageUpdateCount + participantUpdateCount);
     }
 
-    private void checkValidation(MessageType messageType, String message) {
-        if (messageType.equals(MessageType.POSITION)) {
-            String[] components = message.split(",");
-            if (components.length != 2) {
-                throw new IllegalArgumentException("올바른 좌표 메시지 형식이 아닙니다.");
-            }
-        }
+    private void checkValidation(MessageType messageType, String message, List<String> imgUrls) {
+        switch (messageType) {
+            case POSITION:
+                checkArgument(isNotBlank(message), "message 값은 필수입니다.");
+                checkArgument(isEmpty(imgUrls), "좌표 요청 시 imgUrls 값은 없어야 합니다.");
 
-        if (messageType.equals(MessageType.IMAGE) && uploadUtils.isNotImageFile(message)) {
-            throw new IllegalArgumentException("올바른 이미지 메시지 형식이 아닙니다.");
+                String[] components = message.split(",");
+                if (components.length != 2) {
+                    throw new IllegalArgumentException("올바른 좌표 메시지 형식이 아닙니다.");
+                }
+                break;
+            case IMAGE:
+                checkArgument(isBlank(message), "이미지 요청 시 message 값은 없어야 합니다.");
+                checkArgument(isNotEmpty(imgUrls), "imgUrls 값은 필수입니다.");
+
+                boolean isInvalid = imgUrls.stream().anyMatch(uploadUtils::isNotImageFile);
+
+                if (isInvalid) {
+                    throw new IllegalArgumentException("올바른 이미지 메시지 형식이 아닙니다.");
+                }
+                break;
+            default:
+                checkArgument(isNotBlank(message), "message 값은 필수입니다.");
+                checkArgument(isEmpty(imgUrls), "좌표 요청 시 imgUrls 값은 없어야 합니다.");
         }
     }
 

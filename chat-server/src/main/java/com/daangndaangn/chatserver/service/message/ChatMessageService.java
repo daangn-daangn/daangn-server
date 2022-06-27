@@ -2,6 +2,7 @@ package com.daangndaangn.chatserver.service.message;
 
 import com.daangndaangn.common.chat.document.ChatRoom;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -14,7 +15,7 @@ public interface ChatMessageService {
     /**
      * for 채팅 메시지 보내기 API
      */
-    CompletableFuture<Long> addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message);
+    CompletableFuture<Long> addChatMessage(String id, Long senderId, Long receiverId, int messageTypeCode, String message, List<String> imgUrls);
 
     /**
      * for 채팅방 메시지 목록 조회 API

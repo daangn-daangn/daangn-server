@@ -27,8 +27,24 @@ public class ChatMessageRequest {
         @Max(value = 3 , message = "messageType 값은 1~3 입니다.")
         @NotNull(message = "messageType 값은 필수입니다.")
         private Integer messageType;
-        @NotBlank(message = "message 내용은 필수입니다.")
+
         private String message;
+
+        @Size(max = 10)
+        private List<String> imgFiles;
+
+        /**
+         * 이미지 타입 메시지 생성
+         */
+        public static CreateRequest of(CreateRequest request, List<String> presignedUrls) {
+            return CreateRequest.builder()
+                    .roomId(request.getRoomId())
+                    .senderId(request.getSenderId())
+                    .receiverId(request.getReceiverId())
+                    .messageType(MessageType.IMAGE.getCode())
+                    .imgFiles(presignedUrls)
+                    .build();
+        }
 
         /**
          * '채팅방 나가기' 메시지 생성
@@ -40,19 +56,6 @@ public class ChatMessageRequest {
                     .receiverId(null)
                     .messageType(MessageType.EXIT.getCode())
                     .message(MessageType.EXIT.getState())
-                    .build();
-        }
-
-        /**
-         * 이미지 타입 메시지 생성
-         */
-        public static CreateRequest of(CreateRequest request, String presignedUrl) {
-            return CreateRequest.builder()
-                    .roomId(request.getRoomId())
-                    .senderId(request.getSenderId())
-                    .receiverId(request.getReceiverId())
-                    .messageType(MessageType.IMAGE.getCode())
-                    .message(presignedUrl)
                     .build();
         }
     }

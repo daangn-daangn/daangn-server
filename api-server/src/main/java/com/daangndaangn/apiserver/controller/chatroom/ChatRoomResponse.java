@@ -57,7 +57,7 @@ public class ChatRoomResponse {
                             null : user.getLocation().getAddress())
                     .productImage(productImage)
                     .lastChat(isEmpty(chatRoom.getChatMessages()) ?
-                            null : chatRoom.getChatMessages().get(0).getMessage())
+                            null : chatRoom.getChatMessages().get(0).getMessage().orElseGet(() -> "사진을 보냈습니다."))
                     .notReadChatCount(notReadChatCount)
                     .pageOffset(pageOffset)
                     .pageSize(pageSize)

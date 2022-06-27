@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ChatMessageResponse {
 
@@ -17,6 +18,7 @@ public class ChatMessageResponse {
         private Long senderId;
         private Integer messageType;
         private String message;
+        private List<String> imgUrls;
         private LocalDateTime createdAt;
 
         /**
@@ -26,7 +28,13 @@ public class ChatMessageResponse {
             return GetResponse.builder()
                     .senderId(chatMessage.getSenderId())
                     .messageType(chatMessage.getMessageType().getCode())
-                    .message(chatMessage.getMessage())
+                    .message(chatMessage.getMessage()
+                        .orElseThrow(
+                            () -> new IllegalStateException(
+                                String.format("%s 타입 message가 비어있습니다.", chatMessage.getMessageType().getState())
+                            )
+                        )
+                    )
                     .createdAt(chatMessage.getCreatedAt())
                     .build();
         }
@@ -34,11 +42,11 @@ public class ChatMessageResponse {
         /**
          * 사진 메시지 전용 응답
          */
-        public static GetResponse of(ChatMessage chatMessage, String presignedUrl) {
+        public static GetResponse of(ChatMessage chatMessage, List<String> presignedUrls) {
             return GetResponse.builder()
                     .senderId(chatMessage.getSenderId())
                     .messageType(chatMessage.getMessageType().getCode())
-                    .message(presignedUrl)
+                    .imgUrls(presignedUrls)
                     .createdAt(chatMessage.getCreatedAt())
                     .build();
         }
