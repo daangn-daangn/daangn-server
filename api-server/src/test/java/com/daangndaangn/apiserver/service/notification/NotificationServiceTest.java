@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.service.notification;
 
 import com.daangndaangn.common.api.entity.notification.Notification;
+import com.daangndaangn.common.api.entity.notification.NotificationConstants;
 import com.daangndaangn.common.api.entity.notification.NotificationType;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.notification.NotificationRepository;
@@ -74,5 +75,66 @@ class NotificationServiceTest {
 
         //then
         verify(notificationRepository).findById(anyLong());
+    }
+
+    @Test
+    public void SOLD_OUT과_PRICE_DOWN의_identifier에서_product_id를_추출할_수_있다() {
+        //given
+        Long productId = 123L;
+        String identifier = NotificationConstants.PRODUCT_PREFIX + productId;
+
+        //when
+        Long result = notificationService.getProductId(identifier);
+
+        //then
+        assertThat(result).isEqualTo(productId);
+    }
+
+    @Test
+    public void SOLD_OUT_TO_BUYER의_identifier에서_product_id를_추출할_수_있다() {
+        //given
+        Long productId = 123L;
+        Long sellerId = 456L;
+        StringBuilder sb = new StringBuilder();
+        String identifier =
+                sb.append(NotificationConstants.PRODUCT_PREFIX).append(productId)
+                      .append("-")
+                  .append(NotificationConstants.SELLER_PREFIX).append(sellerId).toString();
+
+        //when
+        Long result = notificationService.getProductIdOfSoldOutToBuyer(identifier);
+
+        //then
+        assertThat(result).isEqualTo(productId);
+    }
+
+    @Test
+    public void BUYER_REVIEW_CREATED의_identifier에서_product_id를_추출할_수_있다() {
+        //given
+        Long reviewerId = 123L;
+        String identifier = NotificationConstants.SALE_REVIEW_PREFIX + reviewerId;
+
+        //when
+        Long result = notificationService.getReviewerId(identifier);
+
+        //then
+        assertThat(result).isEqualTo(reviewerId);
+    }
+
+    @Test
+    public void 잘못된_identifier인_경우_minus_1을_반환한다() {
+        //given
+        Long productId = 123L;
+        String invalidIdentifier = NotificationConstants.PRODUCT_PREFIX + productId + "invalid";
+
+        //when
+        Long result1 = notificationService.getProductId(invalidIdentifier);
+        Long result2 = notificationService.getProductIdOfSoldOutToBuyer(invalidIdentifier);
+        Long result3 = notificationService.getReviewerId(invalidIdentifier);
+
+        //then
+        assertThat(result1).isEqualTo(-1);
+        assertThat(result2).isEqualTo(-1);
+        assertThat(result3).isEqualTo(-1);
     }
 }

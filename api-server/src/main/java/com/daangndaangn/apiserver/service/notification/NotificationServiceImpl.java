@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.service.notification;
 
 import com.daangndaangn.common.api.entity.notification.Notification;
+import com.daangndaangn.common.api.entity.notification.NotificationConstants;
 import com.daangndaangn.common.api.repository.notification.NotificationRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.error.UnauthorizedException;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -45,5 +48,29 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         notification.update(true);
+    }
+
+    @Override
+    public Long getProductId(String identifier) {
+        checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
+        String productId = identifier.substring(NotificationConstants.PRODUCT_PREFIX.length());
+        return toLong(productId, -1);
+    }
+
+    @Override
+    public Long getProductIdOfSoldOutToBuyer(String identifier) {
+        checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
+        String[] components = identifier.split("-");
+        String productComponent = components[0];
+        String productId = productComponent.substring(NotificationConstants.PRODUCT_PREFIX.length());
+
+        return toLong(productId, -1);
+    }
+
+    @Override
+    public Long getReviewerId(String identifier) {
+        checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
+        String reviewerId = identifier.substring(NotificationConstants.SALE_REVIEW_PREFIX.length());
+        return toLong(reviewerId, -1);
     }
 }

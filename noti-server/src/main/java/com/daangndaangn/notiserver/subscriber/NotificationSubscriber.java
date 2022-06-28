@@ -61,7 +61,7 @@ public class NotificationSubscriber {
 
         notificationService.createBuyerReviewCreatedNotification(message.getSellerId(),
                                     message.getNotificationType(),
-                                    message.getSaleReviewId()
+                                    message.getReviewerId()
         );
     }
 }

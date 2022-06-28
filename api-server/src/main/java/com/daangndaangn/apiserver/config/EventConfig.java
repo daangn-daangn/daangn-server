@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.config;
 
 import com.daangndaangn.apiserver.eventlistener.BuyerReviewCreatedEventListener;
+import com.daangndaangn.apiserver.eventlistener.PriceDownEventListener;
 import com.daangndaangn.apiserver.eventlistener.SoldOutToBuyerEventListener;
 import com.daangndaangn.apiserver.service.favorite.FavoriteProductService;
 import com.daangndaangn.common.event.EventExceptionHandler;
@@ -64,11 +65,11 @@ public class EventConfig {
     }
 
     @Bean(destroyMethod = "close")
-    public SoldOutEventListener priceDownEventListener(EventBus eventBus,
+    public PriceDownEventListener priceDownEventListener(EventBus eventBus,
                                                      @Qualifier("kafkaPriceDownTemplate") KafkaTemplate kafkaTemplate,
                                                      FavoriteProductService favoriteProductService) {
 
-        return new SoldOutEventListener(eventBus, kafkaTemplate, favoriteProductService);
+        return new PriceDownEventListener(eventBus, kafkaTemplate, favoriteProductService);
     }
 
     @Bean(destroyMethod = "close")

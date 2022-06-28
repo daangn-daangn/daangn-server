@@ -13,16 +13,16 @@ import lombok.ToString;
 public class BuyerReviewCreatedEvent {
 
     private final Long sellerId;
-    private final Long saleReviewId;
+    private final Long reviewerId;  //Buyer
     private final NotificationType notificationType;
 
     public static BuyerReviewCreatedEvent from(SaleReview saleReview) {
-        return new BuyerReviewCreatedEvent(saleReview.getReviewee().getId(), saleReview.getId());
+        return new BuyerReviewCreatedEvent(saleReview.getReviewee().getId(), saleReview.getReviewer().getId());
     }
 
-    private BuyerReviewCreatedEvent(Long sellerId, Long saleReviewId) {
+    private BuyerReviewCreatedEvent(Long sellerId, Long reviewerId) {
         this.sellerId = sellerId;
-        this.saleReviewId = saleReviewId;
+        this.reviewerId = reviewerId;
         this.notificationType = NotificationType.BUYER_REVIEW_CREATED;
     }
 }
