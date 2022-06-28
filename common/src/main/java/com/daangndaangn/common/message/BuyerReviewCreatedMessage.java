@@ -12,7 +12,7 @@ import lombok.ToString;
 public class BuyerReviewCreatedMessage {
 
     private Long sellerId;
-    private Long saleReviewId;
+    private Long reviewerId;    //Buyer
     private NotificationType notificationType;
 
     public static BuyerReviewCreatedMessage from(BuyerReviewCreatedEvent event) {
@@ -21,7 +21,7 @@ public class BuyerReviewCreatedMessage {
 
     private BuyerReviewCreatedMessage(BuyerReviewCreatedEvent event) {
         this.sellerId = event.getSellerId();
-        this.saleReviewId = event.getSaleReviewId();
+        this.reviewerId = event.getReviewerId();
         this.notificationType = event.getNotificationType();
     }
 }

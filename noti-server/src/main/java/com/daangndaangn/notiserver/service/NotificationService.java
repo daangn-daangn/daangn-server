@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface NotificationService {
     /**
-     * 구매자가 구매후기를 남긴 경우 => 판매자에게 구매 후기가 왔다는 알림 필요 => 거래 후기 조회 페이지로 이동
+     * 구매자가 구매후기를 남긴 경우 => 판매자에게 구매 후기가 왔다는 알림 필요 => 누가 후기를 남겼는지 알려줘야함
      */
-    Long createBuyerReviewCreatedNotification(Long sellerId, NotificationType notificationType, Long saleReviewId);
+    Long createBuyerReviewCreatedNotification(Long sellerId, NotificationType notificationType, Long reviewerId);
 
     /**
      * 판매자가 판매완료로 상태를 변경한 경우 => 구매자에게 구매 후기 남기라는 알림 필요 => 거래 후기 남기는 페이지로 이동

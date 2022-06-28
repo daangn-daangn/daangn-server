@@ -27,16 +27,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Long createBuyerReviewCreatedNotification(Long sellerId,
                                                      NotificationType notificationType,
-                                                     Long saleReviewId) {
+                                                     Long reviewerId) {
 
         checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
         checkArgument(notificationType != null, "notificationType 값은 필수입니다.");
-        checkArgument(saleReviewId != null, "saleReviewId 값은 필수입니다.");
+        checkArgument(reviewerId != null, "reviewerId 값은 필수입니다.");
 
         User seller = getUser(sellerId);
 
         StringBuilder identifierBuilder = new StringBuilder();
-        identifierBuilder.append(NotificationConstants.SALE_REVIEW_PREFIX).append(saleReviewId);
+        identifierBuilder.append(NotificationConstants.SALE_REVIEW_PREFIX).append(reviewerId);
 
         Notification notification = Notification.builder()
                 .user(seller)

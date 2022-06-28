@@ -29,11 +29,11 @@ public class BuyerReviewCreatedEventListener implements AutoCloseable {
 
     @Subscribe
     public void handleBuyerReviewCreatedEvent(BuyerReviewCreatedEvent event) {
-        Long saleReviewId = event.getSaleReviewId();
         Long sellerId = event.getSellerId();
+        Long reviewerId = event.getReviewerId();
 
         log.info("buyerReview with saleReviewId: {} created! send to seller:{}",
-                saleReviewId, sellerId);
+                reviewerId, sellerId);
 
         try {
             log.info("Try to send push for {}", event);

@@ -28,6 +28,6 @@ public class PriceDownEvent {
 
         this.productId = product.getId();
         this.productName = product.getName();
-        this.notificationType = NotificationType.SOLD_OUT;
+        this.notificationType = NotificationType.PRICE_DOWN;
     }
 }

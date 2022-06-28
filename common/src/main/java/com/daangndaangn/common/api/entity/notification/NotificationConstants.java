@@ -6,5 +6,5 @@ package com.daangndaangn.common.api.entity.notification;
 public abstract class NotificationConstants {
     public static final String PRODUCT_PREFIX = "PRODUCT";
     public static final String SELLER_PREFIX = "SELLER";
-    public static final String SALE_REVIEW_PREFIX = "REVIEW";
+    public static final String SALE_REVIEW_PREFIX = "REVIEWER";
 }
