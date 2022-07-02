@@ -133,6 +133,7 @@ CREATE TABLE notifications
     notification_type   int             NOT NULL COMMENT '알림유형 (삭제, 예약중, 판매중, 거래완료, 숨기기)',
     identifier          varchar(50)     NOT NULL COMMENT '식별자',
     is_read             boolean         NOT NULL COMMENT '알림 메시지 조회여부',
+    is_valid            boolean         NOT NULL COMMENT '알림 삭제여부',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     PRIMARY KEY (id),
     KEY notifications_idx_user_id (user_id),
