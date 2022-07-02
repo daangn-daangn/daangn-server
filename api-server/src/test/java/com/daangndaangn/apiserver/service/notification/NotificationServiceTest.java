@@ -66,7 +66,6 @@ class NotificationServiceTest {
         //given
         given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
 
-        boolean before = mockNotification.isRead();
         Long invalidUserId = 999L;
 
         //when
@@ -136,5 +135,38 @@ class NotificationServiceTest {
         assertThat(result1).isEqualTo(-1);
         assertThat(result2).isEqualTo(-1);
         assertThat(result3).isEqualTo(-1);
+    }
+
+    @Test
+    void 자신이_받은_알림을_삭제할_수_있다() {
+        //given
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
+
+        boolean before = mockNotification.isValid();
+
+        //when
+        notificationService.delete(mockNotification.getId(), mockUser.getId());
+
+        boolean after = mockNotification.isValid();
+
+        //then
+        assertThat(before).isEqualTo(true);
+        assertThat(after).isEqualTo(false);
+        verify(notificationRepository).findById(anyLong());
+    }
+
+    @Test
+    void 자신이_받지않은_알림을_삭제하면_예외를_반환한다() {
+        //given
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
+
+        Long invalidUserId = 999L;
+
+        //when
+        assertThatThrownBy(() -> notificationService.delete(mockNotification.getId(), invalidUserId))
+                .isInstanceOf(UnauthorizedException.class);
+
+        //then
+        verify(notificationRepository).findById(anyLong());
     }
 }

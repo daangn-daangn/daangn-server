@@ -35,8 +35,15 @@ public class Notification extends AuditingCreateEntity {
     @Column(nullable = false)
     private boolean isRead;
 
+    @Column(nullable = false)
+    private boolean isValid;
+
     public void update(boolean read) {
         this.isRead = read;
+    }
+
+    public void remove() {
+        this.isValid = false;
     }
 
     @Builder
@@ -50,5 +57,6 @@ public class Notification extends AuditingCreateEntity {
         this.user = user;
         this.notificationType = notificationType;
         this.identifier = identifier;
+        this.isValid = true;
     }
 }

@@ -62,4 +62,16 @@ public class NotificationApiController {
         return OK(null);
     }
 
+    /**
+     * 삭제 처리
+     *
+     * DELETE /api/notifications/:id
+     */
+    @DeleteMapping("/{id}")
+    public ApiResult<Void> deleteNotifications(@PathVariable("id") Long notificationId,
+                                              @AuthenticationPrincipal JwtAuthentication authentication) {
+
+        notificationService.delete(notificationId, authentication.getId());
+        return OK(null);
+    }
 }

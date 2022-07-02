@@ -20,7 +20,9 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
         return jpaQueryFactory
                 .selectFrom(notification)
                     .join(notification.user, user).fetchJoin()
-                .where(notification.user.id.eq(userId))
+                .where(notification.user.id.eq(userId),
+                        notification.isValid.eq(true)
+                )
                 .orderBy(notification.id.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())

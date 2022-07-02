@@ -73,4 +73,18 @@ public class NotificationServiceImpl implements NotificationService {
         String reviewerId = identifier.substring(NotificationConstants.SALE_REVIEW_PREFIX.length());
         return toLong(reviewerId, -1);
     }
+
+    @Override
+    @Transactional
+    public void delete(Long notificationId, Long userId) {
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+
+        Notification notification = getNotification(notificationId);
+
+        if (!userId.equals(notification.getUser().getId())) {
+            throw new UnauthorizedException("본인이 받은 알림만 삭제할 수 있습니다.");
+        }
+
+        notification.remove();
+    }
 }
