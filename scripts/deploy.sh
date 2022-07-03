@@ -1,6 +1,8 @@
 #!/bin/bash
 
-SOURCE_REPOSITORY=/home/ubuntu/daangn-server
+ABSPATH=$(readlink -f $0) # 현재 파일 위치 절대 경로로 받기
+ABSDIR=$(dirname $ABSPATH) # 현재 디렉토리 위치 /daangn-server/scripts
+SOURCE_REPOSITORY=$(dirname $ABSDIR) # 부모 디렉토리 위치 /daangn-server
 DOCKER_APP_NAME=daangn-server # DOCKER_APP_NAME에는 프로젝트명을 적는다.
 
 # Blue 를 기준으로 현재 떠있는 컨테이너를 한다.
@@ -32,4 +34,7 @@ if [ -n "$EXIST_AFTER" ]; then
     # 이전 컨테이너 종료
     echo "$BEFORE_COMPOSE_COLOR down"
     docker-compose -p ${DOCKER_APP_NAME}-${BEFORE_COMPOSE_COLOR} -f ${SOURCE_REPOSITORY}/docker-compose-prod.${BEFORE_COMPOSE_COLOR}.yml down
+else
+    echo "> The new container did not run properly."
+    exit 1
 fi
