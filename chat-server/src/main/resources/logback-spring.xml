@@ -23,7 +23,7 @@
     <!-- ch.qos.logback.core.rolling.RollingFileAppender => 여러개의 파일을 롤링, 순회하면서 로그를 찍습니다. -->
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 기록할 파일명과 경로를 설정 -->
-        <file>log/chat-debug.log</file>
+        <file>log/chat-server-debug.log</file>
         <!-- Rolling 정책::ch.qos.logback.core.rolling.TimeBasedRollingPolicy => 일자별 적용 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 파일 쓰기가 종료된 log 파일명의 패턴을 지정합니다. -->
@@ -44,8 +44,8 @@
     </appender>
 
     <!-- root 레벨 설정 -->
-    <root level="info">
+    <root level="warn">
         <!-- appender-ref로 "appender name" 지정 -->
-        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
     </root>
 </configuration>

@@ -55,7 +55,6 @@ public class GeneralExceptionHandler {
             AuthenticationException.class
     })
     public ResponseEntity<?> handleBadRequestException(Exception e) {
-        log.info("Bad request exception occurred: {}", e.getMessage(), e);
         return createResponse(e, HttpStatus.BAD_REQUEST);
     }
 
@@ -83,20 +82,17 @@ public class GeneralExceptionHandler {
             AwsServiceException.class, SdkClientException.class
     })
     public ResponseEntity<?> handleAwsErrorException(Exception e) {
-        log.info("AwsClientError exception occurred: {}", e.getMessage(), e);
         return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<?> handleHttpClientErrorException(HttpClientErrorException e) {
-        log.info("HttpClientError exception occurred: {}", e.getMessage(), e);
         HttpStatus httpStatus = HttpStatus.valueOf(e.getRawStatusCode());
         return createResponse(e, httpStatus);
     }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<?> handleRestClientException(RestClientException e) {
-        log.info("RestClient exception occurred: {}", e.getMessage(), e);
         return createResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

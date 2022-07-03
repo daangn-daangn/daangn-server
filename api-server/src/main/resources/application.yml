@@ -112,4 +112,4 @@ spring:
       mode: never # schema.sql 실행 금지
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: daangn-daangn.link:9092

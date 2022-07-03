@@ -19,9 +19,6 @@ public class AwsServiceConfig {
 
     @Bean
     public S3Presigner s3Presigner() {
-        log.info("awsConfigure.getAccessKey(): {}", awsConfig.getAccessKey());
-        log.info("awsConfigure.getSecretKey(): {}", awsConfig.getSecretKey());
-
         AwsCredentialsProvider credentialsProvider =
             StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(awsConfig.getAccessKey(), awsConfig.getSecretKey())

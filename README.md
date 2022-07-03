@@ -34,16 +34,18 @@
 
 ### DB schema design
 
-- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/ak4EqcdHAqQhwaYu5)
+- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/8JpeniGokjXbkYvZv)
 
-![도메인 테이블 설계](https://user-images.githubusercontent.com/75410527/176013973-9e4d871e-526f-4858-8b70-36739408971b.png)
+![도메인 테이블 설계](https://user-images.githubusercontent.com/75410527/177047609-9b5723ef-a22d-4191-8d04-69b71b35ef04.png)
 
 ---
 
 ### 사용 기술
 
 - SpringBoot v2.6.4 (gradle)
-- Kafka
+- Spring Data Jpa 
+- Querydsl
+- Apache Kafka
 - Docker
 - mongodb
 - mysql
