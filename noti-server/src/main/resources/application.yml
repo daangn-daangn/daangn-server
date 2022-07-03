@@ -16,7 +16,6 @@ spring:
       sold-out-to-buyer: v1.sold-out-to-buyer.request
       buyer-review-created: v1.buyer-review-created.request
     consumer:
-      bootstrap-servers: kafka:9095
       group-id: notification
       auto-offset-reset: latest # earliest
 
@@ -62,9 +61,21 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9095
 
 ---
 spring:
   config:
     activate:
       on-profile: production
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092

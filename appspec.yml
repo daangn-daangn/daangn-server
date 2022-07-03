@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: / # 현재 프로젝트의 루트 경로
+    destination: /home/ubuntu/daangn-server/ # S3에서 받아올 프로젝트의 위치를 지정 (EC2 내부의 어떤 디렉토리에 전달 ?)
+    overwrite: yes # 덮어쓰기 할 것인지?
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks: # CodeDeploy의 배포에는 각 단계 별 수명 주기가 있는데, 수명 주기에 따라 원하는 스크립트를 수행가능
+  ApplicationStart:
+    - location: scripts/deploy.sh
+      timeout: 180
+      runas: ubuntu

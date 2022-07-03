@@ -1,0 +1,52 @@
+name: daangn-server
+
+on:
+  workflow_dispatch: # 수동으로 해당 workflow를 실행시키겠다는 뜻
+
+env: # 현재 스크립트에서 사용할 환경변수 정의
+  S3_BUCKET_NAME: cotchan-service-deploy
+  PROJECT_NAME: daangn-server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout # 깃헙이 제공하는 워크스페이스 (이 workflow 를 실행하는 공간) 에서 내 저장소가 위치한 곳으로 이동
+        uses: actions/checkout@v3
+
+      - name: create env file # 깃헙 settings > secrets 에 올려놓은 비밀 값을 복사해 .env 파일로 생성
+        run: |
+          touch .env
+          echo "${{ secrets.ENV_PROD_VARS }}" >> .env
+
+      - name: Set up JDK 11 # java 셋업
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+
+      - name: Grant execute permission for gradlew # gradlew에 실행권한
+        run: chmod +x gradlew
+        shell: bash
+
+      - name: Build with Gradle # 프로젝트 build
+        run: ./gradlew clean build -x test
+        shell: bash
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name sandbox-service-deploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name sandbox --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
