@@ -78,4 +78,4 @@ spring:
       ddl-auto: none
   kafka:
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: daangn-daangn.link:9092

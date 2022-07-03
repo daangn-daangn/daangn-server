@@ -42,8 +42,6 @@ public class MongoDbConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected void configureClientSettings(MongoClientSettings.Builder builder) {
-        log.info("mongoConfigure.getUri(): {}", mongoConfig.getUri());
-        log.info("mongoConfigure.getDatabase(): {}", mongoConfig.getDatabase());
         builder.applyConnectionString(new ConnectionString(mongoConfig.getUri()));
     }
 
