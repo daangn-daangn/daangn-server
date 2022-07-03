@@ -1,0 +1,36 @@
+version: "3"
+
+# 두 docker-compose.yml 모두 포트만 다를 뿐 띄우는 컨테이너 정보는 동일
+services:
+  api_server:
+    container_name: api-blue
+    build:
+      context: .
+      dockerfile: ./api-server/Dockerfile
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env
+  chat_server:
+    container_name: chat-blue
+    build:
+      context: .
+      dockerfile: ./chat-server/Dockerfile
+    ports:
+      - "8881:8880"
+    env_file:
+      - .env
+  noti_server:
+    container_name: notification-blue
+    build:
+      context: .
+      dockerfile: ./noti-server/Dockerfile
+    ports:
+      - "9081:9080"
+    env_file:
+      - .env
+
+networks:
+  default:
+    external:
+      name: daangn_net

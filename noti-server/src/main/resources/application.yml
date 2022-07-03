@@ -68,3 +68,9 @@ spring:
   config:
     activate:
       on-profile: production
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none

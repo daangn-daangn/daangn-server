@@ -79,12 +79,15 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
-  sql:
-    init:
-      mode: never # schema.sql 실행 금지
 
 ---
 spring:
   config:
     activate:
       on-profile: production
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: none
