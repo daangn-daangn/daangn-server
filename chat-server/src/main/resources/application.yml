@@ -13,11 +13,8 @@ spring:
     topic:
       chat-message: v1.chat-message.request
     consumer:
-      bootstrap-servers: kafka:9095
       group-id: chat
       auto-offset-reset: latest # earliest
-    producer:
-      bootstrap-servers: kafka:9095
 
 server:
   port: 8880
@@ -79,6 +76,11 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9095
+    producer:
+      bootstrap-servers: kafka:9095
 
 ---
 spring:
@@ -91,3 +93,8 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+    producer:
+      bootstrap-servers: localhost:9092

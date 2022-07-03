@@ -15,8 +15,6 @@ spring:
       price-down: v1.price-down.request
       sold-out-to-buyer: v1.sold-out-to-buyer.request
       buyer-review-created: v1.buyer-review-created.request
-    producer:
-      bootstrap-servers: kafka:9095
 
 jwt:
   header: api_key
@@ -93,6 +91,10 @@ spring:
   sql:
     init:
       mode: never # schema.sql 실행 금지
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9095
+
 
 ---
 spring:
@@ -108,3 +110,6 @@ spring:
   sql:
     init:
       mode: never # schema.sql 실행 금지
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
