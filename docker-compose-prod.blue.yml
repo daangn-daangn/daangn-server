@@ -5,8 +5,8 @@ services:
   api_server:
     container_name: api-blue
     build:
-      context: .
-      dockerfile: ./api-server/Dockerfile
+      context: ./api-server
+      dockerfile: Dockerfile
     ports:
       - "8081:8080"
     env_file:
@@ -14,8 +14,8 @@ services:
   chat_server:
     container_name: chat-blue
     build:
-      context: .
-      dockerfile: ./chat-server/Dockerfile
+      context: ./chat-server
+      dockerfile: Dockerfile
     ports:
       - "8881:8880"
     env_file:
@@ -23,8 +23,8 @@ services:
   noti_server:
     container_name: notification-blue
     build:
-      context: .
-      dockerfile: ./noti-server/Dockerfile
+      context: ./noti-server
+      dockerfile: Dockerfile
     ports:
       - "9081:9080"
     env_file:
