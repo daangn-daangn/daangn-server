@@ -5,7 +5,7 @@ import com.daangndaangn.apiserver.security.oauth.OAuthResponse;
 import com.daangndaangn.apiserver.security.oauth.OAuthService;
 import com.daangndaangn.common.jwt.JwtAuthenticationToken;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
@@ -60,6 +60,6 @@ public class AuthApiController {
         oAuthService.logout(OAuthRequest.LogoutRequest.from(accessToken));
         SecurityContextHolder.clearContext();
 
-        return OK(null);
+        return OK();
     }
 }

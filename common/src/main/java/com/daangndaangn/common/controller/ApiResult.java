@@ -1,4 +1,4 @@
-package com.daangndaangn.common.web;
+package com.daangndaangn.common.controller;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,6 +21,10 @@ public class ApiResult<T> {
 
     public static <T> ApiResult<T> OK(T response) {
         return new ApiResult<>(true, response, null);
+    }
+
+    public static <T> ApiResult<T> OK() {
+        return new ApiResult<>(true, null, null);
     }
 
     public static ApiResult<?> ERROR(Throwable throwable, HttpStatus status) {

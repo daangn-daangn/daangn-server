@@ -19,7 +19,6 @@ public class MessageSender {
     private final KafkaTemplate<String, CreateRequest> kafkaTemplate;
 
     public void send(CreateRequest message) {
-        log.info("sending data='{}' to topic='{}'", message, kafkaTopic);
         //Sending the message to kafka topic queue
         kafkaTemplate.send(kafkaTopic, message);
     }

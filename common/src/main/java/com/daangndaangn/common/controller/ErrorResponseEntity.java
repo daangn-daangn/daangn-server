@@ -1,4 +1,4 @@
-package com.daangndaangn.common.web;
+package com.daangndaangn.common.controller;
 
 import com.daangndaangn.common.error.DuplicateValueException;
 import com.daangndaangn.common.error.NotFoundException;
@@ -10,13 +10,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.concurrent.CompletionException;
 
-import static com.daangndaangn.common.web.ApiResult.ERROR;
+import static com.daangndaangn.common.controller.ApiResult.ERROR;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-/**
- *
- */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponseEntity {

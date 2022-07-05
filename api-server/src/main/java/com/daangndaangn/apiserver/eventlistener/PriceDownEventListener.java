@@ -45,10 +45,7 @@ public class PriceDownEventListener implements AutoCloseable {
                 .map(favoriteProduct -> favoriteProduct.getUser().getId())
                 .collect(toList());
 
-        log.info("product {}, productId {} priceDown! send to user: {}", productName, productId, userIds);
-
         try {
-            log.info("Try to send push for {}", event);
             kafkaTemplate.send(priceDownTopic, PriceDownMessage.of(event, userIds));
         } catch (Exception e) {
             log.error("Got error while handling event PriceDownEvent " + event, e);

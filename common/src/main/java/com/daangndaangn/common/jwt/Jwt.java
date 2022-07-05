@@ -158,21 +158,5 @@ public final class Jwt {
         public void eraseExp() {
             exp = null;
         }
-
-        //FIXME: 삭제 예정
-        @Override
-        public String toString() {
-            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                    .append("id", id)
-                    .append("oauthId", oauthId)
-                    .append("nickname", nickname)
-                    .append("location", location)
-                    .append("manner", manner)
-                    .append("profileUrl", profileUrl)
-                    .append("roles", Arrays.toString(roles))
-                    .append("iat", iat)
-                    .append("exp", exp)
-                    .toString();
-        }
     }
 }

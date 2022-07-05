@@ -1,6 +1,6 @@
 package com.daangndaangn.common.security;
 
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.daangndaangn.common.web.ApiResult.ERROR;
+import static com.daangndaangn.common.controller.ApiResult.ERROR;
 
 /**
  * 인증 실패 시 401 응답을 내려주는 Handler
  */
 @Component
 @RequiredArgsConstructor
-public class CustomUnauthorizedHandler implements AuthenticationEntryPoint {
+public class CommonUnauthorizedHandler implements AuthenticationEntryPoint {
 
     static ApiResult<?> E401 = ERROR("Authentication error (cause: unauthorized)", HttpStatus.UNAUTHORIZED);
 

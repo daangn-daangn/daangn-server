@@ -18,7 +18,6 @@ public class UploadUtils {
         }
 
         String extension = FilenameUtils.getExtension(filename.toLowerCase());
-//        return Arrays.stream(CONTENT_TYPES).anyMatch(t -> t.equals(extension));
         return Arrays.asList(CONTENT_TYPES).contains(extension);
     }
 

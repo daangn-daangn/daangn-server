@@ -25,15 +25,6 @@ jwt:
   client-secret: daangn-server
   expiry-seconds: 7200 # 2시간
 
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
-
 async:
   thread:
     thread-name-prefix: async-thread-
@@ -64,6 +55,15 @@ spring:
       bootstrap-servers: localhost:9095
     producer:
       bootstrap-servers: localhost:9095
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
 
 ---
 spring:
