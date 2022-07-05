@@ -1,6 +1,6 @@
 package com.daangndaangn.common.security;
 
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.daangndaangn.common.web.ApiResult.ERROR;
+import static com.daangndaangn.common.controller.ApiResult.ERROR;
 
 /**
  * 인가 실패 시 403 응답을 내려주는 Handler
  */
 @Component
 @RequiredArgsConstructor
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class CommonAccessDeniedHandler implements AccessDeniedHandler {
 
     static ApiResult<?> E403 = ERROR("Authority error error (cause: forbidden)", HttpStatus.FORBIDDEN);
 

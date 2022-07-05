@@ -29,15 +29,6 @@ oauth:
     login-url: https://kapi.kakao.com/v2/user/me
     logout-url: https://kapi.kakao.com/v1/user/logout
 
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
-
 async:
   thread:
     thread-name-prefix: async-thread-
@@ -76,6 +67,15 @@ spring:
   kafka:
     producer:
       bootstrap-servers: localhost:9095
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
 
 ---
 spring:

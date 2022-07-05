@@ -1,4 +1,4 @@
-package com.daangndaangn.common.web;
+package com.daangndaangn.common.controller;
 
 import com.daangndaangn.common.error.DuplicateValueException;
 import com.daangndaangn.common.error.NotFoundException;
@@ -24,7 +24,7 @@ import software.amazon.awssdk.core.exception.SdkClientException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.daangndaangn.common.web.ApiResult.ERROR;
+import static com.daangndaangn.common.controller.ApiResult.ERROR;
 
 @Slf4j
 @RestControllerAdvice

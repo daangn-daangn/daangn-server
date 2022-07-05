@@ -2,13 +2,13 @@ package com.daangndaangn.apiserver.controller.category;
 
 import com.daangndaangn.apiserver.controller.category.CategoryResponse.GetResponse;
 import com.daangndaangn.apiserver.service.category.CategoryService;
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/api/categories")

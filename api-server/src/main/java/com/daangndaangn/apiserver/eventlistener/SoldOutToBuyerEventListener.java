@@ -35,11 +35,7 @@ public class SoldOutToBuyerEventListener implements AutoCloseable {
         Long sellerId = event.getSellerId();
         Long buyerId = event.getBuyerId();
 
-        log.info("product {}, productId {} soldOutToBuyer! send to buyer: {} with sellerId: {}",
-                productName, productId, buyerId, sellerId);
-
         try {
-            log.info("Try to send push for {}", event);
             kafkaTemplate.send(soldOutToBuyerTopic, SoldOutToBuyerMessage.from(event));
         } catch (Exception e) {
             log.error("Got error while handling event SoldOutToBuyerEvent " + event, e);

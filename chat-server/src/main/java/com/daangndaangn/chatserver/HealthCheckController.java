@@ -1,7 +1,7 @@
 package com.daangndaangn.chatserver;
 
 import com.daangndaangn.common.jwt.JwtAuthentication;
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

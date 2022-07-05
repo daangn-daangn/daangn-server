@@ -25,7 +25,6 @@ public class OAuthResponse {
      * }
      */
     @Getter
-    @ToString   //FIXME: ToString은 결과 확인용으로 향후 제거할 예정입니다.
     public static class LoginResponse {
         private Long id;
         private String profileImage;
@@ -39,7 +38,6 @@ public class OAuthResponse {
     }
 
     @Getter
-    @ToString   //FIXME: ToString은 결과 확인용으로 향후 제거할 예정입니다.
     public static class LogoutResponse {
         private Long id;
     }

@@ -11,8 +11,8 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
-import com.daangndaangn.common.web.ErrorResponseEntity;
+import com.daangndaangn.common.controller.ApiResult;
+import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.springframework.http.HttpStatus.*;
@@ -110,7 +110,7 @@ public class UserApiController {
 
         return mannerService.createManner(userId, evaluatorId, score).handle((mannerId, throwable) -> {
             if (mannerId != null) {
-                return new ResponseEntity<>(OK(null), OK);
+                return new ResponseEntity<>(OK(), OK);
             }
 
             return ErrorResponseEntity.from(throwable, true);

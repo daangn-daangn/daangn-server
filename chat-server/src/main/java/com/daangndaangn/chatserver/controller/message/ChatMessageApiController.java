@@ -12,8 +12,8 @@ import com.daangndaangn.common.chat.document.message.MessageType;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
-import com.daangndaangn.common.web.ErrorResponseEntity;
+import com.daangndaangn.common.controller.ApiResult;
+import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/chat/messages")
@@ -58,7 +58,7 @@ public class ChatMessageApiController {
             if (addCount != null && addCount == 3) {
                 CreateRequest convertedMessage = convertMessage(message);
                 messageSender.send(convertedMessage);
-                return new ResponseEntity<>(OK(null), HttpStatus.OK);
+                return new ResponseEntity<>(OK(), HttpStatus.OK);
             }
 
             return ErrorResponseEntity.from(throwable, true);
@@ -139,6 +139,6 @@ public class ChatMessageApiController {
 
         chatMessageService.updateReadMessageSize(request.getRoomId(), authentication.getId());
 
-        return OK(null);
+        return OK();
     }
 }

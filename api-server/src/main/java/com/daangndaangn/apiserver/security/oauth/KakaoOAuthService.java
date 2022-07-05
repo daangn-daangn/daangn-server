@@ -33,8 +33,6 @@ public class KakaoOAuthService implements OAuthService {
         ResponseEntity<OAuthResponse.LoginResponse> oauthResponse
                 = restTemplate.exchange(requestUrl, HttpMethod.GET, authRequest, OAuthResponse.LoginResponse.class);
 
-        log.info("authentication response body = {}", oauthResponse.getBody());
-
         return oauthResponse.getBody();
     }
 
@@ -46,8 +44,6 @@ public class KakaoOAuthService implements OAuthService {
 
         ResponseEntity<OAuthResponse.LogoutResponse> oauthResponse
                 = restTemplate.exchange(requestUrl, HttpMethod.POST, logoutRequest, OAuthResponse.LogoutResponse.class);
-
-        log.info("logout response body = {}", oauthResponse.getBody());
 
         return oauthResponse.getBody();
     }

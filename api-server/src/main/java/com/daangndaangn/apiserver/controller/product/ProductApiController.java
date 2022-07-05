@@ -14,8 +14,8 @@ import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
-import com.daangndaangn.common.web.ErrorResponseEntity;
+import com.daangndaangn.common.controller.ApiResult;
+import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,7 +28,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.http.HttpStatus.OK;
@@ -145,7 +145,7 @@ public class ProductApiController {
                     request.getPrice(),
                     request.getDescription());
 
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("물품 수정은 판매자만 가능합니다.");
@@ -162,7 +162,7 @@ public class ProductApiController {
 
         if (productService.isSeller(productId, authentication.getId())) {
             productService.delete(productId);
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("물품 삭제는 판매자만 가능합니다.");
@@ -193,7 +193,7 @@ public class ProductApiController {
             productService.update(productId, request.getState());
         }
 
-        return OK(null);
+        return OK();
     }
 
     /**
@@ -277,6 +277,6 @@ public class ProductApiController {
 
         productService.refresh(productId);
 
-        return OK(null);
+        return OK();
     }
 }

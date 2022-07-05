@@ -32,11 +32,7 @@ public class BuyerReviewCreatedEventListener implements AutoCloseable {
         Long sellerId = event.getSellerId();
         Long reviewerId = event.getReviewerId();
 
-        log.info("buyerReview with saleReviewId: {} created! send to seller:{}",
-                reviewerId, sellerId);
-
         try {
-            log.info("Try to send push for {}", event);
             kafkaTemplate.send(buyerReviewCreatedTopic, BuyerReviewCreatedMessage.from(event));
         } catch (Exception e) {
             log.error("Got error while handling event BuyerReviewCreatedEvent " + event, e);

@@ -41,8 +41,7 @@ public class EventConfig {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
-//        executor.afterPropertiesSet();
-        executor.initialize();
+        executor.afterPropertiesSet();
         return executor;
     }
 

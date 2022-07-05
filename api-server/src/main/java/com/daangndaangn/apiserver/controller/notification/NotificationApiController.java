@@ -3,10 +3,9 @@ package com.daangndaangn.apiserver.controller.notification;
 import com.daangndaangn.apiserver.controller.notification.NotificationResponse.SimpleResponse;
 import com.daangndaangn.apiserver.service.notification.NotificationService;
 import com.daangndaangn.apiserver.service.notification.query.NotificationQueryService;
-import com.daangndaangn.common.api.entity.notification.NotificationType;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
+import com.daangndaangn.common.controller.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.daangndaangn.common.api.entity.notification.NotificationType.BUYER_REVIEW_CREATED;
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 
 @RequestMapping("/api/notifications")
@@ -59,7 +58,7 @@ public class NotificationApiController {
                                               @AuthenticationPrincipal JwtAuthentication authentication) {
 
         notificationService.toRead(notificationId, authentication.getId());
-        return OK(null);
+        return OK();
     }
 
     /**
@@ -72,6 +71,6 @@ public class NotificationApiController {
                                               @AuthenticationPrincipal JwtAuthentication authentication) {
 
         notificationService.delete(notificationId, authentication.getId());
-        return OK(null);
+        return OK();
     }
 }

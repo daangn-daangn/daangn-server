@@ -9,8 +9,8 @@ import com.daangndaangn.apiserver.service.salereview.SaleReviewService;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.util.PresignerUtils;
-import com.daangndaangn.common.web.ApiResult;
-import com.daangndaangn.common.web.ErrorResponseEntity;
+import com.daangndaangn.common.controller.ApiResult;
+import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.api.entity.review.SaleReviewType.BUYER_REVIEW;
 import static com.daangndaangn.common.api.entity.review.SaleReviewType.SELLER_REVIEW;
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.springframework.http.HttpStatus.OK;
@@ -178,7 +178,7 @@ public class SaleReviewApiController {
 
         if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.update(saleReviewId, request.getContent());
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("리뷰 수정은 작성자만 가능합니다.");
@@ -198,7 +198,7 @@ public class SaleReviewApiController {
 
         if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.update(saleReviewId, request.getContent());
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("리뷰 수정은 작성자만 가능합니다.");
@@ -215,7 +215,7 @@ public class SaleReviewApiController {
 
         saleReviewService.hide(saleReviewId, authentication.getId());
 
-        return OK(null);
+        return OK();
     }
 
     /**
@@ -231,7 +231,7 @@ public class SaleReviewApiController {
 
         if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.delete(saleReviewId);
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("리뷰 삭제는 작성자만 가능합니다.");
@@ -250,7 +250,7 @@ public class SaleReviewApiController {
 
         if (authentication.getId().equals(saleReview.getReviewer().getId())) {
             saleReviewService.delete(saleReviewId);
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("리뷰 삭제는 작성자만 가능합니다.");

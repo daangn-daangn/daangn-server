@@ -7,8 +7,8 @@ import com.daangndaangn.apiserver.service.favorite.FavoriteProductService;
 import com.daangndaangn.apiserver.service.product.query.ProductQueryService;
 import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
-import com.daangndaangn.common.web.ApiResult;
-import com.daangndaangn.common.web.ErrorResponseEntity;
+import com.daangndaangn.common.controller.ApiResult;
+import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.daangndaangn.common.web.ApiResult.OK;
+import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -81,7 +81,7 @@ public class FavoriteProductApiController {
 
         if (favoriteProductService.isOwner(favoriteId, authentication.getId())) {
             favoriteProductService.delete(favoriteId);
-            return OK(null);
+            return OK();
         }
 
         throw new UnauthorizedException("찜하기를 누른 본인만 찜하기를 삭제할 수 있습니다.");

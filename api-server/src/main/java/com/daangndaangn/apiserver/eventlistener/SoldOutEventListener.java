@@ -45,10 +45,7 @@ public class SoldOutEventListener implements AutoCloseable {
                 .map(favoriteProduct -> favoriteProduct.getUser().getId())
                 .collect(toList());
 
-        log.info("product {}, productId {} soldOut! send to user: {}", productName, productId, userIds);
-
         try {
-            log.info("Try to send push for {}", event);
             kafkaTemplate.send(soldOutTopic, SoldOutMessage.of(event, userIds));
         } catch (Exception e) {
             log.error("Got error while handling event SoldOutEvent " + event, e);

@@ -77,7 +77,6 @@ public class PresignerUtils {
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(awsConfig.getBucket())
                 .key(filePathKey)
-//                .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
         return PutObjectPresignRequest.builder()

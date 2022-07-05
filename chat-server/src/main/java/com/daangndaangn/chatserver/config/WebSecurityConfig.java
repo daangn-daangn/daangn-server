@@ -4,18 +4,16 @@ import com.daangndaangn.common.api.entity.user.Role;
 import com.daangndaangn.common.config.JwtConfig;
 import com.daangndaangn.common.jwt.Jwt;
 import com.daangndaangn.common.jwt.JwtAuthenticationTokenFilter;
-import com.daangndaangn.common.security.CustomAccessDeniedHandler;
-import com.daangndaangn.common.security.CustomUnauthorizedHandler;
+import com.daangndaangn.common.security.CommonAccessDeniedHandler;
+import com.daangndaangn.common.security.CommonUnauthorizedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsUtils;
 
 import java.util.List;
 
@@ -26,8 +24,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Jwt jwt;
     private final JwtConfig jwtConfig;
-    private final CustomUnauthorizedHandler unauthorizedHandler;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CommonUnauthorizedHandler unauthorizedHandler;
+    private final CommonAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
