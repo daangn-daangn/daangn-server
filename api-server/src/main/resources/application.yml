@@ -10,6 +10,8 @@ spring:
         implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
   kafka:
+    producer:
+      retries: 10
     topic:
       sold-out: v1.sold-out.request
       price-down: v1.price-down.request

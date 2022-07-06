@@ -24,6 +24,9 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;
 
+    @Value("${spring.kafka.producer.retries}")
+    private int retries;
+
     @Bean
     @Qualifier("kafkaSoldOutTemplate")
     public KafkaTemplate<String, SoldOutMessage> kafkaSoldOutTemplate() {
@@ -73,6 +76,7 @@ public class KafkaProducerConfig {
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configs.put(ProducerConfig.RETRIES_CONFIG, retries);
         return configs;
     }
 }
