@@ -7,6 +7,9 @@ import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 
 @Slf4j
@@ -31,15 +34,24 @@ public class SoldOutToBuyerEventListener implements AutoCloseable {
     @Subscribe
     public void handleSoldOutToBuyerEvent(SoldOutToBuyerEvent event) {
         Long productId = event.getProductId();
-        String productName = event.getProductName();
         Long sellerId = event.getSellerId();
         Long buyerId = event.getBuyerId();
 
-        try {
+        ListenableFuture<SendResult<String, SoldOutToBuyerMessage>> future =
             kafkaTemplate.send(soldOutToBuyerTopic, SoldOutToBuyerMessage.from(event));
-        } catch (Exception e) {
-            log.error("Got error while handling event SoldOutToBuyerEvent " + event, e);
-        }
+
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.warn("handleSoldOutToBuyerEvent exception occurred with productId: {}, sellerId: {}, buyerId: {}: {}",
+                        productId, sellerId, buyerId, ex.getMessage(), ex);
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, SoldOutToBuyerMessage> result) {
+
+            }
+        });
     }
 
     @Override

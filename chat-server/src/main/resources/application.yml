@@ -9,12 +9,6 @@ spring:
         use_sql_comments: true
         implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-  kafka:
-    topic:
-      chat-message: v1.chat-message.request
-    consumer:
-      group-id: chat
-      auto-offset-reset: latest # earliest
 
 server:
   port: 8880
@@ -50,11 +44,6 @@ spring:
     mongodb:
       database: daangn_test
       uri: mongodb://localhost:27017/daangn_test
-  kafka:
-    consumer:
-      bootstrap-servers: localhost:9095
-    producer:
-      bootstrap-servers: localhost:9095
 
 logging:
   level:
@@ -76,11 +65,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
-  kafka:
-    consumer:
-      bootstrap-servers: kafka:9095
-    producer:
-      bootstrap-servers: kafka:9095
 
 ---
 spring:
@@ -93,8 +77,3 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
-  kafka:
-    consumer:
-      bootstrap-servers: daangn-daangn.link:9092
-    producer:
-      bootstrap-servers: daangn-daangn.link:9092

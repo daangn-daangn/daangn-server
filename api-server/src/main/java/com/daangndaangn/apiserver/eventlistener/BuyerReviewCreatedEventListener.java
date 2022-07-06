@@ -7,6 +7,9 @@ import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Slf4j
 public class BuyerReviewCreatedEventListener implements AutoCloseable {
@@ -32,11 +35,20 @@ public class BuyerReviewCreatedEventListener implements AutoCloseable {
         Long sellerId = event.getSellerId();
         Long reviewerId = event.getReviewerId();
 
-        try {
+        ListenableFuture<SendResult<String, BuyerReviewCreatedMessage>> future =
             kafkaTemplate.send(buyerReviewCreatedTopic, BuyerReviewCreatedMessage.from(event));
-        } catch (Exception e) {
-            log.error("Got error while handling event BuyerReviewCreatedEvent " + event, e);
-        }
+
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.warn("handleBuyerReviewCreatedEvent exception occurred with sellerId: {}, reviewerId: {}: {}",
+                        sellerId, reviewerId, ex.getMessage(), ex);
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, BuyerReviewCreatedMessage> result) {
+            }
+        });
     }
 
     @Override

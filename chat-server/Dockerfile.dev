@@ -9,16 +9,9 @@ RUN ./gradlew clean :chat-server:build -x test
 
 FROM openjdk:11
 
-ENV DOCKERIZE_VERSION v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
 WORKDIR /app
 
 COPY --from=builder chat-server/build/libs/*.jar ./chat-server.jar
-COPY chat-server/docker-entrypoint.sh ./docker-entrypoint.sh
 
-RUN chmod +x ./docker-entrypoint.sh
-ENTRYPOINT ./docker-entrypoint.sh
+ENTRYPOINT ["java","-jar","./chat-server.jar"]
 
