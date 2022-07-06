@@ -31,6 +31,8 @@ services:
       dockerfile: ./api-server/Dockerfile.dev
     ports:
       - "8080:8080"
+    depends_on:
+      - kafka
     env_file:
       - .env
   chat_server:
@@ -40,8 +42,6 @@ services:
       dockerfile: ./chat-server/Dockerfile.dev
     ports:
       - "8880:8880"
-    depends_on:
-      - kafka
     env_file:
       - .env
   noti_server:
