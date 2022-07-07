@@ -28,7 +28,7 @@
 - `chat-server`: 채팅 관련 기능을 담당하는 서버
 - `notification-server`: api-server로부터 요청을 받아 알림 처리를 담당하는 서버 
 
-![daangn-server-architecture2](https://user-images.githubusercontent.com/75410527/176134384-0fdf4482-9546-4014-a949-b0ee174a1416.jpeg)
+![프로젝트 아키텍쳐 generator 007](https://user-images.githubusercontent.com/75410527/177644798-a600770e-87ee-46b2-820c-423c012c3653.jpeg)
 
 ---
 
