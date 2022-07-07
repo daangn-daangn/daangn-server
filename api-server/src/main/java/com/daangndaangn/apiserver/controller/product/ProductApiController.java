@@ -40,7 +40,7 @@ public class ProductApiController {
 
     private final ProductService productService;
     private final ProductQueryService productQueryService;
-    private final ProductDetailQueryService productDetailQueryService;
+    private final ProductDetailQueryService productDetailService;
     private final UserService userService;
     private final SaleReviewService saleReviewService;
     private final PresignerUtils presignerUtils;
@@ -70,8 +70,8 @@ public class ProductApiController {
 
         products
             .stream()
-            .filter(p -> isNotEmpty(p.getImageUrl()))
-            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .filter(p -> isNotEmpty(p.getThumbNailImage()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getThumbNailImage())));
 
         return OK(products);
     }
@@ -82,16 +82,17 @@ public class ProductApiController {
      * GET /api/products/:productId
      */
     @GetMapping("/{productId}")
-    public ApiResult<DetailResponse> getProduct(@PathVariable("productId") Long productId) {
+    public ApiResult<DetailResponse> getProduct(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                @PathVariable("productId") Long productId) {
 
-        ProductDetailQueryDto productDetailQueryDto = productDetailQueryService.getProductDetail(productId);
+        ProductDetailQueryDto productDetail = productDetailService.getProductDetail(productId, authentication.getId());
 
-        List<String> productImageUrls = productDetailQueryDto.getProductImages().stream()
+        List<String> productImageUrls = productDetail.getProductImages().stream()
                 .map(ProductImage::getImageUrl)
                 .map(presignerUtils::getProductPresignedGetUrl)
                 .collect(toList());
 
-        return OK(DetailResponse.from(productDetailQueryDto, productImageUrls));
+        return OK(DetailResponse.from(productDetail, productImageUrls));
     }
 
     /**
@@ -109,7 +110,6 @@ public class ProductApiController {
         return productService.create(authentication.getId(),
                 request.getCategoryId(),
                 request.getTitle(),
-                request.getName(),
                 request.getPrice(),
                 request.getDescription(),
                 request.getProductImages()).handle((product, throwable) -> {
@@ -140,7 +140,6 @@ public class ProductApiController {
         if (productService.isSeller(productId, authentication.getId())) {
             productService.update(productId,
                     request.getTitle(),
-                    request.getName(),
                     request.getCategoryId(),
                     request.getPrice(),
                     request.getDescription());
@@ -216,8 +215,8 @@ public class ProductApiController {
 
         products
             .stream()
-            .filter(p -> isNotEmpty(p.getImageUrl()))
-            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .filter(p -> isNotEmpty(p.getThumbNailImage()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getThumbNailImage())));
 
         if (ProductState.SOLD_OUT.getCode().equals(productState)) {
             List<SaleHistoryResponse> saleHistoryResponses =
@@ -250,8 +249,8 @@ public class ProductApiController {
 
         products
             .stream()
-            .filter(p -> isNotEmpty(p.getImageUrl()))
-            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .filter(p -> isNotEmpty(p.getThumbNailImage()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getThumbNailImage())));
 
         List<PurchaseHistoryResponse> historyResponses =
             products.stream().map(product -> {

@@ -77,7 +77,6 @@ public class ProductServiceTest {
                 .seller(mockSeller)
                 .category(mockCategory)
                 .title("title")
-                .name("name")
                 .price(10000L)
                 .description("description")
                 .build();
@@ -89,13 +88,12 @@ public class ProductServiceTest {
         given(userService.getUser(anyLong())).willReturn(mockUser);
 
         String title = "test title";
-        String name = "test name";
         Long price = 123L;
         String description = "test description";
 
         //when
         assertThrows(IllegalStateException.class,
-            () -> productService.create(mockUser.getId(), mockCategory.getId(), title, name, price, description, null));
+            () -> productService.create(mockUser.getId(), mockCategory.getId(), title, price, description, null));
 
         //then
         verify(uploadUtils, never()).isNotImageFile(anyString());
@@ -113,12 +111,11 @@ public class ProductServiceTest {
         given(userService.getUser(anyLong())).willReturn(mockUser);
 
         String title = "test title";
-        String name = "test name";
         Long price = 123L;
         String description = "test description";
 
         //when
-        productService.create(mockUser.getId(), mockCategory.getId(), title, name, price, description, null);
+        productService.create(mockUser.getId(), mockCategory.getId(), title, price, description, null);
 
         //then
         verify(uploadUtils, never()).isNotImageFile(anyString());
@@ -137,13 +134,12 @@ public class ProductServiceTest {
         given(userService.getUser(anyLong())).willReturn(mockUser);
 
         String title = "test title";
-        String name = "test name";
         Long price = 123L;
         String description = "test description";
         List<String> productImages = List.of("image1.png", "image2.jpeg");
 
         //when
-        productService.create(mockUser.getId(), mockCategory.getId(), title, name, price, description, productImages);
+        productService.create(mockUser.getId(), mockCategory.getId(), title, price, description, productImages);
 
         //then
         verify(uploadUtils, times(productImages.size())).isNotImageFile(anyString());
@@ -160,14 +156,13 @@ public class ProductServiceTest {
         given(uploadUtils.isNotImageFile(anyString())).willReturn(true);
 
         String title = "test title";
-        String name = "test name";
         Long price = 123L;
         String description = "test description";
         List<String> invalidProductImages = List.of("image1", "image2.jpeg");
 
         //when
         assertThrows(IllegalArgumentException.class,
-                () -> productService.create(mockUser.getId(), mockCategory.getId(), title, name, price, description, invalidProductImages));
+                () -> productService.create(mockUser.getId(), mockCategory.getId(), title, price, description, invalidProductImages));
         //then
         verify(uploadUtils).isNotImageFile(anyString());
         verify(categoryService, never()).getCategory(anyLong());
@@ -250,7 +245,6 @@ public class ProductServiceTest {
         given(productRepository.findByProductId(anyLong())).willReturn(Optional.ofNullable(mockProduct));
         given(categoryService.getCategory(anyLong())).willReturn(mockCategory);
 
-        String newName = "newName";
         String newTitle = "newTitle";
         long newPrice = 12345L;
         String newDescription = "newDescription";
@@ -261,10 +255,9 @@ public class ProductServiceTest {
         }
 
         //when
-        productService.update(mockProduct.getId(), newTitle, newName, mockCategory.getId(), newPrice, newDescription);
+        productService.update(mockProduct.getId(), newTitle, mockCategory.getId(), newPrice, newDescription);
 
         //then
-        assertThat(mockProduct.getName()).isEqualTo(newName);
         assertThat(mockProduct.getTitle()).isEqualTo(newTitle);
         assertThat(mockProduct.getPrice()).isEqualTo(newPrice);
         assertThat(mockProduct.getDescription()).isEqualTo(newDescription);

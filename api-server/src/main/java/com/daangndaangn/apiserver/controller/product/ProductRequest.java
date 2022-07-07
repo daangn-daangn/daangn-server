@@ -17,8 +17,6 @@ public class ProductRequest {
         private Long categoryId;
         @NotBlank(message = "title 값은 필수입니다.")
         private String title;
-        @NotBlank(message = "name 값은 필수입니다.")
-        private String name;
         @NotNull(message = "price 값은 필수입니다.")
         private Long price;
         @NotBlank(message = "description 값은 필수입니다.")
@@ -34,8 +32,6 @@ public class ProductRequest {
         private Long categoryId;
         @NotBlank(message = "title 값은 필수입니다.")
         private String title;
-        @NotBlank(message = "name 값은 필수입니다.")
-        private String name;
         @NotNull(message = "price 값은 필수입니다.")
         private Long price;
         @NotBlank(message = "description 값은 필수입니다.")

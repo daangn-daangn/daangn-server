@@ -82,7 +82,6 @@ public class ChatRoomResponse {
         private String productImage;
         private Long productPrice;
         private String productTitle;
-        private String productName;
         private String productState;
 
         public static DetailResponse of(ChatRoom chatRoom,
@@ -103,7 +102,6 @@ public class ChatRoomResponse {
                     .productImage(productImage)
                     .productPrice(product.getPrice())
                     .productTitle(product.getTitle())
-                    .productName(product.getName())
                     .productState(product.getProductState().getState())
                     .build();
         }

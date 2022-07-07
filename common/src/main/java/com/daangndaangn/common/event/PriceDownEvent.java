@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class PriceDownEvent {
 
     private final Long productId;
-    private final String productName;
+    private final String productTitle;
     private final NotificationType notificationType;
 
     public static PriceDownEvent from(Product product) {
@@ -27,7 +27,7 @@ public class PriceDownEvent {
         checkArgument(product.getId() != null, "product id 값은 필수입니다.");
 
         this.productId = product.getId();
-        this.productName = product.getName();
+        this.productTitle = product.getTitle();
         this.notificationType = NotificationType.PRICE_DOWN;
     }
 }

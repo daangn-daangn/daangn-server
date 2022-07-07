@@ -19,7 +19,7 @@ public class SoldOutToBuyerEvent {
     private final Long productId;
     private final Long sellerId;
     private final Long buyerId;
-    private final String productName;
+    private final String productTitle;
     private final NotificationType notificationType;
 
     public static SoldOutToBuyerEvent of(Product product, User buyer) {
@@ -35,7 +35,7 @@ public class SoldOutToBuyerEvent {
         productId = product.getId();
         sellerId = product.getSeller().getId();
         buyerId = buyer.getId();
-        productName = product.getName();
+        productTitle = product.getTitle();
         notificationType = NotificationType.SOLD_OUT_TO_BUYER;
     }
 }

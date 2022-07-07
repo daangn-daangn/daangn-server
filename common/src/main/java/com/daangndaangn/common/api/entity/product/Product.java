@@ -38,9 +38,6 @@ public class Product extends AuditingCreateUpdateEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(nullable = false, length = 50)
-    private String name;
-
     @Column(nullable = false)
     private long price;
 
@@ -69,20 +66,17 @@ public class Product extends AuditingCreateUpdateEntity {
     private Product(Long id,
                     User seller,
                     Category category,
-                    String name,
                     long price,
                     String title,
                     String description) {
 
         checkArgument(seller != null, "seller 값은 필수입니다.");
         checkArgument(category != null, "category 값은 필수입니다.");
-        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
         checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
         checkArgument(isNotEmpty(description), "description 값은 필수입니다.");
         checkArgument(
                 seller.getLocation() != null && isNotEmpty(seller.getLocation().getAddress()),
                 "판매자의 주소 정보는 필수입니다.");
-        checkArgument(name.length() <= 50, "물품명은 50자 이하여야 합니다.");
         checkArgument(title.length() <= 100, "판매글 제목은 100자 이하여야 합니다.");
         checkArgument(description.length() <= 100, "판매글 내용은 100자 이하여야 합니다.");
 
@@ -90,7 +84,6 @@ public class Product extends AuditingCreateUpdateEntity {
         this.seller = seller;
         this.buyer = null;
         this.category = category;
-        this.name = name;
         this.price = price;
         this.title = title;
         this.description = description;
@@ -111,19 +104,15 @@ public class Product extends AuditingCreateUpdateEntity {
         productImages.add(ProductImage.of(this, productImageUrl));
     }
 
-    public void updateInfo(String title, String name, Category category, Long price, String description) {
+    public void updateInfo(String title, Category category, Long price, String description) {
         checkArgument(
                 isEmpty(title) || title.length() <= 100,
                 "판매글 제목은 100자 이하여야 합니다.");
-        checkArgument(
-                isEmpty(name) || name.length() <= 50,
-                "물품명은 50자 이하여야 합니다.");
         checkArgument(
                 isEmpty(description) || description.length() <= 100,
                 "물품 설명은 100자 이하여야 합니다.");
 
         this.title = isEmpty(title) ? this.title : title;
-        this.name = isEmpty(name) ? this.name : name;
         this.category = category == null ? this.category : category;
         this.price = price == null ? this.price : price;
         this.description = isEmpty(description) ? this.description : description;

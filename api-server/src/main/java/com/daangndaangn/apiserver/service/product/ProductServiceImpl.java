@@ -47,7 +47,6 @@ public class ProductServiceImpl implements ProductService {
     public CompletableFuture<Product> create(Long sellerId,
                                              Long categoryId,
                                              String title,
-                                             String name,
                                              Long price,
                                              String description,
                                              List<String> productImageUrls) {
@@ -55,7 +54,6 @@ public class ProductServiceImpl implements ProductService {
         checkArgument(sellerId != null, "sellerId 값은 필수입니다.");
         checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
         checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
-        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
         checkArgument(price != null, "price 값은 필수입니다.");
         checkArgument(isNotEmpty(description), "description 값은 필수입니다..");
         checkArgument(productImageUrls == null || productImageUrls.size() <= 10, "사진은 최대 10장만 등록할 수 있습니다.");
@@ -81,7 +79,6 @@ public class ProductServiceImpl implements ProductService {
                 .seller(seller)
                 .category(category)
                 .title(title)
-                .name(name)
                 .price(price)
                 .description(description)
                 .build();
@@ -153,9 +150,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void update(Long id, String title, String name, Long categoryId, Long price, String description) {
+    public void update(Long id, String title, Long categoryId, Long price, String description) {
         checkArgument(isNotEmpty(title), "title 값은 필수입니다.");
-        checkArgument(isNotEmpty(name), "name 값은 필수입니다.");
         checkArgument(categoryId != null, "categoryId 값은 필수입니다.");
         checkArgument(price != null, "price 값은 필수입니다.");
         checkArgument(isNotEmpty(description), "description 값은 필수입니다.");
@@ -165,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
 
         long beforePrice = product.getPrice();
 
-        product.updateInfo(title, name, category, price, description);
+        product.updateInfo(title, category, price, description);
 
         //상품의 가격이 내려간 경우
         if (product.getPrice() < beforePrice) {
