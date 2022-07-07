@@ -55,7 +55,6 @@ class FavoriteProductServiceTest {
                 .id(1L)
                 .seller(mockUser)
                 .category(Category.builder().id(1L).name("mockCategory").build())
-                .name("mockProduct")
                 .price(10000)
                 .title("mockProduct 팝니다.")
                 .description("mockProduct 팝니다. 새 상품 입니다.")

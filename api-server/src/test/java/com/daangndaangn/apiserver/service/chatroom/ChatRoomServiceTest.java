@@ -78,7 +78,6 @@ class ChatRoomServiceTest {
                 .seller(mockUser1)
                 .category(mockCategory)
                 .title("테스트 title 입니다.")
-                .name("name")
                 .price(1L)
                 .description("테스트 description 입니다.")
                 .build();

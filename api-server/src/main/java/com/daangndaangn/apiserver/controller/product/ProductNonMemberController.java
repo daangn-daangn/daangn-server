@@ -42,8 +42,8 @@ public class ProductNonMemberController {
 
         products
             .stream()
-            .filter(p -> StringUtils.isNotEmpty(p.getImageUrl()))
-            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getImageUrl())));
+            .filter(p -> StringUtils.isNotEmpty(p.getThumbNailImage()))
+            .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getThumbNailImage())));
 
         return OK(products);
     }

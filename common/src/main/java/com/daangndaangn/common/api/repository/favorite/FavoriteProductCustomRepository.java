@@ -11,4 +11,5 @@ public interface FavoriteProductCustomRepository {
     Optional<FavoriteProduct> findByIdWithUser(Long id);
     List<FavoriteProduct> findAll(Long userId, Pageable pageable);
     List<FavoriteProduct> findAll(Long productId);
+    boolean exists(Long productId, Long userId);
 }

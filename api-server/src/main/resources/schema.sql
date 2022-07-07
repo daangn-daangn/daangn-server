@@ -40,7 +40,6 @@ CREATE TABLE categories
 CREATE TABLE products
 (
     id                  bigint          NOT NULL AUTO_INCREMENT COMMENT 'id',
-    name                varchar(50)     NOT NULL COMMENT '물품명',
     price               bigint          NOT NULL COMMENT '가격',
     title               varchar(100)    NOT NULL COMMENT '제목',
     description         varchar(500)    NOT NULL COMMENT '상세 내용',

@@ -22,7 +22,6 @@ public class ProductDetailQueryDto {
     private User seller;
     private User buyer;
     private Category category;
-    private String name;
     private Long price;
     private String title;
     private String description;
@@ -32,6 +31,7 @@ public class ProductDetailQueryDto {
     private List<ProductImage> productImages;
     private Long favoriteCount;
     private Long chattingCount;
+    private Boolean isFavorite;
     private LocalDateTime createdAt;
 
     public static ProductDetailQueryDto of(Product product, Long favoriteCount, Long chattingCount) {
@@ -40,7 +40,6 @@ public class ProductDetailQueryDto {
                 .seller(product.getSeller())
                 .buyer(product.getBuyer())
                 .category(product.getCategory())
-                .name(product.getName())
                 .price(product.getPrice())
                 .title(product.getTitle())
                 .description(product.getDescription())
@@ -50,6 +49,27 @@ public class ProductDetailQueryDto {
                 .productImages(product.getProductImages())
                 .favoriteCount(favoriteCount)
                 .chattingCount(chattingCount)
+                .isFavorite(false)
+                .createdAt(product.getCreatedAt())
+                .build();
+    }
+
+    public static ProductDetailQueryDto of(Product product, Long favoriteCount, Long chattingCount, boolean isFavorite) {
+        return ProductDetailQueryDto.builder()
+                .id(product.getId())
+                .seller(product.getSeller())
+                .buyer(product.getBuyer())
+                .category(product.getCategory())
+                .price(product.getPrice())
+                .title(product.getTitle())
+                .description(product.getDescription())
+                .location(product.getLocation())
+                .productState(product.getProductState())
+                .thumbNailImage(product.getThumbNailImage())
+                .productImages(product.getProductImages())
+                .favoriteCount(favoriteCount)
+                .chattingCount(chattingCount)
+                .isFavorite(isFavorite)
                 .createdAt(product.getCreatedAt())
                 .build();
     }

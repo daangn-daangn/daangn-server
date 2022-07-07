@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface ProductService {
 
-    CompletableFuture<Product> create(Long sellerId, Long categoryId, String title, String name, Long price, String description, List<String> productImageUrls);
+    CompletableFuture<Product> create(Long sellerId, Long categoryId, String title, Long price, String description, List<String> productImageUrls);
 
     Product getProduct(Long id);
 
@@ -20,7 +20,7 @@ public interface ProductService {
 
     void update(Long id, int productStateCode);
 
-    void update(Long id, String title, String name, Long categoryId, Long price, String description);
+    void update(Long id, String title, Long categoryId, Long price, String description);
 
     void delete(Long id);
 

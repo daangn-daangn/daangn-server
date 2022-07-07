@@ -25,7 +25,7 @@ public class SoldOutToBuyerMessage {
         this.productId = event.getProductId();
         this.sellerId = event.getSellerId();
         this.buyerId = event.getBuyerId();
-        this.productName = event.getProductName();
+        this.productName = event.getProductTitle();
         this.notificationType = event.getNotificationType();
     }
 }

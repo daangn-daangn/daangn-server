@@ -22,13 +22,13 @@ public class ProductResponse {
         private String title;
         private String location;
         private Long price;
-        private String imageUrl;
+        private String thumbNailImage;
         private Long favoriteCount;
         private Long chattingCount;
         private LocalDateTime createdAt;
 
         void updateImageUrl(String presigendImageUrl) {
-            this.imageUrl = presigendImageUrl;
+            this.thumbNailImage = presigendImageUrl;
         }
 
         public static SimpleResponse of(ProductQueryDto productQueryDto, Long chattingCount) {
@@ -37,7 +37,7 @@ public class ProductResponse {
                     .title(productQueryDto.getTitle())
                     .location(productQueryDto.getLocation())
                     .price(productQueryDto.getPrice())
-                    .imageUrl(productQueryDto.getImageUrl())
+                    .thumbNailImage(productQueryDto.getImageUrl())
                     .favoriteCount(productQueryDto.getFavoriteCount())
                     .chattingCount(chattingCount)
                     .createdAt(productQueryDto.getCreatedAt())
@@ -68,7 +68,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getImageUrl())
+                    .imageUrl(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(hasReview)
@@ -82,7 +82,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getImageUrl())
+                    .imageUrl(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(false)
@@ -114,7 +114,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getImageUrl())
+                    .imageUrl(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(hasReview)
@@ -129,9 +129,9 @@ public class ProductResponse {
     public static class DetailResponse {
         private Long id;
         private String seller;
+        private Long sellerId;
         private String buyer;
         private Long categoryId;
-        private String name;
         private Long price;
         private String title;
         private String description;
@@ -141,6 +141,7 @@ public class ProductResponse {
         private List<String> productImages;
         private Long favoriteCount;
         private Long chattingCount;
+        private Boolean isFavorite;
         private LocalDateTime createdAt;
 
         public static DetailResponse from(ProductDetailQueryDto productDetailQueryDto,
@@ -149,9 +150,9 @@ public class ProductResponse {
             return DetailResponse.builder()
                     .id(productDetailQueryDto.getId())
                     .seller(productDetailQueryDto.getSeller().getNickname())
+                    .sellerId(productDetailQueryDto.getSeller().getId())
                     .buyer(isEmpty(productDetailQueryDto.getBuyer()) ? null : productDetailQueryDto.getBuyer().getNickname())
                     .categoryId(productDetailQueryDto.getCategory().getId())
-                    .name(productDetailQueryDto.getName())
                     .price(productDetailQueryDto.getPrice())
                     .title(productDetailQueryDto.getTitle())
                     .description(productDetailQueryDto.getDescription())
@@ -161,6 +162,7 @@ public class ProductResponse {
                     .productImages(presignedProductImages)
                     .favoriteCount(productDetailQueryDto.getFavoriteCount())
                     .chattingCount(productDetailQueryDto.getChattingCount())
+                    .isFavorite(productDetailQueryDto.getIsFavorite())
                     .createdAt(productDetailQueryDto.getCreatedAt())
                     .build();
         }

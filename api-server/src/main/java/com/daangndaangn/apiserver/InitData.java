@@ -116,7 +116,6 @@ public class InitData {
             productService.create(1L,
                     1L,
                     "mockProduct 팝니다1",
-                    "mockProduct1",
                     10000L,
                     "mockProduct1 description",
                     null);
@@ -124,7 +123,6 @@ public class InitData {
             productService.create(1L,
                     2L,
                     "mockProduct 팝니다2",
-                    "mockProduct2",
                     20000L,
                     "mockProduct2 description",
                     null);
@@ -132,7 +130,6 @@ public class InitData {
             productService.create(1L,
                     3L,
                     "mockProduct 팝니다3",
-                    "mockProduct3",
                     30000L,
                     "mockProduct3 description",
                     List.of("test001.jpg","test002.jpeg","test003.png"));
@@ -140,56 +137,48 @@ public class InitData {
             productService.create(1L,
                     4L,
                     "mockProduct 팝니다4",
-                    "mockProduct4",
                     40000L,
                     "mockProduct4 description",null);
 
             productService.create(1L,
                     5L,
                     "mockProduct 팝니다5",
-                    "mockProduct5",
                     50000L,
                     "mockProduct5 description",null);
 
             productService.create(2L,
                     2L,
                     "mockProduct 팝니다6",
-                    "mockProduct6",
                     110000L,
                     "mockProduct6 description",null);
 
             productService.create(2L,
                     2L,
                     "mockProduct 팝니다7",
-                    "mockProduct7",
                     120000L,
                     "mockProduct7 description",null);
 
             productService.create(2L,
                     3L,
                     "mockProduct 팝니다8",
-                    "mockProduct8",
                     130000L,
                     "mockProduct8 description",null);
 
             productService.create(2L,
                     4L,
                     "mockProduct 팝니다9",
-                    "mockProduct9",
                     140000L,
                     "mockProduct9 description",null);
 
             productService.create(3L,
                     5L,
                     "mockProduct 팝니다10",
-                    "mockProduct10",
                     150000L,
                     "mockProduct10 description",null);
 
             productService.create(3L,
                     5L,
                     "mockProduct 팝니다11",
-                    "mockProduct11",
                     160000L,
                     "mockProduct11 description",
                     List.of("test020.jpg","test021.jpeg","test022.png"));
@@ -197,7 +186,6 @@ public class InitData {
             productService.create(3L,
                     5L,
                     "mockProduct 팝니다12",
-                    "mockProduct12",
                     170000L,
                     "mockProduct12 description",
                     List.of("test010.jpg","test011.jpeg","test012.png"));

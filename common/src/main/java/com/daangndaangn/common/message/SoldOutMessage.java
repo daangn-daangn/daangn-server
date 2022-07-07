@@ -45,7 +45,7 @@ public class SoldOutMessage {
 
     private SoldOutMessage(SoldOutEvent event, List<Long> userIds) {
         this.productId = event.getProductId();
-        this.productName = event.getProductName();
+        this.productName = event.getProductTitle();
         this.notificationType = event.getNotificationType();
         this.userIds = userIds;
     }

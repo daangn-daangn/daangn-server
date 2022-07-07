@@ -65,4 +65,16 @@ public class FavoriteProductCustomRepositoryImpl implements FavoriteProductCusto
                         qFavoriteProduct.isValid.eq(true))
                 .fetch();
     }
+
+    @Override
+    public boolean exists(Long productId, Long userId) {
+        FavoriteProduct result = jpaQueryFactory
+                .selectFrom(qFavoriteProduct)
+                .where(qFavoriteProduct.product.id.eq(productId),
+                        qFavoriteProduct.user.id.eq(userId),
+                        qFavoriteProduct.isValid.eq(true))
+                .fetchFirst();
+
+        return result != null;
+    }
 }
