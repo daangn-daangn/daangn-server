@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.List;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,26 +35,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .cors().configurationSource(request -> {
-                CorsConfiguration cors = new CorsConfiguration();
-                cors.setAllowedOrigins(List.of("http://localhost:3000"));
-                cors.setAllowedMethods(List.of("*"));
-                cors.setAllowedHeaders(List.of("*"));
-                cors.setAllowCredentials(true);
-                return cors;
-            })
-                .and()
             .csrf()
                 .disable()
             .headers()
                 .disable()
+            .cors()
+                .configurationSource(configurationSource())
+                .and()
             .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and()
             .formLogin()
                 .disable()
-//            .authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
             .authorizeRequests()
                 .antMatchers("/chat/health").permitAll() // 서버 상태 CHECK API는 모두 접근가능
                 .antMatchers("/chat/**").hasRole(Role.USER.name())   // 그 외 API는 '회원 권한' 필요
@@ -62,5 +55,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
             .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public CorsConfigurationSource configurationSource() {
+        final String clientUrl = "http://localhost:3000";
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin(clientUrl);
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
