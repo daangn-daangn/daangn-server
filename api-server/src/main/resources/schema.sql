@@ -47,6 +47,7 @@ CREATE TABLE products
     product_state       int             NOT NULL COMMENT '물품상태 (삭제, 예약중, 판매중, 거래완료, 숨기기)',
     thumb_nail_image    varchar(500)    DEFAULT NULL COMMENT '대표이미지 url',
     refresh_cnt         int             NOT NULL DEFAULT 0 COMMENT '새로 고침(끌어올리기) 횟수',
+    view_cnt            int             NOT NULL DEFAULT 0 COMMENT '조회수',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     seller_id           bigint          DEFAULT NULL COMMENT '판매자 id',

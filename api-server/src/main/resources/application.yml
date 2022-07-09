@@ -34,16 +34,21 @@ oauth:
 async:
   thread:
     thread-name-prefix: async-thread-
-    core-pool-size: 10  # 동시에 실행시킬 쓰레드의 갯수
-    max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
-    queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
+    core-pool-size: 2  # 동시에 실행시킬 쓰레드의 갯수
+    max-pool-size: 10   # 쓰레드 풀의 최대 사이즈
+    queue-capacity: 20 # 쓰레드 풀 큐의 사이즈.
 
 eventbus:
   thread:
     thread-name-prefix: eventBus-thread-
-    core-pool-size: 10  # 동시에 실행시킬 쓰레드의 갯수
-    max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
-    queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
+    core-pool-size: 2  # 동시에 실행시킬 쓰레드의 갯수
+    max-pool-size: 10   # 쓰레드 풀의 최대 사이즈
+    queue-capacity: 20 # 쓰레드 풀 큐의 사이즈.
+
+scheduler:
+  thread:
+    thread-name-prefix: scheduler-thread-
+    pool-size: 2  # 스케줄러 쓰레드 풀 사이즈
 
 ---
 spring:

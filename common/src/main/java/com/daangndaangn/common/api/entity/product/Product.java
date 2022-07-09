@@ -59,6 +59,9 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(nullable = false)
     private int refreshCnt;
 
+    @Column(nullable = false)
+    private int viewCnt;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages = new ArrayList<>();
 
@@ -90,6 +93,7 @@ public class Product extends AuditingCreateUpdateEntity {
         this.location = seller.getLocation();
         this.productState = ProductState.FOR_SALE;
         this.refreshCnt = 0;
+        this.viewCnt = 0;
     }
 
     public void setThumbnailImage(String thumbNailImage) {
@@ -125,6 +129,10 @@ public class Product extends AuditingCreateUpdateEntity {
     public void updateBuyer(User buyer) {
         checkArgument(buyer != null, "buyer 값은 필수입니다.");
         this.buyer = buyer;
+    }
+
+    public void increaseViewCount(int viewCount) {
+        this.viewCnt += viewCount;
     }
 
     public void refresh() {

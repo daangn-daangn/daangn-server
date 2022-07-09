@@ -32,7 +32,8 @@ public class InitData {
         log.info("start initTestSetting");
         try {
 //            initDataService.initCategories();
-            initDataService.initUsers();
+//            initDataService.initUsers();
+            initDataService.initUsersWithProducts();
 //        initDataService.initManners();
 //        initDataService.initProducts();
 //        initDataService.initFavoriteProducts();
@@ -89,6 +90,112 @@ public class InitData {
                     userService.update(userId, "테스트닉네임5", "노원구 상계동");
                     return null;
                 }).thenAccept(result -> log.info("initUsers"));
+        }
+
+        public void initUsersWithProducts() throws ExecutionException, InterruptedException {
+            userService.create(12L, "test001.jpg")
+                    .thenApply(userId -> {
+                        userService.update(userId, "테스트 닉네임1", "노원구 상계동");
+                        productService.create(userId,
+                                1L,
+                                "mockProduct 팝니다1",
+                                10000L,
+                                "mockProduct1 description",
+                                null);
+
+                        productService.create(userId,
+                                2L,
+                                "mockProduct 팝니다2",
+                                20000L,
+                                "mockProduct2 description",
+                                null);
+
+                        productService.create(userId,
+                                3L,
+                                "mockProduct 팝니다3",
+                                30000L,
+                                "mockProduct3 description",
+                                List.of("test001.jpg","test002.jpeg","test003.png"));
+
+                        productService.create(userId,
+                                4L,
+                                "mockProduct 팝니다4",
+                                40000L,
+                                "mockProduct4 description",null);
+
+                        productService.create(userId,
+                                5L,
+                                "mockProduct 팝니다5",
+                                50000L,
+                                "mockProduct5 description",null);
+                        return null;
+                    }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(34L, "test002.jpg")
+                    .thenApply(userId -> {
+                        userService.update(userId, "테스트닉네임2", "노원구 상계동");
+                        productService.create(userId,
+                                2L,
+                                "mockProduct 팝니다6",
+                                110000L,
+                                "mockProduct6 description",null);
+
+                        productService.create(userId,
+                                2L,
+                                "mockProduct 팝니다7",
+                                120000L,
+                                "mockProduct7 description",null);
+
+                        productService.create(userId,
+                                3L,
+                                "mockProduct 팝니다8",
+                                130000L,
+                                "mockProduct8 description",null);
+
+                        productService.create(userId,
+                                4L,
+                                "mockProduct 팝니다9",
+                                140000L,
+                                "mockProduct9 description",null);
+                        return null;
+                    }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(56L, "test003.jpg")
+                    .thenApply(userId -> {
+                        userService.update(userId, "테스트닉네임3", "노원구 상계동");
+                        productService.create(userId,
+                                5L,
+                                "mockProduct 팝니다10",
+                                150000L,
+                                "mockProduct10 description",null);
+
+                        productService.create(userId,
+                                5L,
+                                "mockProduct 팝니다11",
+                                160000L,
+                                "mockProduct11 description",
+                                List.of("test020.jpg","test021.jpeg","test022.png"));
+
+                        productService.create(userId,
+                                5L,
+                                "mockProduct 팝니다12",
+                                170000L,
+                                "mockProduct12 description",
+                                List.of("test010.jpg","test011.jpeg","test012.png"));
+                        return null;
+                    }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(78L, "test004.jpg")
+                    .thenApply(userId -> {
+                        userService.update(userId, "테스트닉네임4", "노원구 상계동");
+                        return null;
+                    }).thenAccept(result -> log.info("initUsers"));
+
+            userService.create(910L, "test005.jpg")
+                    .thenApply(userId -> {
+                        userService.update(userId, "테스트닉네임5", "노원구 상계동");
+                        return null;
+                    }).thenAccept(result -> log.info("initUsers"));
         }
 
         public void initManners() {
