@@ -7,6 +7,8 @@ import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
+import com.daangndaangn.common.event.ProductViewEvent;
+import com.google.common.eventbus.EventBus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ public class ProductDetailQueryService {
     private final ProductQueryRepository productQueryRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final FavoriteProductRepository favoriteProductRepository;
+    private final EventBus eventBus;
 
     public ProductDetailQueryDto getProductDetail(Long id) {
 
@@ -40,6 +43,8 @@ public class ProductDetailQueryService {
         Product productWithProductImages = productService.getProductWithProductImages(id);
         long chattingCount = chatRoomRepository.countAllByProductId(id);
         boolean isFavorite = favoriteProductRepository.exists(productWithProductImages.getId(), userId);
+
+        eventBus.post(ProductViewEvent.from(productWithProductImages));
 
         return ProductDetailQueryDto.of(productWithProductImages, productQueryDto.getFavoriteCount(), chattingCount, isFavorite);
     }

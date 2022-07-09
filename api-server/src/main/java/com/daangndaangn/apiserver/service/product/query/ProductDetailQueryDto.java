@@ -27,6 +27,7 @@ public class ProductDetailQueryDto {
     private String description;
     private Location location;
     private ProductState productState;
+    private Integer viewCount;
     private String thumbNailImage;
     private List<ProductImage> productImages;
     private Long favoriteCount;
@@ -45,6 +46,7 @@ public class ProductDetailQueryDto {
                 .description(product.getDescription())
                 .location(product.getLocation())
                 .productState(product.getProductState())
+                .viewCount(product.getViewCnt())
                 .thumbNailImage(product.getThumbNailImage())
                 .productImages(product.getProductImages())
                 .favoriteCount(favoriteCount)
@@ -65,6 +67,7 @@ public class ProductDetailQueryDto {
                 .description(product.getDescription())
                 .location(product.getLocation())
                 .productState(product.getProductState())
+                .viewCount(product.getViewCnt())
                 .thumbNailImage(product.getThumbNailImage())
                 .productImages(product.getProductImages())
                 .favoriteCount(favoriteCount)

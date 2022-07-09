@@ -137,6 +137,7 @@ public class ProductResponse {
         private String description;
         private String location;
         private String productState;
+        private Integer viewCount;
         private String thumbNailImage;
         private List<String> productImages;
         private Long favoriteCount;
@@ -158,6 +159,7 @@ public class ProductResponse {
                     .description(productDetailQueryDto.getDescription())
                     .location(productDetailQueryDto.getLocation().getAddress())
                     .productState(productDetailQueryDto.getProductState().getState())
+                    .viewCount(productDetailQueryDto.getViewCount())
                     .thumbNailImage(isEmpty(presignedProductImages) ? null : presignedProductImages.get(0))
                     .productImages(presignedProductImages)
                     .favoriteCount(productDetailQueryDto.getFavoriteCount())

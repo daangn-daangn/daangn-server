@@ -1,11 +1,9 @@
 package com.daangndaangn.apiserver.config;
 
-import com.daangndaangn.apiserver.eventlistener.BuyerReviewCreatedEventListener;
-import com.daangndaangn.apiserver.eventlistener.PriceDownEventListener;
-import com.daangndaangn.apiserver.eventlistener.SoldOutToBuyerEventListener;
+import com.daangndaangn.apiserver.eventlistener.*;
 import com.daangndaangn.apiserver.service.favorite.FavoriteProductService;
+import com.daangndaangn.apiserver.service.product.views.ProductViewService;
 import com.daangndaangn.common.event.EventExceptionHandler;
-import com.daangndaangn.apiserver.eventlistener.SoldOutEventListener;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import lombok.Getter;
@@ -85,5 +83,12 @@ public class EventConfig {
                                                                            KafkaTemplate kafkaTemplate) {
 
         return new BuyerReviewCreatedEventListener(eventBus, kafkaTemplate);
+    }
+
+    @Bean(destroyMethod = "close")
+    public ProductViewEventListener productViewEventListener(EventBus eventBus,
+                                                             ProductViewService productViewService) {
+
+        return new ProductViewEventListener(eventBus, productViewService);
     }
 }
