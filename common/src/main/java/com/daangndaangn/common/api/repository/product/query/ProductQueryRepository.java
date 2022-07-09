@@ -164,9 +164,9 @@ public class ProductQueryRepository {
                     .leftJoin(favoriteProduct).on(product.id.eq(favoriteProduct.product.id))
                                             .on(favoriteProduct.isValid.eq(true))
                 .where(
+                    addressContains(address),
                     categoriesEq(productSearchOption.getCategories()),
                     titleContains(productSearchOption.getTitle()),
-                    addressContains(address),
                     priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice()),
                     product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )

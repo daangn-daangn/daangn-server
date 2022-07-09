@@ -21,7 +21,7 @@ CREATE TABLE users
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     PRIMARY KEY (id),
-    KEY users_idx_oauth_id (oauth_id),
+    KEY users_idx_oauth (oauth_id),
     KEY users_idx_nickname (nickname)
 ) COMMENT '유저 테이블';
 
@@ -54,8 +54,10 @@ CREATE TABLE products
     buyer_id            bigint          DEFAULT NULL COMMENT '구매자 id',
     category_id         bigint          DEFAULT NULL COMMENT '카테고리 id',
     PRIMARY KEY (id),
-    KEY products_idx_seller_location (seller_id, location),
-    KEY products_idx_buyer_location (buyer_id, location),
+    KEY products_idx_seller (seller_id),
+    KEY products_idx_buyer (buyer_id),
+    KEY products_idx_category (category_id),
+    KEY products_idx_location_category (location, category_id),
     CONSTRAINT fk_products_to_seller FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_products_to_buyer FOREIGN KEY (buyer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_products_to_category FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -85,6 +87,7 @@ CREATE TABLE favorite_products
     product_id          bigint          DEFAULT NULL COMMENT '물품 id',
     PRIMARY KEY (id),
     KEY favorite_products_idx_user (user_id),
+    KEY favorite_products_idx_product (product_id),
     KEY favorite_products_idx_product_user (product_id, user_id),
     CONSTRAINT fk_favorite_products_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_favorite_products_to_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -102,9 +105,8 @@ CREATE TABLE sale_reviews
     reviewer_id         bigint          DEFAULT NULL COMMENT '리뷰 작성자 id',
     reviewee_id         bigint          DEFAULT NULL COMMENT '리뷰 작성 대상자 id',
     PRIMARY KEY (id),
-    KEY sale_reviews_idx_reviewer (reviewer_id),
-    KEY sale_reviews_idx_reviewee (reviewee_id),
-    KEY sale_reviews_idx_product (product_id),
+    KEY sale_reviews_idx_reviewee_type (reviewee_id, sale_review_type),
+    KEY sale_reviews_idx_product_reviewer_type (product_id, reviewer_id, sale_review_type),
     CONSTRAINT fk_sale_reviews_to_reviewer FOREIGN KEY (reviewer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_sale_reviews_to_reviewee FOREIGN KEY (reviewee_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_sale_reviews_to_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -120,8 +122,8 @@ CREATE TABLE manner_evaluations
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     updated_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
     PRIMARY KEY (id),
-    KEY manner_evaluations_idx_user_id (user_id),
-    KEY manner_evaluations_idx_evaluator_id (evaluator_id),
+    KEY manner_evaluations_idx_user (user_id),
+    KEY manner_evaluations_idx_evaluator (evaluator_id),
     CONSTRAINT fk_manner_evaluations_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_manner_evaluations_to_evaluator FOREIGN KEY (evaluator_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT '매너평가 테이블';
@@ -136,7 +138,7 @@ CREATE TABLE notifications
     is_valid            boolean         NOT NULL COMMENT '알림 삭제여부',
     created_at          datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
     PRIMARY KEY (id),
-    KEY notifications_idx_user_id (user_id),
+    KEY notifications_idx_user (user_id),
     CONSTRAINT fk_notifications_to_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT '알림 테이블';
 
