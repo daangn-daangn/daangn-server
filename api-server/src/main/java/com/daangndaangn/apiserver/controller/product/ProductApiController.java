@@ -63,10 +63,10 @@ public class ProductApiController {
         List<SimpleResponse> products;
 
         if (user.isEmptyLocation()) {
-            products = productQueryService.getProducts(productSearchOption, pageable);
-        } else {
-            products = productQueryService.getProducts(productSearchOption, user.getLocation(), pageable);
+            throw new IllegalStateException("물품 조회 시 위치 정보 등록이 필수입니다.");
         }
+
+        products = productQueryService.getProducts(productSearchOption, user.getLocation(), pageable);
 
         products
             .stream()

@@ -164,7 +164,7 @@ public class ProductQueryRepository {
                     .leftJoin(favoriteProduct).on(product.id.eq(favoriteProduct.product.id))
                                             .on(favoriteProduct.isValid.eq(true))
                 .where(
-                    addressContains(address),
+                    addressEq(address),
                     categoriesEq(productSearchOption.getCategories()),
                     titleContains(productSearchOption.getTitle()),
                     priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice()),
@@ -175,6 +175,13 @@ public class ProductQueryRepository {
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                 .fetch();
+    }
+
+    private BooleanExpression addressEq(String address) {
+        if (isBlank(address)) {
+            return null;
+        }
+        return product.location.address.eq(address);
     }
 
     private BooleanExpression categoriesEq(List<Long> categories) {
@@ -189,13 +196,6 @@ public class ProductQueryRepository {
             return null;
         }
         return product.title.contains(title);
-    }
-
-    private BooleanExpression addressContains(String address) {
-        if (isBlank(address)) {
-            return null;
-        }
-        return product.location.address.contains(address);
     }
 
     private BooleanExpression priceCondition(long minPrice, long maxPrice) {
