@@ -35,16 +35,6 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, C
     /**
      * ChatRoom 조회 시 chat_messages 최상위 1건만 가져오기 위한 전처리
      */
-    @Query(value = "{ $or: [ {'firstUserId': :#{#firstUserId}}, {'secondUserId': :#{#secondUserId}} ] }",
-            fields = "{'chat_messages': { $slice: -1 }}"
-    )
-    List<ChatRoom> findAllByFirstUserIdOrSecondUserId(@Param("firstUserId") Long firstUserId,
-                                                      @Param("secondUserId") Long secondUserId,
-                                                      Pageable pageable);
-
-    /**
-     * ChatRoom 조회 시 chat_messages 최상위 1건만 가져오기 위한 전처리
-     */
     @Query(value = "{'id': { $in : :#{#chatRoomIds} } }",
             fields = "{'chat_messages': { $slice: -1 }}"
     )
@@ -72,7 +62,7 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, C
      */
     @Aggregation(
         pipeline = {"{'$match' :{'id': :#{#id}} }",
-                    "{'$project': { item: 1, numberOfColors: { $size: '$chat_messages'}}}"
+                    "{'$project': { item: 1, numberOfChatMessages: { $size: '$chat_messages'}}}"
         }
     )
     Long getChatRoomMessageSize(@Param("id") String id);
