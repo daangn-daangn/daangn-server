@@ -23,6 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @Transactional(readOnly = true, value = "mongoTransactionManager")
@@ -97,7 +98,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .map(Participant::getChatRoomId).collect(toList());
 
         return chatRoomRepository.findAllByChatRoomIds(chatRoomIds,
-                Sort.by(Sort.Direction.DESC, "updated_at"));
+                Sort.by(DESC, "updated_at"));
     }
 
     @Override

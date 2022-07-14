@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -98,6 +99,12 @@ public class UserServiceImpl implements UserService {
         checkArgument(userId != null, "userId 값은 필수입니다.");
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class, String.format("userId = %s", userId)));
+    }
+
+    @Override
+    public List<User> getUsers(List<Long> userIds) {
+        checkArgument(isNotEmpty(userIds), "userIds 값은 필수입니다.");
+        return userRepository.findAll(userIds);
     }
 
     @Override

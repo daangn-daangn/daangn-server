@@ -27,6 +27,14 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>, C
     /**
      * ChatRoom 조회 시 chat_messages 최상위 1건만 가져오기 위한 전처리
      */
+    @Query(value = "{'productId': :#{#productId} }",
+            fields = "{'chat_messages': { $slice: -1 }}"
+    )
+    List<ChatRoom> findAllByProductId(@Param("productId") Long productId, Pageable pageable);
+
+    /**
+     * ChatRoom 조회 시 chat_messages 최상위 1건만 가져오기 위한 전처리
+     */
     @Query(value = "{'id': :#{#id} }",
             fields = "{'chat_messages': { $slice: -1 }}"
     )
