@@ -24,17 +24,6 @@ public class ProductDetailQueryService {
     private final FavoriteProductRepository favoriteProductRepository;
     private final EventBus eventBus;
 
-    public ProductDetailQueryDto getProductDetail(Long id) {
-
-        ProductQueryDto productQueryDto = productQueryRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(ProductQueryDto.class, String.format("productId = %s", id)));
-
-        Product productWithProductImages = productService.getProductWithProductImages(id);
-        long chattingCount = chatRoomRepository.countAllByProductId(id);
-
-        return ProductDetailQueryDto.of(productWithProductImages, productQueryDto.getFavoriteCount(), chattingCount);
-    }
-
     public ProductDetailQueryDto getProductDetail(Long id, Long userId) {
 
         ProductQueryDto productQueryDto = productQueryRepository.findById(id)

@@ -56,8 +56,8 @@ CREATE TABLE products
     PRIMARY KEY (id),
     KEY products_idx_seller (seller_id),
     KEY products_idx_buyer (buyer_id),
-    KEY products_idx_category (category_id),
     KEY products_idx_location_category (location, category_id),
+    KEY products_idx_location_created_at (location, created_at),
     CONSTRAINT fk_products_to_seller FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_products_to_buyer FOREIGN KEY (buyer_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_products_to_category FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET NULL ON UPDATE CASCADE

@@ -36,16 +36,6 @@ public class ProductQueryService {
         }).collect(toList());
     }
 
-    //비회원 전용
-    public List<ProductResponse.SimpleResponse> getProducts(ProductSearchOption productSearchOption, Pageable pageable) {
-        List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productSearchOption, null, pageable);
-
-        return productQueryDtos.stream().map(p -> {
-            long chattingCount = chatRoomRepository.countAllByProductId(p.getId());
-            return ProductResponse.SimpleResponse.of(p, chattingCount);
-        }).collect(toList());
-    }
-
     //특정 사용자가 찜한 상품 목록만 조회
     public List<ProductResponse.SimpleResponse> getFavoriteProducts(List<Long> productIds) {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productIds);
