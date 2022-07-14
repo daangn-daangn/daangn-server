@@ -1,9 +1,11 @@
 package com.daangndaangn.apiserver.controller.chatroom;
 
+import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.BuyerResponse;
 import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.CreateResponse;
 import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.DetailResponse;
 import com.daangndaangn.apiserver.controller.chatroom.ChatRoomResponse.SimpleResponse;
 import com.daangndaangn.apiserver.service.chatroom.ChatRoomService;
+import com.daangndaangn.apiserver.service.chatroom.query.ChatRoomQueryService;
 import com.daangndaangn.apiserver.service.participant.ParticipantService;
 import com.daangndaangn.apiserver.service.product.ProductService;
 import com.daangndaangn.apiserver.service.user.UserService;
@@ -19,6 +21,8 @@ import com.daangndaangn.common.controller.ErrorResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RequestMapping("/api/chat-rooms")
 @RestController
@@ -37,6 +42,7 @@ import static java.util.stream.Collectors.toList;
 public class ChatRoomApiController {
 
     private final ChatRoomService chatRoomService;
+    private final ChatRoomQueryService chatRoomQueryService;
     private final UserService userService;
     private final ParticipantService participantService;
     private final ProductService productService;
@@ -128,5 +134,26 @@ public class ChatRoomApiController {
                 null : presignerUtils.getProductPresignedGetUrl(product.getThumbNailImage());
 
         return OK(DetailResponse.of(chatRoom, participant.isOut(), otherUser, profileImage, product, productImage));
+    }
+
+    /**
+     * 채팅방이 만들어져 있는 구매자 목록 조회
+     *
+     * GET /api/chat-rooms/product/:product-id
+     */
+    @GetMapping("/product/{productId}")
+    public ApiResult<List<BuyerResponse>> getChatRoomBuyers(@AuthenticationPrincipal JwtAuthentication authentication,
+                                                            @PathVariable("productId") Long productId,
+                                                            @PageableDefault(sort ="updated_at",
+                                                                             direction = DESC) Pageable pageable) {
+
+        if (!productService.isSeller(productId, authentication.getId())) {
+            throw new UnauthorizedException("물품 판매자만 구매자 채팅방 목록을 조회할 수 있습니다.");
+        }
+
+        return OK(chatRoomQueryService.getChatRoomBuyersByProductId(authentication.getId(), productId, pageable)
+                .stream()
+                .map(BuyerResponse::from)
+                .collect(toList()));
     }
 }

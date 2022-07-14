@@ -106,4 +106,17 @@ public class ChatRoomResponse {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class BuyerResponse {
+        private Long id;
+        private String name;
+
+        public static BuyerResponse from(User user) {
+            return new BuyerResponse(user.getId(), user.getNickname());
+        }
+    }
+
 }

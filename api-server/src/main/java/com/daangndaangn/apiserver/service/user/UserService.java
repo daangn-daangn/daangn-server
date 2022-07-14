@@ -17,6 +17,8 @@ public interface UserService {
 
     User getUser(Long userId);
 
+    List<User> getUsers(List<Long> userIds);
+
     User getUserByOauthId(Long oauthId);
 
     void delete(Long userId);

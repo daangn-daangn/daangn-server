@@ -4,6 +4,7 @@ import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -56,7 +57,7 @@ public class ProductResponse {
         private String title;
         private String location;
         private Long price;
-        private String imageUrl;
+        private String thumbNailImage;
         private Long favoriteCount;
         private Long chattingCount;
         private boolean hasReview;
@@ -68,7 +69,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getThumbNailImage())
+                    .thumbNailImage(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(hasReview)
@@ -82,7 +83,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getThumbNailImage())
+                    .thumbNailImage(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(false)
@@ -102,7 +103,7 @@ public class ProductResponse {
         private String title;
         private String location;
         private Long price;
-        private String imageUrl;
+        private String thumbNailImage;
         private Long favoriteCount;
         private Long chattingCount;
         private boolean hasReview;
@@ -114,7 +115,7 @@ public class ProductResponse {
                     .title(simpleResponse.getTitle())
                     .location(simpleResponse.getLocation())
                     .price(simpleResponse.getPrice())
-                    .imageUrl(simpleResponse.getThumbNailImage())
+                    .thumbNailImage(simpleResponse.getThumbNailImage())
                     .favoriteCount(simpleResponse.getFavoriteCount())
                     .chattingCount(simpleResponse.getChattingCount())
                     .hasReview(hasReview)
@@ -128,9 +129,8 @@ public class ProductResponse {
     @JsonNaming(SnakeCaseStrategy.class)
     public static class DetailResponse {
         private Long id;
-        private String seller;
-        private Long sellerId;
-        private String buyer;
+        private UserDto seller;
+        private UserDto buyer;
         private Long categoryId;
         private Long price;
         private String title;
@@ -150,9 +150,13 @@ public class ProductResponse {
 
             return DetailResponse.builder()
                     .id(productDetailQueryDto.getId())
-                    .seller(productDetailQueryDto.getSeller().getNickname())
-                    .sellerId(productDetailQueryDto.getSeller().getId())
-                    .buyer(isEmpty(productDetailQueryDto.getBuyer()) ? null : productDetailQueryDto.getBuyer().getNickname())
+                    .seller(UserDto.of(productDetailQueryDto.getSeller().getId(),
+                                        productDetailQueryDto.getSeller().getNickname())
+                    )
+                    .buyer(isEmpty(productDetailQueryDto.getBuyer()) ? null
+                            : UserDto.of(productDetailQueryDto.getBuyer().getId(),
+                                        productDetailQueryDto.getBuyer().getNickname())
+                    )
                     .categoryId(productDetailQueryDto.getCategory().getId())
                     .price(productDetailQueryDto.getPrice())
                     .title(productDetailQueryDto.getTitle())
@@ -167,6 +171,18 @@ public class ProductResponse {
                     .isFavorite(productDetailQueryDto.getIsFavorite())
                     .createdAt(productDetailQueryDto.getCreatedAt())
                     .build();
+        }
+
+        @Getter
+        @AllArgsConstructor
+        @JsonNaming(SnakeCaseStrategy.class)
+        public static class UserDto {
+            private Long id;
+            private String name;
+
+            public static UserDto of(Long id, String name) {
+                return new UserDto(id, name);
+            }
         }
     }
 
