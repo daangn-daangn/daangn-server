@@ -12,6 +12,7 @@ import com.daangndaangn.common.api.repository.salereview.SaleReviewRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.error.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,9 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -80,7 +81,8 @@ public class SaleReviewServiceTest {
      * create test
      */
     @Test
-    public void 리뷰를_남기는_사용자가_주소값과_닉네임이_없으면_예외를_반환한다() {
+    @DisplayName("리뷰를_남기는_사용자가_주소값과_닉네임이_없으면_예외를_반환한다")
+    public void create() {
         //given
         User mockUser = User.builder()
                 .id(3L)
@@ -114,11 +116,9 @@ public class SaleReviewServiceTest {
         verify(saleReviewRepository, never()).save(any());
     }
 
-    /**
-     * isValidCreateRequest test
-     */
     @Test
-    public void isValidCreateRequest는_seller와_buyer가_모두_유효해야_true를_반환한다() {
+    @DisplayName("isValidCreateRequest는_seller와_buyer가_모두_유효해야_true를_반환한다")
+    public void isValidCreateRequest1() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -139,7 +139,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void SELLER_REVIEW는_seller만_남길_수_있다() {
+    @DisplayName("SELLER_REVIEW는_seller만_남길_수_있다")
+    public void isValidCreateRequest2() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -162,7 +163,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void BUYER_REVIEW는_buyer만_남길_수_있다() {
+    @DisplayName("BUYER_REVIEW는_buyer만_남길_수_있다")
+    public void isValidCreateRequest3() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -185,7 +187,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void SELLER_REVIEW나_BUYER_REVIEW가_아닌_타입은_false를_반환한다() {
+    @DisplayName("SELLER_REVIEW나_BUYER_REVIEW가_아닌_타입은_false를_반환한다")
+    public void isValidCreateRequest4() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -206,7 +209,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 없는_리뷰를_조회하면_예외를_반환한다() {
+    @DisplayName("없는_리뷰를_조회하면_예외를_반환한다")
+    public void getSaleReview() {
         //given
         Long InvalidReviewId = 999L;
         given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.empty());
@@ -219,6 +223,7 @@ public class SaleReviewServiceTest {
     }
 
     @Test
+    @DisplayName("없는_리뷰를_조회하면_빈_리스트를_반환한다")
     public void 없는_리뷰를_조회하면_빈_리스트를_반환한다() {
         //given
         given(saleReviewRepository.findAllUserReview(anyLong(), any())).willReturn(Collections.emptyList());
@@ -240,7 +245,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_받은_전체_리뷰를_조회할_수_있다() {
+    @DisplayName("내가_받은_전체_리뷰를_조회할_수_있다")
+    public void getUserReviews() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -270,7 +276,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_받은_판매자_리뷰를_조회할_수_있다() {
+    @DisplayName("내가_받은_판매자_리뷰를_조회할_수_있다")
+    public void getSellerReviews() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -300,7 +307,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_받은_구매자_리뷰를_조회할_수_있다() {
+    @DisplayName("내가_받은_구매자_리뷰를_조회할_수_있다")
+    public void getBuyerReviews() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -330,7 +338,142 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_구매자_리뷰를_남겼는지_여부를_알_수_있다() {
+    @DisplayName("사용자가 구매자 후기 작성자인지 여부를 알 수 있다")
+    public void isSellerReviewWriter1() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser1)
+                .reviewee(mockUser2)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+
+        //when
+        boolean buyerReviewWriter = saleReviewService.isSellerReviewWriter(saleReview.getId(), mockUser1.getId());
+
+        //then
+        assertThat(buyerReviewWriter).isEqualTo(true);
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("작성자 식별 시 saleReviewId와 userId 값은 필수이다")
+    public void isSellerReviewWriter2() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser1)
+                .reviewee(mockUser2)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        Long invalidReviewId = null;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> saleReviewService.isSellerReviewWriter(invalidReviewId, mockUser1.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> saleReviewService.isSellerReviewWriter(saleReview.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(saleReviewRepository, never()).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("사용자가 구매자 후기 작성자인지 여부를 알 수 있다")
+    public void isBuyerReviewWriter1() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.BUYER_REVIEW)
+                .reviewer(mockUser1)
+                .reviewee(mockUser2)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+
+        //when
+        boolean buyerReviewWriter = saleReviewService.isBuyerReviewWriter(saleReview.getId(), mockUser1.getId());
+
+        //then
+        assertThat(buyerReviewWriter).isEqualTo(true);
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("작성자 식별 시 saleReviewId와 userId 값은 필수이다")
+    public void isBuyerReviewWriter2() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.BUYER_REVIEW)
+                .reviewer(mockUser1)
+                .reviewee(mockUser2)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        Long invalidReviewId = null;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> saleReviewService.isBuyerReviewWriter(invalidReviewId, mockUser1.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> saleReviewService.isBuyerReviewWriter(saleReview.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(saleReviewRepository, never()).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("내가_구매자_리뷰를_남겼는지_여부를_알_수_있다")
+    public void existBuyerReview1() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -352,7 +495,35 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_판매자_리뷰를_남겼는지_여부를_알_수_있다() {
+    @DisplayName("구매자 리뷰 조회 시 productId 또는 userId가 올바르지 않으면 예외를 반환한다")
+    public void existBuyerReview2() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        Long invalidProductId = null;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> saleReviewService.existBuyerReview(invalidProductId, mockUser1.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> saleReviewService.existBuyerReview(mockProduct.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(saleReviewRepository, never()).existBuyerReview(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("내가_판매자_리뷰를_남겼는지_여부를_알_수_있다")
+    public void existSellerReview1() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -374,7 +545,105 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 내가_받았던_리뷰를_숨길_수_있다() {
+    @DisplayName("판매자 리뷰 조회 시 productId 또는 userId가 올바르지 않으면 예외를 반환한다")
+    public void existSellerReview2() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        Long invalidProductId = null;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> saleReviewService.existSellerReview(invalidProductId, mockUser1.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> saleReviewService.existSellerReview(mockProduct.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(saleReviewRepository, never()).existSellerReview(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("리뷰를 수정할 수 있다")
+    public void update1() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+
+        String newContent = "newContent";
+
+        //when
+        saleReviewService.update(saleReview.getId(), newContent);
+
+        //then
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 시 review id와 수정 내용이 필수이다")
+    public void update2() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+
+        String newContent = "newContent";
+        Long invalidReviewId = null;
+        String invalidContent = "";
+
+        //when
+        assertThatThrownBy(() -> saleReviewService.update(invalidReviewId, newContent))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> saleReviewService.update(saleReview.getId(), invalidContent))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(saleReviewRepository, never()).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("내가_받았던_리뷰를_숨길_수_있다")
+    public void hide1() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -408,7 +677,8 @@ public class SaleReviewServiceTest {
     }
 
     @Test
-    public void 리뷰를_받았던_사람외에는_리뷰를_숨길_수_없다() {
+    @DisplayName("리뷰를_받았던_사람외에는_리뷰를_숨길_수_없다")
+    public void hide2() {
         //given
         Product mockProduct = Product.builder()
                 .id(1L)
@@ -436,5 +706,37 @@ public class SaleReviewServiceTest {
 
         //then
         verify(saleReviewRepository).findBySaleReviewId(anyLong());
+    }
+
+    @Test
+    @DisplayName("리뷰를 삭제할 수 있다")
+    public void delete() {
+        //given
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .seller(mockUser2)
+                .category(mockCategory)
+                .title("title")
+                .price(1000L)
+                .description("description")
+                .build();
+
+        SaleReview saleReview = SaleReview.builder()
+                .id(1L)
+                .saleReviewType(SaleReviewType.SELLER_REVIEW)
+                .reviewer(mockUser2)
+                .reviewee(mockUser1)
+                .product(mockProduct)
+                .content("mockContent")
+                .build();
+
+        given(saleReviewRepository.findBySaleReviewId(anyLong())).willReturn(Optional.ofNullable(saleReview));
+
+        //when
+        saleReviewService.delete(saleReview.getId());
+
+        //then
+        verify(saleReviewRepository).findBySaleReviewId(anyLong());
+        verify(saleReviewRepository).delete(any());
     }
 }

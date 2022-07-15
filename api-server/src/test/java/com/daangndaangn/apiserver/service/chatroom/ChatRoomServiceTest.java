@@ -12,6 +12,7 @@ import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -97,7 +98,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 물품ID와_사용자_ID_list를_받으면_채팅방을_생성할_수_있다() throws ExecutionException, InterruptedException {
+    @DisplayName("물품ID와_사용자_ID_list를_받으면_채팅방을_생성할_수_있다")
+    public void create1() throws ExecutionException, InterruptedException {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -127,7 +129,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 이미_채팅방이_존재하는_경우_기존의_채팅방을_리턴한다() throws ExecutionException, InterruptedException {
+    @DisplayName("이미_채팅방이_존재하는_경우_기존의_채팅방을_리턴한다")
+    public void create2() throws ExecutionException, InterruptedException {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -154,7 +157,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 채팅방_생성_시_존재하지_않는_UserId인_경우_예외를_반환한다() {
+    @DisplayName("채팅방_생성_시_존재하지_않는_UserId인_경우_예외를_반환한다")
+    public void create3() {
         //given
         given(userService.existById(anyLong())).willReturn(false);
 
@@ -171,20 +175,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void userId_순서가_달라도_같은_Identifier를_반환한다() {
-        //given
-        //when
-        String identifier1 = chatRoomService.toIdentifier(1L, 2L);
-        String identifier2 = chatRoomService.toIdentifier(2L, 1L);
-
-        //then
-        assertThat(identifier1).isNotNull();
-        assertThat(identifier2).isNotNull();
-        assertThat(identifier1).isEqualTo(identifier2);
-    }
-
-    @Test
-    public void 이미_존재하는_채팅방_조회_시_에러가_발생하는_경우_예외를_반환한다() {
+    @DisplayName("이미_존재하는_채팅방_조회_시_에러가_발생하는_경우_예외를_반환한다")
+    public void create4() {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -207,7 +199,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void product_id가_없으면_채팅방을_생성하지_않고_예외를_반환한다() {
+    @DisplayName("product_id가_없으면_채팅방을_생성하지_않고_예외를_반환한다")
+    public void create5() {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -229,7 +222,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void participant를_생성하다가_에러가_발생하는_경우_예외를_반환한다() {
+    @DisplayName("participant를_생성하다가_에러가_발생하는_경우_예외를_반환한다")
+    public void create6() {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -255,7 +249,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void chatRoom을_생성하지_못하는_경우_예외를_반환한다() {
+    @DisplayName("chatRoom을_생성하지_못하는_경우_예외를_반환한다")
+    public void create7() {
         //given
         given(userService.existById(anyLong())).willReturn(true);
 
@@ -279,13 +274,29 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void 채팅방을_생성하려는_두_UserId가_같은경우_예외를_반환한다() {
+    @DisplayName("채팅방을_생성하려는_두_UserId가_같은경우_예외를_반환한다")
+    public void create8() {
         //when
         assertThrows(IllegalArgumentException.class, () -> chatRoomService.create(mockProduct.getId(), List.of(1L, 1L)));
     }
 
     @Test
-    public void userId로_사용자가_들어가있는_채팅방을_조회할_수_있다() {
+    @DisplayName("userId_순서가_달라도_같은_Identifier를_반환한다")
+    public void toIdentifier() {
+        //given
+        //when
+        String identifier1 = chatRoomService.toIdentifier(1L, 2L);
+        String identifier2 = chatRoomService.toIdentifier(2L, 1L);
+
+        //then
+        assertThat(identifier1).isNotNull();
+        assertThat(identifier2).isNotNull();
+        assertThat(identifier1).isEqualTo(identifier2);
+    }
+
+    @Test
+    @DisplayName("userId로_사용자가_들어가있는_채팅방을_조회할_수_있다")
+    public void getChatRooms1() {
         //given
         Pageable pageable = PageRequest.of(0, 5);
         given(chatRoomRepository.findAllByChatRoomIds(anyList(), any()))
@@ -300,7 +311,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void userId로_사용자가_들어가있는_채팅방이_없을_시_빈_리스트를_반환한다() {
+    @DisplayName("userId로_사용자가_들어가있는_채팅방이_없을_시_빈_리스트를_반환한다")
+    public void getChatRooms2() {
         //given
         Pageable pageable = PageRequest.of(0, 5);
         given(chatRoomRepository.findAllByChatRoomIds(anyList(), any()))
@@ -315,7 +327,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void id에_맞는_채팅방을_조회할_수_있다() {
+    @DisplayName("id에_맞는_채팅방을_조회할_수_있다")
+    public void getChatRoom1() {
         //given
         String testChatRoomId = "1qa2ws3ed";
 
@@ -343,7 +356,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void id에_맞는_채팅방이_없을_시_예외를_반환한다() {
+    @DisplayName("id에_맞는_채팅방이_없을_시_예외를_반환한다")
+    public void getChatRoom2() {
         //given
         String testChatRoomId = "1qa2ws3ed";
         given(chatRoomRepository.findChatRoomById(anyString())).willReturn(Optional.empty());
@@ -356,7 +370,8 @@ class ChatRoomServiceTest {
     }
 
     @Test
-    public void id_입력_시_채팅룸에_존재하는_메시지_갯수를_반환한다() {
+    @DisplayName("id_입력_시_채팅룸에_존재하는_메시지_갯수를_반환한다")
+    public void getChatRoomMessageSize() {
         //given
         long chatRoomMessageSize = 6L;
         String mockChatRoomId = "mockChatRoomId";

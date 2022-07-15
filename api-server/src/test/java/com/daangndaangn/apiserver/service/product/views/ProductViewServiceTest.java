@@ -1,6 +1,7 @@
 package com.daangndaangn.apiserver.service.product.views;
 
 import org.awaitility.Duration;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -17,7 +18,8 @@ class ProductViewServiceTest {
     private ProductViewService productViewService;
 
     @Test
-    public void 십초마다_스케줄링이_수행된다() {
+    @DisplayName("십초마다_스케줄링이_수행된다")
+    public void updateProductViewCount() {
         await()
             .atMost(new Duration(20, SECONDS))
             .untilAsserted(() -> verify(productViewService,atLeast(3)).updateProductViewCount());
