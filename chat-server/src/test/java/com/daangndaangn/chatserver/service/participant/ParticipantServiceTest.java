@@ -4,9 +4,11 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.Participant;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
+import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.error.UnauthorizedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,7 +52,8 @@ class ParticipantServiceTest {
     }
 
     @Test
-    public void chatRoomId와_userId의_조합으로_조회할_수_있다() {
+    @DisplayName("chatRoomId와_userId의_조합으로_조회할_수_있다")
+    public void getParticipant1() {
         //given
         given(participantRepository.findByChatRoomIdAndUserId(anyString(), anyLong()))
                 .willReturn(Optional.ofNullable(mockParticipant));
@@ -66,7 +69,23 @@ class ParticipantServiceTest {
     }
 
     @Test
-    public void 채팅방_참여자이면_true를_반환한다() {
+    @DisplayName("chatRoomId와_userId의_조합으로_조회 시 없는 경우 예외를 반환한다")
+    public void getParticipant2() {
+        //given
+        given(participantRepository.findByChatRoomIdAndUserId(anyString(), anyLong()))
+                .willReturn(Optional.empty());
+
+        //when
+        Assertions.assertThrows(NotFoundException.class,
+                () -> participantService.getParticipant(mockChatRoomId, mockUser.getId()));
+
+        //then
+        verify(participantRepository).findByChatRoomIdAndUserId(anyString(), anyLong());
+    }
+
+    @Test
+    @DisplayName("채팅방_참여자이면_true를_반환한다")
+    public void isParticipant1() {
         //given
         given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong())).willReturn(true);
 
@@ -77,10 +96,12 @@ class ParticipantServiceTest {
 
         //then
         assertThat(result).isEqualTo(true);
+        verify(participantRepository).existsByChatRoomIdAndUserId(anyString(), anyLong());
     }
 
     @Test
-    public void 채팅방_참여자가_아니면_false를_반환한다() {
+    @DisplayName("채팅방_참여자가_아니면_false를_반환한다")
+    public void isParticipant2() {
         //given
         given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong())).willReturn(false);
 
@@ -91,10 +112,29 @@ class ParticipantServiceTest {
 
         //then
         assertThat(result).isEqualTo(false);
+        verify(participantRepository).existsByChatRoomIdAndUserId(anyString(), anyLong());
     }
 
     @Test
-    public void 채팅방을_초대하면_상대방의_out_상태가_false가_된다() {
+    @DisplayName("chatRoomId나 userId가 형식에 맞지 않으면 예외를 반환한다")
+    public void isParticipant3() {
+        //given
+        String invalidChatRoomId = "";
+        Long invalidUserId = null;
+
+        //when
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> participantService.isParticipant(invalidChatRoomId, mockParticipant.getUserId()));
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> participantService.isParticipant(mockChatRoomId, invalidUserId));
+
+        //then
+        verify(participantRepository, never()).existsByChatRoomIdAndUserId(anyString(), anyLong());
+    }
+
+    @Test
+    @DisplayName("채팅방을_초대하면_상대방의_out_상태가_false가_된다")
+    public void inviteUser1() {
         //given
         given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong()))
                 .willReturn(true);
@@ -118,7 +158,8 @@ class ParticipantServiceTest {
     }
 
     @Test
-    public void 채팅방에_참여중이지_않던_사용자를_초대하면_예외를_반환한다() {
+    @DisplayName("채팅방에_참여중이지_않던_사용자를_초대하면_예외를_반환한다")
+    public void inviteUser2() {
         //given
         given(participantRepository.existsByChatRoomIdAndUserId(anyString(), anyLong()))
                 .willReturn(false);
@@ -135,7 +176,8 @@ class ParticipantServiceTest {
     }
 
     @Test
-    public void 채팅방을_나가면_out_상태가_true가_된다() {
+    @DisplayName("채팅방을_나가면_out_상태가_true가_된다")
+    public void deleteUser() {
         //given
         given(participantRepository.findByChatRoomIdAndUserId(anyString(), anyLong()))
                 .willReturn(Optional.ofNullable(mockParticipant));

@@ -11,7 +11,9 @@ import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import com.daangndaangn.common.chat.repository.participant.ParticipantRepository;
 import com.daangndaangn.common.error.NotFoundException;
 import com.daangndaangn.common.util.UploadUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -83,7 +85,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 올바르지_않은_메시지_타입은_예외를_반환한다() {
+    @DisplayName("올바르지_않은_메시지_타입은_예외를_반환한다")
+    public void addChatMessage1() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -105,7 +108,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 일반_메시지_저장_시_imgUrl_필드가_비어있어야_한다() {
+    @DisplayName("일반_메시지_저장_시_imgUrl_필드가_비어있어야_한다")
+    public void addChatMessage2() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -124,7 +128,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 일반_메시지_저장_시_imgUrl_필드가_있는_경우_예외를_반환한다() {
+    @DisplayName("일반_메시지_저장_시_imgUrl_필드가_있는_경우_예외를_반환한다")
+    public void addChatMessage3() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -142,7 +147,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 좌표_메시지_저장_시_imgUrl_필드가_비어있어야_한다() {
+    @DisplayName("좌표_메시지_저장_시_imgUrl_필드가_비어있어야_한다")
+    public void addChatMessage4() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -161,7 +167,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 좌표_메시지_저장_시_imgUrl_필드가_있는_경우_예외를_반환한다() {
+    @DisplayName("좌표_메시지_저장_시_imgUrl_필드가_있는_경우_예외를_반환한다")
+    public void addChatMessage5() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -179,7 +186,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 이미지_메시지_저장_시_message_필드가_비어있어야_한다() {
+    @DisplayName("이미지_메시지_저장_시_message_필드가_비어있어야_한다")
+    public void addChatMessage6() {
         //given
         given(uploadUtils.isNotImageFile(anyString())).willReturn(false);
 
@@ -203,7 +211,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 이미지_메시지_저장_시_message_필드가_있는_경우_예외를_반환한다() {
+    @DisplayName("이미지_메시지_저장_시_message_필드가_있는_경우_예외를_반환한다")
+    public void addChatMessage7() {
         //given
         String id = "testId";
         long senderId = 1L;
@@ -220,10 +229,61 @@ class ChatMessageServiceTest {
         verify(participantRepository, never()).synchronizeUpdatedAt(anyString(), anyList(), any());
     }
 
+    @Test
+    @DisplayName("페이징 사이즈에 맞게 한 개의 ChatRoom을 조회할 수 있다")
+    public void getChatRoomWithMessages1() {
+        //given
+        given(chatRoomRepository.findChatRoomWithChatMessages(anyString(), anyInt(), anyInt())).willReturn(Optional.ofNullable(mockChatRoom));
 
+        int mockPageSize = 10;
+
+        //when
+        ChatRoom chatRoomWithMessages = chatMessageService.getChatRoomWithMessages(mockChatRoom.getId(), mockPageSize);
+
+        //then
+        assertThat(chatRoomWithMessages).isEqualTo(mockChatRoom);
+        verify(chatRoomRepository).findChatRoomWithChatMessages(anyString(), anyInt(), anyInt());
+    }
 
     @Test
-    public void readMessageSize를_내가_속한_채팅방의_채팅_갯수만큼_업데이트_할_수_있다() {
+    @DisplayName("ChatRoom 조회 시 없으면 예외를 반환한다")
+    public void getChatRoomWithMessages2() {
+        //given
+        given(chatRoomRepository.findChatRoomWithChatMessages(anyString(), anyInt(), anyInt())).willReturn(Optional.empty());
+
+        int mockPageSize = 10;
+
+        //when
+        Assertions.assertThatThrownBy(() -> chatMessageService.getChatRoomWithMessages(mockChatRoom.getId(), mockPageSize))
+                .isInstanceOf(NotFoundException.class);
+
+        //then
+        verify(chatRoomRepository).findChatRoomWithChatMessages(anyString(), anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("ChatRoom 조회 시 없으면 예외를 반환한다")
+    public void getChatRoomWithMessages3() {
+        //given
+        String invalidChatRoomId = null;
+        int invalidPageSize = -1;
+
+        int mockPageSize = 10;
+
+        //when
+        Assertions.assertThatThrownBy(() -> chatMessageService.getChatRoomWithMessages(invalidChatRoomId, mockPageSize))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        Assertions.assertThatThrownBy(() -> chatMessageService.getChatRoomWithMessages(mockChatRoom.getId(), invalidPageSize))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(chatRoomRepository, never()).findChatRoomWithChatMessages(anyString(), anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("readMessageSize를_내가_속한_채팅방의_채팅_갯수만큼_업데이트_할_수_있다")
+    public void updateReadMessageSize1() {
         //given
         long testMessageSize = 25L;
         given(chatRoomRepository.getChatRoomMessageSize(anyString())).willReturn(testMessageSize);
@@ -245,7 +305,8 @@ class ChatMessageServiceTest {
     }
 
     @Test
-    public void 유효하지_않은_chatRoomId나_userId_입력시_readMessageSize를_업데이트_하지않고_예외를_반환한다() {
+    @DisplayName("유효하지_않은_chatRoomId나_userId_입력시_readMessageSize를_업데이트_하지않고_예외를_반환한다")
+    public void updateReadMessageSize2() {
         //given
         String invalidChatRoomId = "invalidChatRoomId";
         Long invalidUserId = -1L;

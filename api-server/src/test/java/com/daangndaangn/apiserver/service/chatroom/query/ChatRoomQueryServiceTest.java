@@ -8,6 +8,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.chat.document.ChatRoom;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -60,7 +61,8 @@ class ChatRoomQueryServiceTest {
     }
 
     @Test
-    public void 판매자는_자신이_파는_product에_대해_개설되어있는_채팅의_User_목록을_조회할_수_있다() {
+    @DisplayName("판매자는_자신이_파는_product에_대해_개설되어있는_채팅의_User_목록을_조회할_수_있다")
+    public void getChatRoomBuyersByProductId() {
         //given
         List<User> mockUsers = new LinkedList<>();
         List<ChatRoom> mockChatRooms = new LinkedList<>();

@@ -7,6 +7,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.notification.NotificationRepository;
 import com.daangndaangn.common.error.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 자신이_받은_알림을_읽음_상태로_변경할_수_있다() {
+    @DisplayName("자신이_받은_알림을_읽음_상태로_변경할_수_있다")
+    void toRead() {
         //given
         given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
 
@@ -62,7 +64,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 자신이_받지않은_알림을_읽음_상태로_변경하면_예외를_반환한다() {
+    @DisplayName("자신이_받지않은_알림을_읽음_상태로_변경하면_예외를_반환한다")
+    void toRead2() {
         //given
         given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
 
@@ -77,7 +80,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    public void SOLD_OUT과_PRICE_DOWN의_identifier에서_product_id를_추출할_수_있다() {
+    @DisplayName("SOLD_OUT과_PRICE_DOWN의_identifier에서_product_id를_추출할_수_있다")
+    public void getProductId() {
         //given
         Long productId = 123L;
         String identifier = NotificationConstants.PRODUCT_PREFIX + productId;
@@ -90,7 +94,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    public void SOLD_OUT_TO_BUYER의_identifier에서_product_id를_추출할_수_있다() {
+    @DisplayName("SOLD_OUT_TO_BUYER의_identifier에서_product_id를_추출할_수_있다")
+    public void getProductIdOfSoldOutToBuyer() {
         //given
         Long productId = 123L;
         Long sellerId = 456L;
@@ -108,7 +113,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    public void BUYER_REVIEW_CREATED의_identifier에서_product_id를_추출할_수_있다() {
+    @DisplayName("BUYER_REVIEW_CREATED의_identifier에서_product_id를_추출할_수_있다")
+    public void getReviewerId() {
         //given
         Long reviewerId = 123L;
         String identifier = NotificationConstants.SALE_REVIEW_PREFIX + reviewerId;
@@ -121,7 +127,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    public void 잘못된_identifier인_경우_minus_1을_반환한다() {
+    @DisplayName("잘못된_identifier인_경우_minus_1을_반환한다")
+    public void getProductId_getProductIdOfSoldOutToBuyer_getReviewerId() {
         //given
         Long productId = 123L;
         String invalidIdentifier = NotificationConstants.PRODUCT_PREFIX + productId + "invalid";
@@ -138,7 +145,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 자신이_받은_알림을_삭제할_수_있다() {
+    @DisplayName("자신이_받은_알림을_삭제할_수_있다")
+    void delete1() {
         //given
         given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
 
@@ -156,7 +164,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 자신이_받지않은_알림을_삭제하면_예외를_반환한다() {
+    @DisplayName("자신이_받지않은_알림을_삭제하면_예외를_반환한다")
+    void delete2() {
         //given
         given(notificationRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockNotification));
 

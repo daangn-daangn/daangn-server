@@ -8,6 +8,7 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.favorite.FavoriteProductRepository;
 import com.daangndaangn.apiserver.service.user.UserService;
+import com.daangndaangn.common.error.NotFoundException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -65,9 +67,9 @@ class FavoriteProductServiceTest {
         mockFavoriteProduct = FavoriteProduct.builder().id(1L).product(mockProduct).user(mockUser).build();
     }
 
-    // create Test
     @Test
-    public void 물품을_찜할_수_있다_처음_찜하는_상품은_getUser와_getProduct와_save를_사용한다() {
+    @DisplayName("물품을_찜할_수_있다_처음_찜하는_상품은_getUser와_getProduct와_save를_사용한다")
+    public void create1() {
         //given
         given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.empty());
         given(userService.getUser(any())).willReturn(mockUser);
@@ -93,9 +95,9 @@ class FavoriteProductServiceTest {
         verify(favoriteProductRepository).save(any());
     }
 
-    // create Test
     @Test
-    public void 물품을_찜할_수_있다_이미_찜했던_상품이지만_취소했던_경우_isValid_필드를_활성화한다() {
+    @DisplayName("물품을_찜할_수_있다_이미_찜했던_상품이지만_취소했던_경우_isValid_필드를_활성화한다")
+    public void create2() {
         //given
         given(favoriteProductRepository.findByProductAndUser(any(),any())).willReturn(Optional.of(mockFavoriteProduct));
         lenient().when(userService.getUser(any())).thenReturn(mockUser);
@@ -120,9 +122,59 @@ class FavoriteProductServiceTest {
         verify(productService, never()).getProduct(any());
     }
 
-    // getFavoriteProductsByUser Test
     @Test
-    public void 사용자가_찜한_모든_물품목록을_반환한다() {
+    @DisplayName("물품을_찜할_수_있다_이미_찜했던_상품이지만_취소했던_경우_isValid_필드를_활성화한다")
+    public void create3() {
+        //given
+        Long invalidProductId = null;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> favoriteProductService.create(invalidProductId, mockUser.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> favoriteProductService.create(mockProduct.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(favoriteProductRepository, never()).findByProductAndUser(any(),any());
+        verify(favoriteProductRepository, never()).save(any());
+        verify(userService, never()).getUser(any());
+        verify(productService, never()).getProduct(any());
+    }
+
+
+    @Test
+    @DisplayName("id로 favoriteProduct를 조회할 수 있다")
+    public void getFavoriteProduct1() {
+        //given
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockFavoriteProduct));
+
+        //when
+        FavoriteProduct favoriteProduct = favoriteProductService.getFavoriteProduct(mockFavoriteProduct.getId());
+
+        //then
+        assertThat(favoriteProduct).isEqualTo(mockFavoriteProduct);
+        verify(favoriteProductRepository).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("id로 favoriteProduct 조회 시 없으면 예외를 반환한다")
+    public void getFavoriteProduct2() {
+        //given
+        Long invalidId = 5L;
+        given(favoriteProductRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        //when
+        assertThatThrownBy(() -> favoriteProductService.getFavoriteProduct(invalidId))
+                .isInstanceOf(NotFoundException.class);
+
+        //then
+        verify(favoriteProductRepository).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("사용자가_찜한_모든_물품목록을_반환한다")
+    public void getFavoriteProductsByUser() {
         //given
         List<FavoriteProduct> mockFavoriteProducts
                 = Stream.of(new FavoriteProduct[]{mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,
@@ -142,9 +194,9 @@ class FavoriteProductServiceTest {
         verify(favoriteProductRepository).findAll(anyLong(), any(PageRequest.class));
     }
 
-    // getFavoriteProductsByProduct Test
     @Test
-    public void 특정_물품을_찜한_모든_사용자목록을_반환한다() {
+    @DisplayName("특정_물품을_찜한_모든_사용자목록을_반환한다")
+    public void getFavoriteProductsByProduct() {
         //given
         List<FavoriteProduct> mockFavoriteProducts
                 = Stream.of(new FavoriteProduct[]{mockFavoriteProduct,mockFavoriteProduct,mockFavoriteProduct,
@@ -163,9 +215,9 @@ class FavoriteProductServiceTest {
         verify(favoriteProductRepository).findAll(anyLong());
     }
 
-    // delete Test
     @Test
-    public void 물품_찜하기를_해제하면_isValid_필드값이_false가_된다() {
+    @DisplayName("물품_찜하기를_해제하면_isValid_필드값이_false가_된다")
+    public void delete() {
         //given
         given(favoriteProductRepository.findById(1L)).willReturn(Optional.of(mockFavoriteProduct));
         assertThat(mockFavoriteProduct.isValid()).isEqualTo(true);
@@ -179,7 +231,8 @@ class FavoriteProductServiceTest {
     }
 
     @Test
-    public void 찜하기를_누른_사용자를_식별할_수_있다() {
+    @DisplayName("찜하기를_누른_사용자를_식별할_수_있다")
+    public void isOwner1() {
         //given
         given(favoriteProductRepository.findByIdWithUser(anyLong()))
             .willReturn(Optional.ofNullable(mockFavoriteProduct));
@@ -193,6 +246,43 @@ class FavoriteProductServiceTest {
         //then
         assertThat(result1).isEqualTo(false);
         assertThat(result2).isEqualTo(true);
+        verify(favoriteProductRepository, times(2)).findByIdWithUser(anyLong());
+    }
+
+    @Test
+    @DisplayName("찜하기를_누른_사용자가 없을 시 예외를 반환한다")
+    public void isOwner2() {
+        //given
+        given(favoriteProductRepository.findByIdWithUser(anyLong()))
+                .willReturn(Optional.empty());
+
+        long invalidUserId = 5L;
+
+        //when
+        assertThatThrownBy(() -> favoriteProductService.isOwner(mockFavoriteProduct.getId(), invalidUserId))
+                .isInstanceOf(NotFoundException.class);
+
+        //then
+        verify(favoriteProductRepository).findByIdWithUser(anyLong());
+    }
+
+    @Test
+    @DisplayName("찜하기를_누른_사용자 조회 시 id와 userId는 필수이다")
+    public void isOwner3() {
+        //given
+        Long invalidId = null;
+        long userId = 5L;
+        Long invalidUserId = null;
+
+        //when
+        assertThatThrownBy(() -> favoriteProductService.isOwner(mockFavoriteProduct.getId(), invalidUserId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> favoriteProductService.isOwner(invalidId, userId))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        //then
+        verify(favoriteProductRepository, never()).findByIdWithUser(anyLong());
     }
 
 

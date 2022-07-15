@@ -5,6 +5,7 @@ import com.daangndaangn.common.api.entity.user.User;
 import com.daangndaangn.common.api.repository.notification.NotificationRepository;
 import com.daangndaangn.common.api.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +42,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 구매자가_구매후기를_남긴_경우_알림을_만들_수_있다() {
+    @DisplayName("구매자가_구매후기를_남긴_경우_알림을_만들_수_있다")
+    void createBuyerReviewCreatedNotification() {
         //given
         Notification mockNotification = Notification.builder()
                 .id(1L)
@@ -66,7 +68,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 판매자가_판매완료로_상태를_변경한_경우_알림을_만들_수_있다() {
+    @DisplayName("판매자가_판매완료로_상태를_변경한_경우_알림을_만들_수_있다")
+    void createSoldOutToBuyerNotification() {
         //given
         Notification mockNotification = Notification.builder()
                 .id(1L)
@@ -92,7 +95,8 @@ class NotificationServiceTest {
     }
 
     @Test
-    void 찜한_상품에_대한_이벤트가_일어난_경우_관계된_사람들의_수_만큼_알림을_만들_수_있다() {
+    @DisplayName("찜한_상품에_대한_이벤트가_일어난_경우_관계된_사람들의_수_만큼_알림을_만들_수_있다")
+    void createFavoriteProductNotification() {
         //given
         Notification mockNotification = Notification.builder()
                 .id(1L)
