@@ -39,6 +39,19 @@ public class UserApiController {
     private final PresignerUtils presignerUtils;
 
     /**
+     * GET /api/users
+     */
+    @GetMapping
+    public ApiResult<UserInfoResponse> getUser(@AuthenticationPrincipal JwtAuthentication authentication) {
+
+        User user = userService.getUser(authentication.getId());
+        String profileUrl = isEmpty(user.getProfileUrl()) ?
+                null : presignerUtils.getProfilePresignedGetUrl(user.getProfileUrl());
+
+        return OK(UserInfoResponse.from(user, profileUrl));
+    }
+
+    /**
      * GET /api/users/:userId
      */
     @GetMapping("/{userId}")
