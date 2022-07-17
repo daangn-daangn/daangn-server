@@ -28,6 +28,16 @@ jwt:
   client-secret: daangn-server
   expiry-seconds: 7200 # 2시간
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 ---
 spring:
   config:

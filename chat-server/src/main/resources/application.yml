@@ -26,6 +26,16 @@ async:
     max-pool-size: 50   # 쓰레드 풀의 최대 사이즈
     queue-capacity: 100 # 쓰레드 풀 큐의 사이즈.
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 ---
 spring:
   config:

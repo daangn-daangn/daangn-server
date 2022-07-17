@@ -50,6 +50,16 @@ scheduler:
     thread-name-prefix: scheduler-thread-
     pool-size: 2  # 스케줄러 쓰레드 풀 사이즈
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 ---
 spring:
   config:
