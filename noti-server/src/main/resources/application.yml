@@ -76,6 +76,3 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
-  kafka:
-    consumer:
-      bootstrap-servers: daangn-daangn.link:9092

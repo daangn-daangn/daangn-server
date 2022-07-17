@@ -117,6 +117,3 @@ spring:
   sql:
     init:
       mode: never # schema.sql 실행 금지
-  kafka:
-    producer:
-      bootstrap-servers: daangn-daangn.link:9092
