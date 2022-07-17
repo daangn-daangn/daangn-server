@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                    .regexMatchers("^/actuator.*").permitAll()
                     .antMatchers("/api/health").permitAll() // 서버 상태 CHECK API는 모두 접근가능
                     .antMatchers("/api/auth/login").permitAll()   // 로그인 API는 모두 접근가능
                     .antMatchers("/api/users/join").permitAll()  // 회원 가입 API는 모두 접근가능
