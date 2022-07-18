@@ -11,6 +11,8 @@ services:
       - "8082:8080"
     env_file:
       - .env
+    volumes:
+      - /tmp/log:/app/log
   chat_server:
     container_name: daangn-chat-server-green
     build:
@@ -20,6 +22,8 @@ services:
       - "8882:8880"
     env_file:
       - .env
+    volumes:
+      - /tmp/log:/app/log
   noti_server:
     container_name: daangn-notification-server-green
     build:
@@ -29,6 +33,8 @@ services:
       - "9082:9080"
     env_file:
       - .env
+    volumes:
+      - /tmp/log:/app/log
 
 networks:
   default:

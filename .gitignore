@@ -49,8 +49,3 @@ out/
 /noti-server/src/main/resources/aws.properties
 /noti-server/src/main/resources/application-dev.properties
 
-### Log ###
-/log
-/api-server/log
-/chat-server/log
-/noti-server/log
