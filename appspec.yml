@@ -14,5 +14,5 @@ permissions:
 hooks: # CodeDeploy의 배포에는 각 단계 별 수명 주기가 있는데, 수명 주기에 따라 원하는 스크립트를 수행가능
   ApplicationStart:
     - location: scripts/deploy.sh
-      timeout: 180
+      timeout: 300
       runas: ubuntu
