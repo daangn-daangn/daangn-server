@@ -86,4 +86,18 @@ public class FavoriteProductApiController {
 
         throw new UnauthorizedException("찜하기를 누른 본인만 찜하기를 삭제할 수 있습니다.");
     }
+
+    /**
+     * 찜하기 By Product Id
+     *
+     * DELETE /api/favorite-products/products/:productId
+     */
+    @DeleteMapping("/products/{productId}")
+    public ApiResult<Void> deleteFavoriteProductByProductId(@PathVariable("productId") Long productId,
+                                                            @AuthenticationPrincipal JwtAuthentication authentication) {
+
+        favoriteProductService.delete(productId, authentication.getId());
+
+        return OK();
+    }
 }

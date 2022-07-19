@@ -85,6 +85,18 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     @Override
+    @Transactional
+    public void delete(Long productId, Long userId) {
+        checkArgument(productId != null, "productId 값은 필수입니다.");
+        checkArgument(userId != null, "userId 값은 필수입니다.");
+
+        FavoriteProduct deletedFavoriteProduct = favoriteProductRepository.findByProductAndUser(productId, userId)
+                .orElseThrow(() -> new NotFoundException(FavoriteProduct.class, String.format("productId = %s, userId = %s", productId, userId)));
+
+        deletedFavoriteProduct.update(false);
+    }
+
+    @Override
     public boolean isOwner(Long favoriteProductId, Long userId) {
         checkArgument(favoriteProductId != null, "favoriteProductId 값은 필수입니다.");
         checkArgument(userId != null, "userId 값은 필수입니다.");

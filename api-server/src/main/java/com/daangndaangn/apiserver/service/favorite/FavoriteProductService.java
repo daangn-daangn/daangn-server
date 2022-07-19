@@ -18,5 +18,7 @@ public interface FavoriteProductService {
 
     void delete(Long id);
 
+    void delete(Long productId, Long userId);
+
     boolean isOwner(Long favoriteProductId, Long userId);
 }

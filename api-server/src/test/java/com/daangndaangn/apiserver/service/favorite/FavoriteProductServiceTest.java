@@ -217,7 +217,7 @@ class FavoriteProductServiceTest {
 
     @Test
     @DisplayName("물품_찜하기를_해제하면_isValid_필드값이_false가_된다")
-    public void delete() {
+    public void deleteFavoriteProductId() {
         //given
         given(favoriteProductRepository.findById(1L)).willReturn(Optional.of(mockFavoriteProduct));
         assertThat(mockFavoriteProduct.isValid()).isEqualTo(true);
@@ -228,6 +228,40 @@ class FavoriteProductServiceTest {
         //then
         assertThat(mockFavoriteProduct.isValid()).isEqualTo(false);
         verify(favoriteProductRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("물품_찜하기를_해제하면_isValid_필드값이_false가_된다")
+    public void deleteByProductIdWithUserId1() {
+        //given
+        given(favoriteProductRepository.findByProductAndUser(anyLong(), anyLong()))
+                .willReturn(Optional.of(mockFavoriteProduct));
+
+        assertThat(mockFavoriteProduct.isValid()).isEqualTo(true);
+
+        //when
+        favoriteProductService.delete(mockProduct.getId(), mockUser.getId());
+
+        //then
+        assertThat(mockFavoriteProduct.isValid()).isEqualTo(false);
+        verify(favoriteProductRepository).findByProductAndUser(anyLong(), anyLong());
+    }
+
+    @Test
+    @DisplayName("productId와 userId에 해당하는 찜한 물품이 없다면 예외를 반환한다")
+    public void deleteByProductIdWithUserId2() {
+        //given
+        given(favoriteProductRepository.findByProductAndUser(anyLong(), anyLong()))
+                .willReturn(Optional.empty());
+
+        assertThat(mockFavoriteProduct.isValid()).isEqualTo(true);
+
+        //when
+        assertThatThrownBy(() -> favoriteProductService.delete(mockProduct.getId(), mockUser.getId()))
+                .isInstanceOf(NotFoundException.class);
+
+        //then
+        verify(favoriteProductRepository).findByProductAndUser(anyLong(), anyLong());
     }
 
     @Test
