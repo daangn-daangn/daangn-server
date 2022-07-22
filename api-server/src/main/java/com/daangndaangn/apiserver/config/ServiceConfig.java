@@ -3,6 +3,7 @@ package com.daangndaangn.apiserver.config;
 import com.daangndaangn.common.config.JwtConfig;
 import com.daangndaangn.common.jwt.Jwt;
 import com.daangndaangn.common.util.MessageUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * 프로젝트에서 사용하는 각종 Bean 모음
  */
+@Slf4j
 @Configuration
 public class ServiceConfig {
 
@@ -31,6 +33,7 @@ public class ServiceConfig {
 
     @Bean
     public Jwt jwt(JwtConfig jwtConfig) {
+        log.warn("jwt expirySeconds: {}",jwtConfig.getExpirySeconds());
         return new Jwt(jwtConfig.getIssuer(), jwtConfig.getClientSecret(), jwtConfig.getExpirySeconds());
     }
 
