@@ -61,10 +61,8 @@ public class UserServiceTest {
         given(userRepository.existsByOAuth(anyLong())).willReturn(false);
         given(userRepository.save(any())).willReturn(mockUser);
 
-        String profileImageUrl = "testProfileImageUrl";
-
         //when
-        Long userId = userService.create(mockUser.getOauthId(), profileImageUrl).get();
+        Long userId = userService.create(mockUser.getOauthId()).get();
 
         //then
         assertThat(userId).isEqualTo(mockUser.getId());
@@ -82,7 +80,7 @@ public class UserServiceTest {
         given(userRepository.findByOauthId(anyLong())).willReturn(Optional.ofNullable(mockUser));
 
         //when
-        Long userId = userService.create(mockUser.getOauthId(), "testProfileImageUrl").get();
+        Long userId = userService.create(mockUser.getOauthId()).get();
 
         //then
         assertThat(userId).isEqualTo(mockUser.getId());
@@ -96,7 +94,7 @@ public class UserServiceTest {
     @DisplayName("사용자는_닉네임과_위치_프로필이미지를_업데이트_할_수_있다")
     public void update1() {
         //given
-        given(userRepository.findByOauthId(anyLong())).willReturn(Optional.ofNullable(mockUser));
+        given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockUser));
         given(uploadUtils.isNotImageFile(anyString())).willReturn(false);
         given(userRepository.exists(anyString())).willReturn(false);
 
@@ -109,7 +107,7 @@ public class UserServiceTest {
         String newProfileUrl = "newProfileUrl";
 
         //when
-        long updatedId = userService.update(mockUser.getOauthId(), newNickname, newLocation, newProfileUrl);
+        long updatedId = userService.update(mockUser.getId(), newNickname, newLocation, newProfileUrl);
 
         //then
         assertThat(updatedId).isEqualTo(mockUser.getId());
@@ -117,7 +115,7 @@ public class UserServiceTest {
         assertThat(mockUser.getLocation()).isEqualTo(newLocation);
         assertThat(mockUser.getProfileUrl()).isNotEmpty();
 
-        verify(userRepository).findByOauthId(anyLong());
+        verify(userRepository).findById(anyLong());
         verify(uploadUtils).isNotImageFile(anyString());
         verify(userRepository).exists(anyString());
     }
@@ -126,7 +124,7 @@ public class UserServiceTest {
     @DisplayName("프로필이미지_형식이_올바르지_않은_경우_예외를_반환한다")
     public void update2() {
         //given
-        given(userRepository.findByOauthId(anyLong())).willReturn(Optional.ofNullable(mockUser));
+        given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockUser));
         given(uploadUtils.isNotImageFile(anyString())).willReturn(true);
 
         String newNickname = "newNickname";
@@ -138,7 +136,7 @@ public class UserServiceTest {
             () -> userService.update(mockUser.getOauthId(), newNickname, newLocation, newProfileUrl));
 
         //then
-        verify(userRepository).findByOauthId(anyLong());
+        verify(userRepository).findById(anyLong());
         verify(uploadUtils).isNotImageFile(anyString());
         verify(userRepository, never()).exists(anyString());
     }
@@ -147,7 +145,7 @@ public class UserServiceTest {
     @DisplayName("이미_존재하는_닉네임인_경우_예외를_반환한다")
     public void update3() {
         //given
-        given(userRepository.findByOauthId(anyLong())).willReturn(Optional.ofNullable(mockUser));
+        given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockUser));
         given(uploadUtils.isNotImageFile(anyString())).willReturn(false);
         given(userRepository.exists(anyString())).willReturn(true);
 
@@ -157,10 +155,10 @@ public class UserServiceTest {
 
         //when
         assertThrows(DuplicateValueException.class,
-                () -> userService.update(mockUser.getOauthId(), newNickname, newLocation, newProfileUrl));
+                () -> userService.update(mockUser.getId(), newNickname, newLocation, newProfileUrl));
 
         //then
-        verify(userRepository).findByOauthId(anyLong());
+        verify(userRepository).findById(anyLong());
         verify(uploadUtils).isNotImageFile(anyString());
         verify(userRepository).exists(anyString());
     }

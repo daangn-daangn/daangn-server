@@ -38,7 +38,7 @@ class NotificationServiceTest {
 
     @BeforeEach
     void init() {
-        mockUser = User.builder().id(1L).oauthId(12345L).profileUrl("").build();
+        mockUser = User.builder().id(1L).oauthId(12345L).build();
     }
 
     @Test

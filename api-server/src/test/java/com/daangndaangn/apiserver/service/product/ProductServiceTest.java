@@ -65,13 +65,11 @@ public class ProductServiceTest {
         mockUser = User.builder()
             .id(1L)
             .oauthId(1234L)
-            .profileUrl("www.naver.com")
             .build();
 
         mockSeller = User.builder()
                 .id(2L)
                 .oauthId(567L)
-                .profileUrl("www.naver.com")
                 .build();
 
         mockSeller.update("testNickname", Location.from("test address"));
@@ -304,7 +302,6 @@ public class ProductServiceTest {
         User mockBuyer = User.builder()
                 .id(3L)
                 .oauthId(89L)
-                .profileUrl("www.naver.com")
                 .build();
 
         assertThat(mockProduct.getProductState()).isEqualTo(ProductState.FOR_SALE);
@@ -401,7 +398,6 @@ public class ProductServiceTest {
         User mockBuyer = User.builder()
                 .id(3L)
                 .oauthId(89L)
-                .profileUrl("www.naver.com")
                 .build();
 
         assertThat(mockProduct.getBuyer()).isNull();

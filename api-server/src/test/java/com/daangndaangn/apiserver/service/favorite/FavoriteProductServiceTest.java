@@ -49,8 +49,8 @@ class FavoriteProductServiceTest {
 
     @BeforeEach
     public void init() {
-        mockUser = User.builder().id(1L).oauthId(1234L).profileUrl(null).build();
-        User mockBuyer = User.builder().id(2L).oauthId(5678L).profileUrl(null).build();
+        mockUser = User.builder().id(1L).oauthId(1234L).build();
+        User mockBuyer = User.builder().id(2L).oauthId(5678L).build();
         mockUser.update("테스트 유저", Location.from("노원구 상계동"));
 
         mockProduct = Product.builder()

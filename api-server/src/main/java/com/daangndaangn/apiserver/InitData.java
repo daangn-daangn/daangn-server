@@ -61,31 +61,31 @@ public class InitData {
         private final ChatRoomService chatRoomService;
 
         public void initUsers() throws ExecutionException, InterruptedException {
-            userService.create(12L, "test001.jpg")
+            userService.create(12L)
                 .thenApply(userId -> {
                     userService.update(userId, "테스트 닉네임1", "노원구 상계동");
                     return null;
                 }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(34L, "test002.jpg")
+            userService.create(34L)
                 .thenApply(userId -> {
                     userService.update(userId, "테스트닉네임2", "노원구 상계동");
                     return null;
                 }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(56L, "test003.jpg")
+            userService.create(56L)
                 .thenApply(userId -> {
                     userService.update(userId, "테스트닉네임3", "노원구 상계동");
                     return null;
                 }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(78L, "test004.jpg")
+            userService.create(78L)
                 .thenApply(userId -> {
                     userService.update(userId, "테스트닉네임4", "노원구 상계동");
                     return null;
                 }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(910L, "test005.jpg")
+            userService.create(910L)
                 .thenApply(userId -> {
                     userService.update(userId, "테스트닉네임5", "노원구 상계동");
                     return null;
@@ -93,7 +93,7 @@ public class InitData {
         }
 
         public void initUsersWithProducts() throws ExecutionException, InterruptedException {
-            userService.create(12L, "test001.jpg")
+            userService.create(12L)
                     .thenApply(userId -> {
                         userService.update(userId, "테스트 닉네임1", "노원구 상계동");
                         productService.create(userId,
@@ -131,7 +131,7 @@ public class InitData {
                         return null;
                     }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(34L, "test002.jpg")
+            userService.create(34L)
                     .thenApply(userId -> {
                         userService.update(userId, "테스트닉네임2", "노원구 상계동");
                         productService.create(userId,
@@ -160,7 +160,7 @@ public class InitData {
                         return null;
                     }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(56L, "test003.jpg")
+            userService.create(56L)
                     .thenApply(userId -> {
                         userService.update(userId, "테스트닉네임3", "노원구 상계동");
                         productService.create(userId,
@@ -185,13 +185,13 @@ public class InitData {
                         return null;
                     }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(78L, "test004.jpg")
+            userService.create(78L)
                     .thenApply(userId -> {
                         userService.update(userId, "테스트닉네임4", "노원구 상계동");
                         return null;
                     }).thenAccept(result -> log.info("initUsers"));
 
-            userService.create(910L, "test005.jpg")
+            userService.create(910L)
                     .thenApply(userId -> {
                         userService.update(userId, "테스트닉네임5", "노원구 상계동");
                         return null;

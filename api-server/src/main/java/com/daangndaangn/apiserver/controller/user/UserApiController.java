@@ -74,10 +74,10 @@ public class UserApiController {
         String accessToken = request.getAccessToken();
         OAuthResponse.LoginResponse userInfo = oAuthService.getUserInfo(OAuthRequest.LoginRequest.from(accessToken));
 
-        return userService.create(userInfo.getId(), userInfo.getProfileImage()).handle((userId, throwable) -> {
+        return userService.create(userInfo.getId()).handle((userId, throwable) -> {
             if (userId != null) {
                 User user = userService.getUser(userId);
-                return new ResponseEntity<>(OK(JoinResponse.from(user)), OK);
+                return new ResponseEntity<>(OK(JoinResponse.of(user, userInfo.getProfileImage())), OK);
             }
 
             return ErrorResponseEntity.from(throwable, true);
@@ -91,7 +91,7 @@ public class UserApiController {
     public ApiResult<UpdateResponse> update(@AuthenticationPrincipal JwtAuthentication authentication,
                                             @Valid @RequestBody UserRequest.UpdateRequest request) {
 
-        long userId = userService.update(authentication.getOauthId(),
+        long userId = userService.update(authentication.getId(),
                 request.getNickname(),
                 Location.from(request.getLocation()),
                 request.getProfileUrl());
