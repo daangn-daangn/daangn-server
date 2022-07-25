@@ -21,6 +21,7 @@ public class SaleReviewResponse {
         private String profileUrl;
         private String location;
         private String content;
+        private int reviewType;
         private LocalDateTime createdAt;
 
         public static GetResponse of(SaleReview saleReview, String profileUrl) {
@@ -31,6 +32,7 @@ public class SaleReviewResponse {
                     .profileUrl(profileUrl)
                     .location(saleReview.getReviewer().getLocation().getAddress())
                     .content(saleReview.getContent())
+                    .reviewType(saleReview.getSaleReviewType().getCode())
                     .createdAt(saleReview.getCreatedAt())
                     .build();
         }
