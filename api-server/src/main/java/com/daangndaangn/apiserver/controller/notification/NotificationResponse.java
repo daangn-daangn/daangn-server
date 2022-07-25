@@ -27,6 +27,25 @@ public class NotificationResponse {
         private boolean isView;
         private LocalDateTime createdAt;
 
+        public static SimpleResponse fromProductAndUserNotice(NotificationQueryDto noti,
+                                                              String productPresignedUrl,
+                                                              String profilePresignedUrl) {
+
+            return SimpleResponse.builder()
+                    .id(noti.getId())
+                    .notiCode(noti.getNotiType().getCode())
+                    .notiType(noti.getNotiType().getState())
+                    .productId(noti.getProductId())
+                    .title(noti.getTitle())
+                    .thumbNailImage(productPresignedUrl)
+                    .reviewerId(noti.getUserId())
+                    .nickname(noti.getNickname())
+                    .profileUrl(profilePresignedUrl)
+                    .isView(noti.isRead())
+                    .createdAt(noti.getCreatedAt())
+                    .build();
+        }
+
         public static SimpleResponse fromUserNotice(NotificationQueryDto noti, String presignedUrl) {
             return SimpleResponse.builder()
                     .id(noti.getId())
@@ -43,7 +62,6 @@ public class NotificationResponse {
         public static SimpleResponse fromProductNotice(NotificationQueryDto noti, String presignedUrl) {
             switch (noti.getNotiType()) {
                 case SOLD_OUT:  //0
-                case SOLD_OUT_TO_BUYER://2
                     return SimpleResponse.builder()
                             .id(noti.getId())
                             .notiCode(noti.getNotiType().getCode())

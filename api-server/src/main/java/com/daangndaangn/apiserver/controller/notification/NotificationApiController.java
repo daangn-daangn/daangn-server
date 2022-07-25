@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.daangndaangn.common.api.entity.notification.NotificationType.BUYER_REVIEW_CREATED;
+import static com.daangndaangn.common.api.entity.notification.NotificationType.SOLD_OUT_TO_BUYER;
 import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -42,6 +43,12 @@ public class NotificationApiController {
                     String presignedUrl = isEmpty(notiDto.getProfileUrl()) ? null :
                             presignerUtils.getProfilePresignedGetUrl(notiDto.getProfileUrl());
                     return SimpleResponse.fromUserNotice(notiDto, presignedUrl);
+                } else if (notiDto.getNotiType().equals(SOLD_OUT_TO_BUYER)) {
+                    String productPresignedUrl = isEmpty(notiDto.getThumbNailImage()) ? null :
+                            presignerUtils.getProductPresignedGetUrl(notiDto.getThumbNailImage());
+                    String profilePresignedUrl = isEmpty(notiDto.getProfileUrl()) ? null :
+                            presignerUtils.getProfilePresignedGetUrl(notiDto.getProfileUrl());
+                    return SimpleResponse.fromProductAndUserNotice(notiDto, productPresignedUrl, profilePresignedUrl);
                 } else {
                     String presignedUrl = isEmpty(notiDto.getThumbNailImage()) ? null :
                             presignerUtils.getProductPresignedGetUrl(notiDto.getThumbNailImage());

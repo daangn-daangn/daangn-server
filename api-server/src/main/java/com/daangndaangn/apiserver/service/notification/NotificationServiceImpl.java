@@ -68,6 +68,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public Long getSellerIdOfSoldOutToBuyer(String identifier) {
+        checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
+        String[] components = identifier.split("-");
+        String sellerComponent = components[1];
+        String sellerId = sellerComponent.substring(NotificationConstants.SELLER_PREFIX.length());
+
+        return toLong(sellerId, -1);
+    }
+
+    @Override
     public Long getReviewerId(String identifier) {
         checkArgument(isNotEmpty(identifier), "identifier 값은 필수입니다.");
         String reviewerId = identifier.substring(NotificationConstants.SALE_REVIEW_PREFIX.length());
