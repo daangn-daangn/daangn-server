@@ -245,7 +245,7 @@ public class ProductApiController {
                                                             @AuthenticationPrincipal JwtAuthentication authentication,
                                                             @PageableDefault(size = 5) Pageable pageable) {
 
-        List<SimpleResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
+        List<BuyerResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
 
         products
             .stream()
