@@ -27,7 +27,6 @@ public class ProductQueryService {
     private final ProductQueryRepository productQueryRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    //회원 전용
     public List<ProductResponse.SimpleResponse> getProducts(ProductSearchOption productSearchOption, Location location, Pageable pageable) {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productSearchOption, location.getAddress(), pageable);
 
