@@ -24,7 +24,23 @@ public class NotificationQueryDto {
     private boolean isRead;
     private LocalDateTime createdAt;
 
-    public static NotificationQueryDto fromProduct(Product product, Notification noti) {
+    public static NotificationQueryDto of(Product product, User user, Notification noti) {
+        return NotificationQueryDto.builder()
+                .id(noti.getId())
+                .notiType(noti.getNotificationType())
+                .productId(product.getId())
+                .price(product.getPrice())
+                .title(product.getTitle())
+                .thumbNailImage(product.getThumbNailImage())
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileUrl(user.getProfileUrl())
+                .isRead(noti.isRead())
+                .createdAt(noti.getCreatedAt())
+                .build();
+    }
+
+    public static NotificationQueryDto from(Product product, Notification noti) {
         return NotificationQueryDto.builder()
                 .id(noti.getId())
                 .notiType(noti.getNotificationType())
@@ -37,7 +53,7 @@ public class NotificationQueryDto {
                 .build();
     }
 
-    public static NotificationQueryDto fromUser(User user, Notification noti) {
+    public static NotificationQueryDto from(User user, Notification noti) {
         return NotificationQueryDto.builder()
                 .id(noti.getId())
                 .notiType(noti.getNotificationType())

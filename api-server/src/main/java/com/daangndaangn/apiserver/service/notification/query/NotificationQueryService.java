@@ -29,20 +29,22 @@ public class NotificationQueryService {
                 case SOLD_OUT:
                     Long productId = notificationService.getProductId(notification.getIdentifier());
                     Product product = productService.getProduct(productId);
-                    return NotificationQueryDto.fromProduct(product, notification);
+                    return NotificationQueryDto.from(product, notification);
                 case PRICE_DOWN:
                     productId = notificationService.getProductId(notification.getIdentifier());
                     product = productService.getProduct(productId);
-                    return NotificationQueryDto.fromProduct(product, notification);
+                    return NotificationQueryDto.from(product, notification);
                 case SOLD_OUT_TO_BUYER:
                     productId = notificationService.getProductIdOfSoldOutToBuyer(notification.getIdentifier());
+                    Long sellerId = notificationService.getSellerIdOfSoldOutToBuyer(notification.getIdentifier());
                     product = productService.getProduct(productId);
-                    return NotificationQueryDto.fromProduct(product, notification);
+                    User seller = userService.getUser(sellerId);
+                    return NotificationQueryDto.of(product, seller, notification);
                 default:
                     //BUYER_REVIEW_CREATED
                     Long reviewerId = notificationService.getReviewerId(notification.getIdentifier());
                     User reviewer = userService.getUser(reviewerId);
-                    return NotificationQueryDto.fromUser(reviewer, notification);
+                    return NotificationQueryDto.from(reviewer, notification);
             }
         }).collect(toList());
     }

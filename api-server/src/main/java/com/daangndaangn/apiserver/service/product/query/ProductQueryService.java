@@ -6,6 +6,7 @@ import com.daangndaangn.common.api.entity.user.Location;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryRepository;
 import com.daangndaangn.common.api.repository.product.query.ProductSearchOption;
+import com.daangndaangn.common.api.repository.product.query.ProductWithSellerQueryDto;
 import com.daangndaangn.common.chat.repository.chatroom.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,6 @@ public class ProductQueryService {
     private final ProductQueryRepository productQueryRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    //회원 전용
     public List<ProductResponse.SimpleResponse> getProducts(ProductSearchOption productSearchOption, Location location, Pageable pageable) {
         List<ProductQueryDto> productQueryDtos = productQueryRepository.findAll(productSearchOption, location.getAddress(), pageable);
 
@@ -67,13 +67,13 @@ public class ProductQueryService {
     /**
      * 구매내역
      */
-    public List<ProductResponse.SimpleResponse> getProductsByBuyer(Long userId, Pageable pageable) {
-        List<ProductQueryDto> productQueryDtos =
+    public List<ProductResponse.BuyerResponse> getProductsByBuyer(Long userId, Pageable pageable) {
+        List<ProductWithSellerQueryDto> productQueryDtos =
             productQueryRepository.findAllByBuyer(userId, pageable);
 
         return productQueryDtos.stream().map(p -> {
             long chattingCount = chatRoomRepository.countAllByProductId(p.getId());
-            return ProductResponse.SimpleResponse.of(p, chattingCount);
+            return ProductResponse.BuyerResponse.of(p, chattingCount);
         }).collect(toList());
     }
 }

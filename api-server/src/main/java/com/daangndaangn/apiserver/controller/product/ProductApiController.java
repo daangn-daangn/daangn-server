@@ -168,7 +168,7 @@ public class ProductApiController {
     }
 
     /**
-     * 물품 상태 변경(1-판매중,2-거래완료,3-예약중)
+     * 물품 상태 변경(0-숨기기,1-판매중,2-거래완료,3-예약중)
      *
      * PUT /api/products/state/:productId
      */
@@ -245,7 +245,7 @@ public class ProductApiController {
                                                             @AuthenticationPrincipal JwtAuthentication authentication,
                                                             @PageableDefault(size = 5) Pageable pageable) {
 
-        List<SimpleResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
+        List<BuyerResponse> products = productQueryService.getProductsByBuyer(authentication.getId(), pageable);
 
         products
             .stream()

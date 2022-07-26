@@ -59,13 +59,11 @@ public class SaleReviewServiceTest {
         mockUser1 = User.builder()
                 .id(1L)
                 .oauthId(12L)
-                .profileUrl("www.naver.com")
                 .build();
 
         mockUser2 = User.builder()
                 .id(2L)
                 .oauthId(34L)
-                .profileUrl("www.naver.com")
                 .build();
 
         mockUser2.update("testNickname", Location.from("test Address"));
@@ -73,7 +71,6 @@ public class SaleReviewServiceTest {
         mockUser3 = User.builder()
                 .id(3L)
                 .oauthId(56L)
-                .profileUrl("www.naver.com")
                 .build();
     }
 
@@ -87,7 +84,6 @@ public class SaleReviewServiceTest {
         User mockUser = User.builder()
                 .id(3L)
                 .oauthId(56L)
-                .profileUrl("www.naver.com")
                 .build();
 
         Product mockProduct = Product.builder()

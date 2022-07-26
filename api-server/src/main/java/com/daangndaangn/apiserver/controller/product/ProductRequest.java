@@ -41,7 +41,7 @@ public class ProductRequest {
     @Getter
     @JsonNaming(SnakeCaseStrategy.class)
     public static class UpdateStateRequest {
-        @Min(value = 1)
+        @Min(value = 0)
         @Max(value = 3)
         @NotNull(message = "state 값은 필수입니다.")
         private Integer state;

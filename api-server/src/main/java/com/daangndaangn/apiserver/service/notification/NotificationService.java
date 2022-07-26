@@ -19,6 +19,9 @@ public interface NotificationService {
     //SOLD_OUT_TO_BUYER
     Long getProductIdOfSoldOutToBuyer(String identifier);
 
+    //SOLD_OUT_TO_BUYER
+    Long getSellerIdOfSoldOutToBuyer(String identifier);
+
     //BUYER_REVIEW_CREATED
     Long getReviewerId(String identifier);
 

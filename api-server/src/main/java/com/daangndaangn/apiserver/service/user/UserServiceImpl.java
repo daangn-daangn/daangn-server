@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Async
     @Override
     @Transactional
-    public CompletableFuture<Long> create(Long oauthId, String profileImageFullPath) {
+    public CompletableFuture<Long> create(Long oauthId) {
         checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
 
         if (userRepository.existsByOAuth(oauthId)) {
@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
 
         User user = User.builder()
                 .oauthId(oauthId)
-                .profileUrl(profileImageFullPath)
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -55,15 +54,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public long update(Long oauthId, String nickname, Location location, String profileImageFullPath) {
-        checkArgument(oauthId != null, "oauthId 값은 필수입니다.");
+    public long update(Long id, String nickname, Location location, String profileImageFullPath) {
+        checkArgument(id != null, "id 값은 필수입니다.");
         checkArgument(isNotEmpty(nickname), "nickname 값은 필수입니다.");
         checkArgument(location != null && isNotEmpty(location.getAddress()), "주소값은 필수입니다.");
         checkArgument(isNotEmpty(profileImageFullPath), "profileImageFullPath 값은 필수입니다.");
 
-        User user = getUserByOauthId(oauthId);
+        User user = getUser(id);
 
-        String profileImageUrl = toProfileImageUrl(profileImageFullPath);
+        String profileImageUrl = toProfileImageUrl(user.getId(), profileImageFullPath);
 
         if (isEmpty(profileImageUrl) || uploadUtils.isNotImageFile(profileImageUrl)) {
             throw new IllegalArgumentException("png, jpeg, jpg에 해당하는 파일만 업로드할 수 있습니다.");
@@ -74,14 +73,14 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateValueException(String.format("nickname: %s", nickname));
         }
 
-        user.update(oauthId, nickname, location, profileImageUrl);
+        user.update(nickname, location, profileImageUrl);
 
         return user.getId();
     }
 
-    private String toProfileImageUrl(String fullPath) {
+    private String toProfileImageUrl(Long userId, String fullPath) {
         String profileImageUrl = FilenameUtils.getName(fullPath);
-        return UUID.randomUUID() + profileImageUrl;
+        return userId + "/" + profileImageUrl;
     }
 
     @Override

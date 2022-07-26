@@ -49,8 +49,8 @@ public class SaleReviewServiceSpyTest {
     @BeforeEach
     public void init() throws ExecutionException, InterruptedException {
         mockCategoryId = categoryService.create("test");
-        mockSellerId = userService.create(123L, null).get();
-        mockBuyerId = userService.create(456L, null).get();
+        mockSellerId = userService.create(123L).get();
+        mockBuyerId = userService.create(456L).get();
 
         userService.update(mockSellerId, "testNickname", "test address");
 

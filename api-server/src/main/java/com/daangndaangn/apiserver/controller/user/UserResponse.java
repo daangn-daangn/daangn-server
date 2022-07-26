@@ -23,11 +23,11 @@ public class UserResponse {
         private Long oauthId;
         private String profileUrl;
 
-        public static JoinResponse from(User user) {
+        public static JoinResponse of(User user, String profileUrl) {
             return JoinResponse.builder()
                     .id(user.getId())
                     .oauthId(user.getOauthId())
-                    .profileUrl(user.getProfileUrl())
+                    .profileUrl(profileUrl)
                     .build();
         }
     }

@@ -57,7 +57,7 @@ public final class Jwt {
         builder.withIssuedAt(now);
 
         if (expirySeconds > 0) {
-            builder.withExpiresAt(new Date(now.getTime() + expirySeconds * 1_000L));
+            builder.withExpiresAt(new Date(now.getTime() + (long)expirySeconds * 1_000L));
         }
 
         builder.withClaim("id", claims.id);

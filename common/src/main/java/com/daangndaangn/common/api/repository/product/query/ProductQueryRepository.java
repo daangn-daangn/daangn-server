@@ -82,20 +82,22 @@ public class ProductQueryRepository {
     /**
      * 특정 사용자의 구매 내역 조회
      */
-    public List<ProductQueryDto> findAllByBuyer(Long buyerId, Pageable pageable) {
+    public List<ProductWithSellerQueryDto> findAllByBuyer(Long buyerId, Pageable pageable) {
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(ProductQueryDto.class,
+                        Projections.constructor(ProductWithSellerQueryDto.class,
                                 product.id,
                                 product.title,
                                 product.location.address,
                                 product.price,
                                 product.thumbNailImage,
+                                product.seller.id,
                                 product.createdAt,
                                 favoriteProduct.id.count()
                         )
                 ).from(product)
                     .join(product.category, category)
+                    .join(product.seller, user)
                     .join(product.buyer, user)
                     .leftJoin(favoriteProduct)
                         .on(product.id.eq(favoriteProduct.product.id))

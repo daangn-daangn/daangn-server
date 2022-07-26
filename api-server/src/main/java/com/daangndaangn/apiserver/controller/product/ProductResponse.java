@@ -2,6 +2,7 @@ package com.daangndaangn.apiserver.controller.product;
 
 import com.daangndaangn.apiserver.service.product.query.ProductDetailQueryDto;
 import com.daangndaangn.common.api.repository.product.query.ProductQueryDto;
+import com.daangndaangn.common.api.repository.product.query.ProductWithSellerQueryDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,42 @@ public class ProductResponse {
                     .location(productQueryDto.getLocation())
                     .price(productQueryDto.getPrice())
                     .thumbNailImage(productQueryDto.getImageUrl())
+                    .favoriteCount(productQueryDto.getFavoriteCount())
+                    .chattingCount(chattingCount)
+                    .createdAt(productQueryDto.getCreatedAt())
+                    .build();
+        }
+    }
+
+    /**
+     * SimpleResponse + sellerId field
+     */
+    @Getter
+    @Builder
+    @JsonNaming(SnakeCaseStrategy.class)
+    public static class BuyerResponse {
+        private Long id;
+        private String title;
+        private String location;
+        private Long price;
+        private String thumbNailImage;
+        private Long sellerId;
+        private Long favoriteCount;
+        private Long chattingCount;
+        private LocalDateTime createdAt;
+
+        void updateImageUrl(String presigendImageUrl) {
+            this.thumbNailImage = presigendImageUrl;
+        }
+
+        public static BuyerResponse of(ProductWithSellerQueryDto productQueryDto, Long chattingCount) {
+            return BuyerResponse.builder()
+                    .id(productQueryDto.getId())
+                    .title(productQueryDto.getTitle())
+                    .location(productQueryDto.getLocation())
+                    .price(productQueryDto.getPrice())
+                    .thumbNailImage(productQueryDto.getImageUrl())
+                    .sellerId(productQueryDto.getSellerId())
                     .favoriteCount(productQueryDto.getFavoriteCount())
                     .chattingCount(chattingCount)
                     .createdAt(productQueryDto.getCreatedAt())
@@ -100,6 +137,7 @@ public class ProductResponse {
     @JsonNaming(SnakeCaseStrategy.class)
     public static class PurchaseHistoryResponse {
         private Long id;
+        private Long sellerId;
         private String title;
         private String location;
         private Long price;
@@ -109,17 +147,18 @@ public class ProductResponse {
         private boolean hasReview;
         private LocalDateTime createdAt;
 
-        public static PurchaseHistoryResponse of(SimpleResponse simpleResponse, boolean hasReview) {
+        public static PurchaseHistoryResponse of(BuyerResponse response, boolean hasReview) {
             return PurchaseHistoryResponse.builder()
-                    .id(simpleResponse.getId())
-                    .title(simpleResponse.getTitle())
-                    .location(simpleResponse.getLocation())
-                    .price(simpleResponse.getPrice())
-                    .thumbNailImage(simpleResponse.getThumbNailImage())
-                    .favoriteCount(simpleResponse.getFavoriteCount())
-                    .chattingCount(simpleResponse.getChattingCount())
+                    .id(response.getId())
+                    .sellerId(response.getSellerId())
+                    .title(response.getTitle())
+                    .location(response.getLocation())
+                    .price(response.getPrice())
+                    .thumbNailImage(response.getThumbNailImage())
+                    .favoriteCount(response.getFavoriteCount())
+                    .chattingCount(response.getChattingCount())
                     .hasReview(hasReview)
-                    .createdAt(simpleResponse.getCreatedAt())
+                    .createdAt(response.getCreatedAt())
                     .build();
         }
     }

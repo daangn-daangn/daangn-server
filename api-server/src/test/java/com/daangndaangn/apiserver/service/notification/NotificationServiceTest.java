@@ -13,11 +13,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -36,12 +42,27 @@ class NotificationServiceTest {
 
     @BeforeEach
     void init() {
-        mockUser = User.builder().id(1L).oauthId(12345L).profileUrl("").build();
+        mockUser = User.builder().id(1L).oauthId(12345L).build();
         mockNotification = Notification.builder().id(1L)
                 .user(mockUser)
                 .notificationType(NotificationType.SOLD_OUT)
                 .identifier("test")
                 .build();
+    }
+
+    @Test
+    @DisplayName("자신이 받은 알림 리스트를 조회할 수 있다.")
+    void getNotifications() {
+        //given
+        List<Notification> mockNotifications = Stream.of(new Notification[]{mockNotification, mockNotification}).collect(toList());
+        given(notificationRepository.findAllByUserId(anyLong(), any())).willReturn(mockNotifications);
+
+        //when
+        List<Notification> notifications = notificationService.getNotifications(mockUser.getId(), PageRequest.of(0, 5));
+
+        //then
+        assertThat(notifications.size()).isEqualTo(mockNotifications.size());
+        verify(notificationRepository).findAllByUserId(anyLong(), any());
     }
 
     @Test
@@ -95,7 +116,7 @@ class NotificationServiceTest {
 
     @Test
     @DisplayName("SOLD_OUT_TO_BUYER의_identifier에서_product_id를_추출할_수_있다")
-    public void getProductIdOfSoldOutToBuyer() {
+    public void getProductIdOfSoldOutToBuyer1() {
         //given
         Long productId = 123L;
         Long sellerId = 456L;
@@ -111,6 +132,26 @@ class NotificationServiceTest {
         //then
         assertThat(result).isEqualTo(productId);
     }
+
+    @Test
+    @DisplayName("SOLD_OUT_TO_BUYER의_identifier에서_seller_id를_추출할_수_있다")
+    public void getProductIdOfSoldOutToBuyer2() {
+        //given
+        Long productId = 123L;
+        Long sellerId = 456L;
+        StringBuilder sb = new StringBuilder();
+        String identifier =
+                sb.append(NotificationConstants.PRODUCT_PREFIX).append(productId)
+                        .append("-")
+                        .append(NotificationConstants.SELLER_PREFIX).append(sellerId).toString();
+
+        //when
+        Long result = notificationService.getSellerIdOfSoldOutToBuyer(identifier);
+
+        //then
+        assertThat(result).isEqualTo(sellerId);
+    }
+
 
     @Test
     @DisplayName("BUYER_REVIEW_CREATED의_identifier에서_product_id를_추출할_수_있다")

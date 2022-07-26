@@ -9,9 +9,9 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
 
-    CompletableFuture<Long> create(Long oauthId, String profileImageFullPath);
+    CompletableFuture<Long> create(Long oauthId);
 
-    long update(Long oauthId, String nickname, Location location, String profileImageFullPath);
+    long update(Long id, String nickname, Location location, String profileImageFullPath);
 
     void update(Long id, String nickname, String location);
 
