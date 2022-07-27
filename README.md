@@ -27,7 +27,7 @@
 
 #### daangn-daangn architecture
 
-![daangn-daangn](https://user-images.githubusercontent.com/75410527/178842214-bb7a49a4-20ee-473f-b6be-bd59e1513ee3.jpeg)
+![프로젝트 아키텍쳐 generator 002](https://user-images.githubusercontent.com/75410527/181295719-73f15db1-f0bc-4c94-9c8e-9a540e8ba3f3.jpeg)
 
 #### daangn-server architecture
 
@@ -35,7 +35,7 @@
 - `chat-server`: 채팅 관련 기능을 담당하는 서버
 - `notification-server`: api-server로부터 요청을 받아 알림 처리를 담당하는 서버 
 
-![daangn-server](https://user-images.githubusercontent.com/75410527/178842230-d88fa5e8-95f7-44e8-ac48-270ef1894f96.jpeg)
+![프로젝트 아키텍쳐 generator 001](https://user-images.githubusercontent.com/75410527/181295759-501508d4-9696-4101-8b03-693012e5e323.jpeg)
 
 ---
 
@@ -58,9 +58,9 @@
 
 - SpringBoot v2.6.4 (gradle)
 - Spring Data Jpa (Querydsl)
-- Apache Kafka
-- Docker
-- mysql
-- mongodb
-- Spring WebSocket STOMP
-- Git-action & AWS CodeDeploy
+- Mysql
+- Mongodb
+- Spring WebSocket STOMP 
+- Google guava 
+- Apache Kafka 
+- Docker & Git-action & AWS CodeDeploy
