@@ -9,6 +9,7 @@ import com.daangndaangn.common.error.UnauthorizedException;
 import com.daangndaangn.common.jwt.JwtAuthentication;
 import com.daangndaangn.common.controller.ApiResult;
 import com.daangndaangn.common.controller.ErrorResponseEntity;
+import com.daangndaangn.common.util.PresignerUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.daangndaangn.common.controller.ApiResult.OK;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.http.HttpStatus.OK;
 
 @RequestMapping("/api/favorite-products")
@@ -31,6 +33,7 @@ public class FavoriteProductApiController {
 
     private final FavoriteProductService favoriteProductService;
     private final ProductQueryService productQueryService;
+    private final PresignerUtils presignerUtils;
 
     /**
      * 찜한 상품 목록 조회
@@ -46,7 +49,14 @@ public class FavoriteProductApiController {
                 .map(favoriteProduct -> favoriteProduct.getProduct().getId())
                 .collect(toList());
 
-        return OK(productQueryService.getFavoriteProducts(productIds));
+        List<SimpleResponse> products = productQueryService.getFavoriteProducts(productIds);
+
+        products
+                .stream()
+                .filter(p -> isNotEmpty(p.getThumbNailImage()))
+                .forEach(p -> p.updateImageUrl(presignerUtils.getProductPresignedGetUrl(p.getThumbNailImage())));
+
+        return OK(products);
     }
 
     /**

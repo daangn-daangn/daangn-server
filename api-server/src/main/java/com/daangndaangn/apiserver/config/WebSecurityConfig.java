@@ -22,8 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 /**
  * SpringSecurity, 인증 인가 관련 설정 및 관련 Bean 모음
  */
@@ -94,10 +92,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CorsConfigurationSource configurationSource() {
-        List<String> clientUrls = List.of("http://localhost:3001", "http://localhost:3002");
-
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(clientUrls);
+        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
