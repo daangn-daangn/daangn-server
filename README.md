@@ -41,15 +41,16 @@
 
 ### DB schema design
 
-- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/YdkZH58WZMtdcPY7A)
+- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/8P5EmGHF6B7oXYHQx)
 
 #### API 관련 ERD
 
-<img width="1401" alt="erd-daangn-server" src="https://user-images.githubusercontent.com/75410527/178994633-37e4131a-5132-43ff-8e4c-112dff49f896.png">
+<img width="1405" alt="erd_diagram_01" src="https://user-images.githubusercontent.com/75410527/181298802-6d8ba8f7-7342-4bc2-9af6-9d2d80d6d34e.png">
+
 
 #### 채팅 관련 ERD
 
-<img width="1023" alt="erd-2-daangn-server" src="https://user-images.githubusercontent.com/75410527/178994673-487fda62-3649-4ebf-9127-721d6251393c.png">
+<img width="1384" alt="erd_diagram_02" src="https://user-images.githubusercontent.com/75410527/181298827-37188ffa-b5cf-4ef8-aa0d-fb75aaaed19a.png">
 
 ---
 
