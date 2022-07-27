@@ -170,7 +170,7 @@ public class ProductQueryRepository {
                     categoriesEq(productSearchOption.getCategories()),
                     titleContains(productSearchOption.getTitle()),
                     priceCondition(productSearchOption.getMinPrice(), productSearchOption.getMaxPrice()),
-                    product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
+                    product.productState.notIn(ProductState.HIDE, ProductState.DELETED, ProductState.SOLD_OUT)
                 )
                 .groupBy(product.id, product.title)
                 .orderBy(product.refreshedAt.desc(), product.id.desc())
