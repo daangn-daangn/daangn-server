@@ -27,7 +27,7 @@
 
 #### daangn-daangn architecture
 
-![daangn-daangn](https://user-images.githubusercontent.com/75410527/178842214-bb7a49a4-20ee-473f-b6be-bd59e1513ee3.jpeg)
+![프로젝트 아키텍쳐 generator 002](https://user-images.githubusercontent.com/75410527/181295719-73f15db1-f0bc-4c94-9c8e-9a540e8ba3f3.jpeg)
 
 #### daangn-server architecture
 
@@ -35,21 +35,22 @@
 - `chat-server`: 채팅 관련 기능을 담당하는 서버
 - `notification-server`: api-server로부터 요청을 받아 알림 처리를 담당하는 서버 
 
-![daangn-server](https://user-images.githubusercontent.com/75410527/178842230-d88fa5e8-95f7-44e8-ac48-270ef1894f96.jpeg)
+![프로젝트 아키텍쳐 generator 001](https://user-images.githubusercontent.com/75410527/181295759-501508d4-9696-4101-8b03-693012e5e323.jpeg)
 
 ---
 
 ### DB schema design
 
-- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/YdkZH58WZMtdcPY7A)
+- [도메인 테이블 설계(ERDCloud)](https://www.erdcloud.com/d/8P5EmGHF6B7oXYHQx)
 
 #### API 관련 ERD
 
-<img width="1401" alt="erd-daangn-server" src="https://user-images.githubusercontent.com/75410527/178994633-37e4131a-5132-43ff-8e4c-112dff49f896.png">
+<img width="1405" alt="erd_diagram_01" src="https://user-images.githubusercontent.com/75410527/181298802-6d8ba8f7-7342-4bc2-9af6-9d2d80d6d34e.png">
+
 
 #### 채팅 관련 ERD
 
-<img width="1023" alt="erd-2-daangn-server" src="https://user-images.githubusercontent.com/75410527/178994673-487fda62-3649-4ebf-9127-721d6251393c.png">
+<img width="1384" alt="erd_diagram_02" src="https://user-images.githubusercontent.com/75410527/181298827-37188ffa-b5cf-4ef8-aa0d-fb75aaaed19a.png">
 
 ---
 
@@ -58,9 +59,9 @@
 
 - SpringBoot v2.6.4 (gradle)
 - Spring Data Jpa (Querydsl)
-- Apache Kafka
-- Docker
-- mysql
-- mongodb
-- Spring WebSocket STOMP
-- Git-action & AWS CodeDeploy
+- Mysql
+- Mongodb
+- Spring WebSocket STOMP 
+- Google guava 
+- Apache Kafka 
+- Docker & Git-action & AWS CodeDeploy
