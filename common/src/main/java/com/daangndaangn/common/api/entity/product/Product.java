@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,9 @@ public class Product extends AuditingCreateUpdateEntity {
     @Column(nullable = false)
     private int viewCnt;
 
+    @Column(nullable = false)
+    private LocalDateTime refreshedAt;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages = new ArrayList<>();
 
@@ -93,6 +97,7 @@ public class Product extends AuditingCreateUpdateEntity {
         this.location = seller.getLocation();
         this.productState = ProductState.FOR_SALE;
         this.refreshCnt = 0;
+        this.refreshedAt = LocalDateTime.now();
         this.viewCnt = 0;
     }
 
@@ -137,6 +142,7 @@ public class Product extends AuditingCreateUpdateEntity {
 
     public void refresh() {
         checkState(refreshCnt + 1 <= 5, "새로 고침은 5회이상 할 수 없습니다.");
+        refreshedAt = LocalDateTime.now();
         refreshCnt++;
     }
 

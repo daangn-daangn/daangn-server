@@ -173,7 +173,7 @@ public class ProductQueryRepository {
                     product.productState.notIn(ProductState.HIDE, ProductState.DELETED)
                 )
                 .groupBy(product.id, product.title)
-                .orderBy(product.updatedAt.desc())
+                .orderBy(product.refreshedAt.desc(), product.id.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                 .fetch();
