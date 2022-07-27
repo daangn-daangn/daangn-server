@@ -29,7 +29,7 @@ public class ProductResponse {
         private Long chattingCount;
         private LocalDateTime createdAt;
 
-        void updateImageUrl(String presigendImageUrl) {
+        public void updateImageUrl(String presigendImageUrl) {
             this.thumbNailImage = presigendImageUrl;
         }
 
